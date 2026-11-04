@@ -19,9 +19,9 @@
 | Casa com sol (`u_casa2.jpg`) | Unsplash, foto `photo-1449844908441-8829872d2607` | Álbum: "nosso endereço" |
 | Casal na cozinha (`u_cozinha.jpg`) | Unsplash, foto `photo-1556909114-f6e7ad7d3136` | Álbum: "domingos" |
 | Sala da nova casa (`u_novacasa.jpg`) | Unsplash, foto `photo-1513694203232-719a280e022f` | Chegada na nova casa |
-| Trilha ambiente (`musica.wav`) | Composta e sintetizada para o projeto (`scripts/diego_musica.py`) | Pads e notas esparsas de piano abafado em Ré maior, sem bateria. Os acordes seguem a narração e a música abaixa sozinha sob a voz (cerca de 13 dB abaixo dela) |
+| Trilha eletrônica minimalista (`musica.wav`) | Composta e sintetizada para o projeto (`scripts/diego_musica.py`) | Pad que "respira", arpejo filtrado, pulso grave suave e ticks digitais, a 95,4 BPM, com compassos que caem nas revelações da marca. Fica cerca de 15 dB abaixo da voz e abaixa sozinha durante a fala |
 | Fontes Montserrat e Caveat | Google Fonts (SIL Open Font License) | Tipografia |
-| Efeitos e ambiências (`sfx.wav`) | Sintetizados para o projeto (`scripts/diego_sfx.py`) | Páginas, caixas, fita, deslocamentos, impactos e ambiência. Sem batida |
+| Efeitos sonoros (`sfx.wav`) | Sintetizados para o projeto (`scripts/diego_sfx.py`) | Paleta premium de interface: passagens de ar curtas, toques de vidro, bipes digitais, impactos graves suaves, brilhos e páginas |
 
 As fotos do Unsplash seguem a [Licença Unsplash](https://unsplash.com/license): uso comercial gratuito, sem atribuição obrigatória. Cada foto pode ser consultada em `https://unsplash.com/photos/<id>`, ou pela imagem em `https://images.unsplash.com/<id>`.
 O vídeo de referência serviu apenas para estudar a linguagem de movimento. Nenhum trecho dele foi incluído no filme.

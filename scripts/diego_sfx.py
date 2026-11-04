@@ -1,212 +1,173 @@
-"""Efeitos e ambiência sintetizados (sem música) para o filme Diego Mudanças.
+"""Efeitos sonoros "premium UI" para o filme Diego Mudanças: ar curto e limpo, toques de vidro,
+bipes digitais, impactos graves suaves e brilhos. Poucos eventos, discretos, com espaço (reverb).
 Gera public/diego/sfx.wav (estéreo 48 kHz). Os tempos seguem src/diego/Diego.jsx.
-Uso: python3 scripts/diego_sfx.py
+Uso: python3 scripts/diego_sfx.py   (requer numpy)
 """
 import numpy as np, wave, os
 
 SR = 48000
 DUR = 62.0
 N = int(SR * DUR)
-rng = np.random.default_rng(7)
+rng = np.random.default_rng(3)
 L = np.zeros(N); R = np.zeros(N)
-
-
-def noise(d, color="white"):
-    n = int(SR * d)
-    x = rng.standard_normal(n)
-    if color == "pink":
-        f = np.fft.rfft(x); k = np.arange(len(f)); k[0] = 1
-        x = np.fft.irfft(f / np.sqrt(k), n)
-    elif color == "brown":
-        x = np.cumsum(x); x -= np.linspace(x[0], x[-1], n)
-    return x / (np.abs(x).max() + 1e-9)
-
-
-def svf(x, fc, q=0.7, mode="bp"):
-    """filtro de estado variável com corte variável (fc escalar ou vetor)."""
-    fc = np.broadcast_to(np.asarray(fc, float), x.shape)
-    f = 2 * np.sin(np.pi * np.clip(fc, 20, SR / 6) / SR)
-    lp = bp = 0.0; out = np.empty_like(x); damp = 1 / q
-    for i in range(len(x)):
-        hp = x[i] - lp - damp * bp
-        bp += f[i] * hp
-        lp += f[i] * bp
-        out[i] = bp if mode == "bp" else (lp if mode == "lp" else hp)
-    return out / (np.abs(out).max() + 1e-9)
-
-
-def env(n, a, r, curve=2.0):
-    t = np.linspace(0, 1, n)
-    e = np.where(t < a, (t / max(a, 1e-6)) ** 1.5, ((1 - t) / max(1 - a, 1e-6)) ** curve)
-    return np.clip(e, 0, 1)
 
 
 def put(sig, t, gain, pan=0.0):
     i = int(t * SR)
     if i >= N: return
-    sig = sig[: N - i] * gain
-    L[i:i + len(sig)] += sig * np.sqrt((1 - pan) / 2) * 1.414
-    R[i:i + len(sig)] += sig * np.sqrt((1 + pan) / 2) * 1.414
+    sig = sig[: N - i] / (np.abs(sig).max() + 1e-9) * gain
+    L[i:i + len(sig)] += sig * np.cos((pan + 1) * np.pi / 4)
+    R[i:i + len(sig)] += sig * np.sin((pan + 1) * np.pi / 4)
 
 
-# ---------- sons ----------
-def whoosh(d=0.7, f0=300, f1=2400, peak=0.55):
-    x = noise(d, "pink"); n = len(x)
-    fc = np.geomspace(f0, f1, n) if f1 > f0 else np.geomspace(f0, f1, n)
-    return svf(x, fc, 1.2) * env(n, peak, 1)
+def tt_(d): return np.arange(int(d * SR)) / SR
 
 
-def thud(d=0.55, f=58):
-    n = int(SR * d); t = np.arange(n) / SR
-    body = np.sin(2 * np.pi * (f * t + 25 * (1 - np.exp(-t * 30)) / 30)) * np.exp(-t * 9)
-    card = svf(noise(d), 500, 1.0, "bp") * np.exp(-t * 35)
-    return body * 0.8 + card * 0.45
+def band(x, fc, oct_w=1.0):
+    """filtro passa-banda suave (gaussiano em oitavas) via FFT."""
+    X = np.fft.rfft(x); f = np.fft.rfftfreq(len(x), 1 / SR)
+    X *= np.exp(-((np.log2(f + 1) - np.log2(fc)) ** 2) / (2 * oct_w ** 2))
+    return np.fft.irfft(X, len(x))
 
 
-def tape(d=0.65):
-    n = int(SR * d); t = np.arange(n) / SR
-    grains = (rng.random(n) < 0.012).astype(float)
-    grains = np.convolve(grains, np.hanning(90), "same")
-    x = svf(noise(d) * (0.3 + grains), np.linspace(1800, 3800, n), 0.9) * env(n, 0.15, 1, 0.8)
-    return x
+def sweep(d, f0, f1, oct_w=0.7):
+    """ruído com banda que desliza de f0 a f1 (STFT)."""
+    n = int(d * SR); W = 1024; H = 256
+    x = rng.standard_normal(n + W)
+    out = np.zeros(n + W); win = np.hanning(W)
+    f = np.fft.rfftfreq(W, 1 / SR)
+    frames = range(0, n, H)
+    for k, i in enumerate(frames):
+        p = i / max(1, n - 1)
+        fc = f0 * (f1 / f0) ** p
+        S = np.fft.rfft(x[i:i + W] * win) * np.exp(-((np.log2(f + 1) - np.log2(fc)) ** 2) / (2 * oct_w ** 2))
+        out[i:i + W] += np.fft.irfft(S, W) * win
+    return out[:n]
 
 
-def page(d=0.5):
-    n = int(SR * d)
-    crack = np.convolve((rng.random(n) < 0.004).astype(float), np.hanning(60), "same")
-    x = svf(noise(d, "pink") * (0.5 + crack), np.geomspace(900, 4200, n), 0.8) * env(n, 0.45, 1, 1.6)
-    return x
+def env(d, peak=0.5, a_curve=2.0, r_curve=2.5):
+    t = tt_(d); p = t / d
+    return np.where(p < peak, (p / peak) ** a_curve, ((1 - p) / (1 - peak)) ** r_curve)
 
 
-def tick(d=0.09):
-    n = int(SR * d); t = np.arange(n) / SR
-    return (svf(noise(d), 3200, 3.0) * np.exp(-t * 90) + np.sin(2 * np.pi * 2100 * t) * np.exp(-t * 120) * 0.3)
+# ---------- paleta ----------
+def air(d=0.45, f0=900, f1=4200, peak=0.55):          # passagem de ar curta e limpa
+    return sweep(d, f0, f1) * env(d, peak)
 
 
-def tap(d=0.25):
-    n = int(SR * d); t = np.arange(n) / SR
-    return svf(noise(d), 1400, 1.2) * np.exp(-t * 40) * 0.7 + np.sin(2 * np.pi * 110 * t) * np.exp(-t * 25) * 0.5
+def glass(f=2600, d=0.7):                              # toque de vidro
+    t = tt_(d)
+    s = sum(a * np.sin(2 * np.pi * f * r * t) * np.exp(-t / dc) for r, a, dc in ((1, 1, .32), (2.76, .35, .12), (5.4, .12, .05)))
+    return s * np.minimum(1, t / 0.002)
 
 
-def fabric(d=0.7):
-    n = int(SR * d)
-    return svf(noise(d, "pink"), np.linspace(500, 1600, n), 0.8) * env(n, 0.4, 1, 1.2)
-
-
-def rumble(d=2.0):
-    n = int(SR * d); t = np.arange(n) / SR
-    x = svf(noise(d, "brown"), 110, 0.8, "lp") * (0.75 + 0.25 * np.sin(2 * np.pi * 7.5 * t))
-    return x * env(n, 0.45, 1, 1.4)
-
-
-def impact(d=2.2):
-    n = int(SR * d); t = np.arange(n) / SR
-    boom = np.sin(2 * np.pi * (44 * t + 30 * (1 - np.exp(-t * 18)) / 18)) * np.exp(-t * 2.6)
-    air = svf(noise(d), 6000, 0.7, "hp") * np.exp(-t * 2.2) * 0.18
-    hit = svf(noise(0.08), 900, 0.8) * 0.6
-    out = boom + air; out[: len(hit)] += hit * np.exp(-np.arange(len(hit)) / SR * 40)
+def chime(f=1760, f2=2637):
+    a = glass(f, 0.9); b = glass(f2, 0.9)
+    out = np.zeros(len(a) + int(0.07 * SR)); out[:len(a)] += a; out[int(0.07 * SR):] += 0.8 * b
     return out
 
 
-def riser(d=1.0):
-    n = int(SR * d)
-    return svf(noise(d, "pink"), np.geomspace(250, 5000, n), 1.4) * (np.linspace(0, 1, n) ** 2.2)
+def blip(f=1500, d=0.12, up=1.25):                     # bipe digital
+    t = tt_(d)
+    fr = f * (1 + (up - 1) * np.minimum(1, t / 0.025))
+    return np.sin(2 * np.pi * np.cumsum(fr) / SR) * np.exp(-t / 0.035) * np.minimum(1, t / 0.0015)
 
 
-def scribble(d=0.8):
-    n = int(SR * d); t = np.arange(n) / SR
-    am = 0.4 + 0.6 * np.abs(np.sin(2 * np.pi * 6.5 * t + np.sin(2 * np.pi * 2.1 * t)))
-    return svf(noise(d), 4200, 1.5) * am * env(n, 0.1, 1, 0.6)
+def thump(f0=110, f1=58, d=0.35):                      # impacto grave suave
+    t = tt_(d)
+    fr = f1 + (f0 - f1) * np.exp(-t / 0.03)
+    body = np.sin(2 * np.pi * np.cumsum(fr) / SR) * np.exp(-t / 0.09)
+    click = band(rng.standard_normal(len(t)), 2500, 0.8) * np.exp(-t / 0.004) * 0.15
+    return body + click
 
 
-def pop(d=0.18):
-    n = int(SR * d); t = np.arange(n) / SR
-    return svf(noise(d), np.geomspace(600, 2200, n), 2.5) * np.exp(-t * 30)
+def sub_hit(d=1.6):                                    # assinatura: grave + ar brilhante
+    t = tt_(d)
+    fr = 38 + 34 * np.exp(-t / 0.06)
+    boom = np.sin(2 * np.pi * np.cumsum(fr) / SR) * np.exp(-t / 0.45) * np.minimum(1, t / 0.005)
+    sheen = band(rng.standard_normal(len(t)), 7000, 0.6) * np.exp(-t / 0.35) * 0.18
+    return boom + sheen
 
 
-def shimmer(d=1.2):
-    n = int(SR * d)
-    return svf(noise(d), 7500, 0.8, "hp") * env(n, 0.25, 1, 2)
+def shimmer(d=1.2, base=74):                           # brilho de luz (parciais agudas com tremolo)
+    t = tt_(d); out = np.zeros(len(t))
+    for k, m in enumerate((base, base + 7, base + 12, base + 16, base + 19)):
+        f = 440 * 2 ** ((m - 69) / 12)
+        trem = 0.6 + 0.4 * np.sin(2 * np.pi * (9 + 3 * k) * t + k)
+        out += np.sin(2 * np.pi * f * t) * trem / (1 + k * 0.4)
+    return out * env(d, 0.35, 1.5, 2.0)
 
 
-# ---------- ambiências (muito baixas) ----------
-def bed(t0, t1, kind, gain):
-    d = t1 - t0; n = int(SR * d)
-    if kind == "room":
-        x = svf(noise(d, "brown"), 220, 0.7, "lp") * 0.8 + svf(noise(d, "pink"), 1800, 0.7, "lp") * 0.15
-    elif kind == "street":
-        t = np.arange(n) / SR
-        x = svf(noise(d, "pink"), 650, 0.7, "lp") * (0.8 + 0.2 * np.sin(2 * np.pi * 0.13 * t))
-    else:  # ar aberto, claro
-        x = svf(noise(d, "pink"), 2600, 0.6, "lp") * 0.6
-    f = np.minimum(1, np.minimum(np.arange(n) / (SR * 0.8), (n - np.arange(n)) / (SR * 0.8)))
-    put(x * f, t0, gain, 0)
-    x2 = np.roll(x, SR // 3)
-    put(x2 * f * 0.0, t0, 0)
+def rise(d=0.9):                                       # subida antes de uma revelação
+    return sweep(d, 600, 7000, 0.5) * (tt_(d) / d) ** 2.2
 
 
-bed(0.0, 31.4, "room", 0.035)
-bed(36.4, 45.2, "street", 0.04)
-bed(45.0, 55.3, "air", 0.03)
-bed(55.0, 62.0, "room", 0.02)
+def paper(d=0.32):                                     # página, curta e limpa
+    t = tt_(d)
+    grains = np.convolve((rng.random(len(t)) < 0.003).astype(float), np.hanning(48), "same")
+    return band(rng.standard_normal(len(t)) * (0.6 + grains), 3000, 0.8) * env(d, 0.35, 1.5, 2.0)
 
-E = []  # (tempo, som, ganho, pan)
+
+def data(n=7, f=1200, step=0.055):                     # sequência digital ascendente
+    out = np.zeros(int((n * step + 0.2) * SR))
+    for k in range(n):
+        b = blip(f * 2 ** (k / 12 * 2), 0.09); i = int(k * step * SR)
+        out[i:i + len(b)] += b * (0.5 + 0.5 * k / n)
+    return out
+
+
+E = []
 # cena 1
-E += [(0.95, whoosh(0.6, 200, 2600, 0.8), 0.20, 0), (1.86, impact(1.6), 0.30, 0), (1.5, tap(), 0.12, 0),
-      (2.6, whoosh(0.7, 1800, 400, 0.4), 0.14, 0), (4.3, fabric(0.8), 0.16, 0.2), (5.25, whoosh(0.6), 0.16, 0)]
-# cena 2 — caixas, fita, móveis, transporte, check
-E += [(5.98, thud(), 0.42, -0.3), (6.16, thud(0.5, 66), 0.38, 0.3), (6.38, thud(0.45, 74), 0.32, 0),
-      (6.35, tape(0.62), 0.22, 0), (6.75, tick(), 0.25, 0),
-      (7.05, whoosh(0.55, 400, 2000, 0.6), 0.18, 0.4), (7.3, fabric(0.6), 0.15, 0), (8.1, tick(), 0.25, 0),
-      (8.55, whoosh(0.55, 400, 2000, 0.6), 0.18, 0.4), (8.75, rumble(1.3), 0.22, 0), (9.75, tick(), 0.25, 0),
-      (10.05, whoosh(0.5, 400, 2000, 0.6), 0.16, 0.4), (10.2, riser(1.65), 0.10, 0), (11.85, impact(1.3), 0.22, 0),
-      (11.95, tick(), 0.3, 0), (12.35, whoosh(0.9, 2200, 250, 0.5), 0.24, 0)]
+E += [(1.02, air(0.5, 700, 3600, 0.75), .10, 0), (1.86, sub_hit(1.2), .16, 0), (1.88, chime(1760, 2637), .05, .2),
+      (2.6, air(0.4, 3000, 1200, 0.3), .05, 0), (4.35, air(0.55, 600, 2600, 0.7), .07, 0)]
+# cena 2 — caixas, lista, objetos
+E += [(5.98, thump(120, 60), .14, -.3), (6.16, thump(130, 66), .12, .3), (6.38, thump(140, 72), .10, 0),
+      (6.75, glass(2600, .5), .05, .3), (7.1, air(0.35, 1200, 3800), .05, .4), (8.1, glass(2900, .5), .05, .3),
+      (8.6, air(0.35, 1200, 3800), .05, .4), (9.75, glass(3100, .5), .05, .3), (10.08, air(0.35, 1200, 3800), .05, .4),
+      (11.86, chime(2093, 3136), .07, 0), (11.86, thump(90, 50, .5), .09, 0), (12.4, air(0.7, 3200, 700, 0.45), .09, 0)]
 # cena 3 — Paulo
-E += [(12.98, whoosh(0.8, 250, 1800, 0.6), 0.14, 0), (13.75, tape(0.6), 0.24, 0), (13.86, whoosh(0.5, 300, 3000, 0.7), 0.14, 0),
-      (14.5, whoosh(0.4, 600, 1500, 0.6), 0.10, -0.6), (14.92, thud(0.45, 62), 0.30, -0.5),
-      (14.66, whoosh(0.4, 600, 1500, 0.6), 0.10, 0.6), (15.08, thud(0.45, 70), 0.28, 0.5),
-      (15.3, thud(0.4, 80), 0.20, 0.4), (15.45, thud(0.4, 76), 0.2, -0.4),
-      (16.05, fabric(0.85), 0.22, 0), (16.8, tap(), 0.14, 0), (17.55, whoosh(1.2, 1500, 300, 0.5), 0.08, 0)]
+E += [(12.95, shimmer(0.9, 74), .035, -.2), (13.86, sub_hit(1.0), .10, 0), (13.9, glass(1760, .8), .035, 0),
+      (14.95, thump(120, 62), .07, -.4), (15.12, thump(130, 66), .06, .4), (16.05, air(0.6, 800, 2800, 0.7), .05, .3)]
 # cena 4 — álbum
-E += [(19.72, page(0.9), 0.30, -0.2), (20.5, tap(), 0.10, 0), (20.8, tap(), 0.10, 0.2),
-      (21.3, whoosh(0.5, 500, 2500, 0.6), 0.12, 0.4), (22.8, page(0.55), 0.32, 0.2),
-      (23.0, tap(), 0.14, -0.2), (23.55, whoosh(0.5, 300, 2800, 0.7), 0.12, 0),
-      (24.3, tap(), 0.14, 0.2), (24.95, whoosh(0.45, 500, 2300, 0.6), 0.12, 0.4),
-      (25.85, tap(), 0.14, -0.1), (27.3, whoosh(0.5, 300, 2800, 0.7), 0.12, 0),
-      (28.55, page(0.5), 0.20, 0), (29.15, thud(0.5, 70), 0.24, 0),
-      (29.82, fabric(0.75), 0.28, 0), (30.35, tape(0.5), 0.18, 0), (30.42, whoosh(0.5, 300, 3000, 0.7), 0.12, 0),
-      (30.75, whoosh(1.1, 200, 3500, 0.5), 0.30, 0)]
-# cena 5 — marca
-E += [(31.5, shimmer(1.4), 0.12, -0.3), (31.55, whoosh(1.2, 300, 2400, 0.5), 0.08, -0.3), (33.4, whoosh(0.5, 500, 2500, 0.6), 0.14, 0.4), (34.4, whoosh(0.6, 2500, 400, 0.4), 0.12, 0),
-      (34.3, riser(0.85), 0.14, 0), (35.14, impact(2.4), 0.42, 0), (35.14, shimmer(1.6), 0.14, 0)]
+E += [(19.72, paper(0.45), .08, -.1), (22.82, paper(0.38), .09, .1), (23.02, glass(2349, .5), .035, -.2),
+      (23.58, air(0.4, 900, 4200, 0.7), .04, 0), (24.32, glass(2637, .5), .035, .2), (24.98, air(0.35, 1200, 3800), .035, .4),
+      (25.87, glass(2960, .5), .035, -.1), (27.32, air(0.4, 900, 4200, 0.7), .04, 0), (28.55, paper(0.3), .06, 0),
+      (29.18, thump(100, 55, .4), .07, 0), (29.85, air(0.55, 500, 2000, 0.6), .05, 0), (30.42, chime(1568, 2349), .045, 0),
+      (30.8, air(0.9, 400, 5000, 0.5), .10, 0)]
+# cena 5 — leão e marca
+E += [(31.5, shimmer(1.6, 74), .045, -.4), (33.4, air(0.4, 1200, 3800), .035, .4), (34.3, rise(0.86), .08, 0),
+      (35.16, sub_hit(1.8), .18, 0), (35.18, chime(1175, 1760), .06, 0), (35.55, shimmer(1.2, 86), .03, .3)]
 # cena 6 — caminhões e trabalho
-E += [(36.3, whoosh(0.7, 2500, 300, 0.4), 0.18, 0), (36.5, rumble(2.2), 0.30, -0.3),
-      (37.05, whoosh(0.5, 300, 3000, 0.7), 0.12, 0), (38.2, whoosh(0.5, 500, 2500, 0.5), 0.2, -0.5),
-      (38.05, whoosh(0.5, 600, 2200, 0.5), 0.14, 0.5), (38.95, whoosh(0.5, 600, 2200, 0.5), 0.14, 0.5), (40.3, whoosh(0.6, 2200, 300, 0.4), 0.18, 0)]
-# cena 7 — trajetória
-E += [(40.95, thud(0.35, 90), 0.20, -0.4), (41.0, tick(), 0.18, -0.4), (41.85, pop(), 0.2, -0.4),
-      (42.62, whoosh(0.95, 300, 1800, 0.5), 0.18, 0), (42.7, rumble(2.0), 0.22, 0),
-      (43.2, thud(0.35, 90), 0.2, 0.4), (43.22, tick(), 0.18, 0.4), (43.3, pop(), 0.18, 0.4),
-      (43.88, pop(), 0.16, -0.2), (44.08, pop(), 0.16, 0), (44.28, pop(), 0.16, 0.2),
-      (44.45, whoosh(0.4, 600, 2500, 0.6), 0.12, 0.4), (44.85, riser(0.8), 0.18, 0), (45.4, whoosh(0.7, 2800, 300, 0.3), 0.18, 0)]
+E += [(36.4, air(0.55, 4000, 900, 0.35), .07, 0), (38.05, air(0.35, 1000, 3600), .04, .5), (38.6, blip(1760), .04, -.2),
+      (38.95, air(0.35, 1000, 3600), .04, .5), (39.5, blip(1976), .04, -.2), (40.3, air(0.45, 3500, 900, 0.3), .05, 0)]
+# cena 7 — trajeto
+E += [(40.9, blip(1319, .14, 1.5), .06, -.4), (40.95, thump(140, 80, .25), .05, -.4), (41.88, blip(1760), .035, -.4),
+      (42.64, data(8, 990), .04, 0), (43.15, blip(1568, .14, 1.5), .06, .4), (43.2, thump(140, 80, .25), .05, .4),
+      (43.9, blip(1760), .03, -.2), (44.1, blip(2093), .03, 0), (44.3, blip(2349), .03, .2), (44.85, rise(0.7), .06, 0)]
 # cena 8 — nova casa
-E += [(45.05, whoosh(0.7, 300, 1800, 0.6), 0.12, -0.5), (46.1, thud(0.5, 64), 0.20, 0), (46.15, tap(), 0.12, 0), (47.25, whoosh(0.5, 300, 3000, 0.7), 0.12, 0),
-      (48.75, whoosh(0.4, 2000, 500, 0.4), 0.10, 0), (49.0, page(0.85), 0.30, -0.2),
-      (49.55, whoosh(0.45, 500, 2400, 0.6), 0.12, 0.4), (49.75, scribble(0.85), 0.16, 0.1),
-      (50.3, tap(), 0.14, 0), (51.5, thud(0.35, 120), 0.26, 0), (51.52, tick(), 0.22, 0),
-      (52.32, whoosh(0.5, 300, 3000, 0.7), 0.14, 0), (54.4, whoosh(0.45, 500, 2400, 0.6), 0.12, 0.4)]
-# cena 9 — marca e convite
-E += [(54.7, whoosh(1.1, 200, 3500, 0.5), 0.30, 0), (55.2, impact(2.6), 0.42, 0), (55.2, shimmer(1.8), 0.14, 0),
-      (57.15, whoosh(0.5, 500, 2000, 0.6), 0.08, 0), (58.6, pop(0.25), 0.25, 0), (58.62, tap(), 0.16, 0),
-      (58.9, shimmer(0.8), 0.08, 0.3), (59.3, whoosh(0.5, 400, 2000, 0.6), 0.08, 0)]
+E += [(45.0, air(0.6, 600, 3000, 0.5), .06, 0), (45.1, shimmer(0.9, 74), .03, -.4), (46.15, thump(100, 55, .4), .06, 0),
+      (47.28, air(0.4, 900, 4200, 0.7), .035, 0), (49.0, paper(0.45), .08, -.1), (49.55, air(0.35, 1200, 3800), .035, .4),
+      (51.52, thump(150, 70, .3), .07, 0), (51.54, blip(1760, .14, 1.33), .05, 0), (52.36, air(0.4, 900, 4200, 0.7), .035, 0),
+      (54.4, rise(0.8), .06, 0)]
+# cena 9 — assinatura e convite
+E += [(54.75, air(1.0, 400, 5000, 0.5), .09, 0), (55.28, sub_hit(1.8), .18, 0), (55.3, chime(1175, 1760), .06, 0),
+      (57.0, shimmer(1.0, 86), .03, -.3), (58.62, chime(2093, 3136), .05, 0), (58.64, thump(150, 80, .25), .05, 0)]
 
-for t, s, g, p in E:
-    put(s / (np.abs(s).max() + 1e-9), t, g, p)
+for t0, s, g, p in E:
+    put(s, t0, g, p)
+
+# espaço comum (reverb curto e escuro)
+def reverb(x, seed, dec=0.55, dur=1.8):
+    n = int(dur * SR); t = np.arange(n) / SR
+    ir = np.random.default_rng(seed).standard_normal(n) * np.exp(-t / dec)
+    ir = np.convolve(ir, np.ones(11) / 11, "same"); ir /= np.sqrt((ir ** 2).sum())
+    m = len(x) + n
+    return np.fft.irfft(np.fft.rfft(x, m) * np.fft.rfft(ir, m), m)[: len(x)]
+L = L + 0.35 * reverb(L, 7); R = R + 0.35 * reverb(R, 8)
 
 mix = np.stack([L, R], 1)
-peak = np.abs(mix).max()
-mix = np.tanh(mix / max(peak, 1e-9) * 1.2) * 0.22  # pico ~ -14 dBFS, voz em primeiro plano
-fade = np.ones(N); fade[-SR * 2:] = np.linspace(1, 0, SR * 2)
+mix = np.tanh(mix / (np.abs(mix).max() + 1e-9) * 1.1) * 0.16  # efeitos discretos
+fade = np.ones(N); fade[-SR:] = np.linspace(1, 0, SR)
 mix *= fade[:, None]
 out = os.path.join(os.path.dirname(__file__), "..", "public", "diego", "sfx.wav")
 with wave.open(out, "wb") as w:
