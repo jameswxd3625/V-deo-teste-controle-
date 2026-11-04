@@ -204,9 +204,9 @@ const Scene1 = ({t}) => {
 
 // ======================= CENA 2 — A LISTA (caixas, móveis, transporte) =======================
 const ITEMS = [
-  {a: 5.72, b: 7.05, word: "CAIXAS"},
-  {a: 7.14, b: 8.55, word: "MÓVEIS", icon: "sofa"},
-  {a: 8.64, b: 10.05, word: "TRANSPORTE", icon: "truck"},
+  {a: 5.72, b: 6.92, word: "CAIXAS"},
+  {a: 7.14, b: 8.38, word: "MÓVEIS", icon: "sofa"},
+  {a: 8.64, b: 9.86, word: "TRANSPORTE", icon: "truck"},
   {a: 10.12, b: 12.45, word: "DAR CERTO", icon: "check"},
 ];
 const Floor = ({o = 1}) => (

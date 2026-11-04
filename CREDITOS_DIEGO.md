@@ -38,5 +38,7 @@ O vídeo de referência serviu apenas para estudar a linguagem de movimento. Nen
 npm install
 python3 scripts/diego_sfx.py                     # efeitos (requer numpy)
 npx remotion studio src/index.jsx                # edição/preview (composição "DiegoMudancas")
-npx remotion render src/index.jsx DiegoMudancas out/DiegoMudancas_1080x1920.mp4 --crf=18
+npx remotion render src/index.jsx DiegoMudancas out/_raw.mp4 --crf=18 --audio-bitrate=256k
+# normalização para redes sociais (-15 LUFS), vídeo copiado sem recompressão
+ffmpeg -i out/_raw.mp4 -c:v copy -af loudnorm=I=-15:TP=-1.5:LRA=11 -ar 48000 -c:a aac -b:a 256k out/DiegoMudancas_1080x1920.mp4
 ```
