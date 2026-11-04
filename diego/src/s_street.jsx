@@ -107,7 +107,7 @@ export const SceneStreet = ({t}) => {
           )}
         </Cam>
       </Stage>
-      <Caption t={t} y={250} out={38.2} lines={[L("Veja nossos *caminhões*", [36.58, 36.82, 37.12], {size: 76, weight: 900})]} />
+      <Caption t={t} y={250} out={37.9} lines={[L("Veja nossos *caminhões*", [36.58, 36.82, 37.12], {size: 76, weight: 900})]} />
       <Caption t={t} y={250} out={39.55} lines={[L("Acompanhe nosso *trabalho*", [38.36, 38.66, 38.92], {size: 72, weight: 900})]} />
     </AbsoluteFill>
   );

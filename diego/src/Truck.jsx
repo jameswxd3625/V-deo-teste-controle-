@@ -66,7 +66,7 @@ export const Truck = ({x = 0, y = 0, s = 1, spin = 0, bounce = 0, light = 0, fli
         <image href={staticFile("brand/wordmark_navy.png")} x={bx + 470} y={bTop + 120} width={500} height={(500 * WM.h) / WM.w} />
         <text x={bx + 720} y={bTop + 382} textAnchor="middle" fontFamily="Montserrat" fontWeight={800} fontSize={25} letterSpacing="1.5" fill="#0B1F5C">TRANSPORTE COM SEGURANÇA E QUALIDADE</text>
         <text x={bx + 720} y={bTop + 72} textAnchor="middle" fontFamily="Montserrat" fontStyle="italic" fontWeight={800} fontSize={24} fill="#1650D0">“Servir a Deus tem nos feito muito bem!”</text>
-        <text x={bx + 960} y={bBot - 30} textAnchor="end" fontFamily="Montserrat" fontWeight={700} fontSize={26} fill="#FFFFFF">@diegomudancasbh</text>
+        <text x={bx + 600} y={bBot - 28} textAnchor="end" fontFamily="Montserrat" fontWeight={700} fontSize={26} fill="#FFFFFF">@diegomudancasbh</text>
         {/* reflexo */}
         <rect x={bx} y={bTop} width={bw} height={bh} fill="url(#boxGloss)" />
       </g>
