@@ -5,12 +5,12 @@ import {AbsoluteFill, Audio, staticFile, useCurrentFrame} from "remotion";
 // somas de molas para múltiplos alvos, bordas líder/seguidora com molas diferentes, câmera única,
 // sem bounce. Motion blur por subquadros (composição a 120 fps -> tmix -> 30 fps).
 export const FPS_V2 = 120;
-const P = {deep: "#01071b", navy: "#02103d", mid: "#0a1a64", blue: "#0a49ac", lum: "#0a8fed", silver: "#d6dae0", gold: "#f6b52a", gold2: "#e08f08"};
+export const P = {deep: "#01071b", navy: "#02103d", mid: "#0a1a64", blue: "#0a49ac", lum: "#0a8fed", silver: "#d6dae0", gold: "#f6b52a", gold2: "#e08f08"};
 const cl = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, k) => a + (b - a) * k;
 
 // resposta ao degrau de uma mola (subamortecida, quase crítica => overshoot mínimo)
-const spr = (t, w = 15, z = 0.9) => {
+export const spr = (t, w = 15, z = 0.9) => {
   if (t <= 0) return 0;
   if (z < 1) {
     const wd = w * Math.sqrt(1 - z * z);
@@ -19,7 +19,7 @@ const spr = (t, w = 15, z = 0.9) => {
   return 1 - Math.exp(-w * t) * (1 + w * t);
 };
 // valor = v0 + soma de uma mola por mudança de alvo
-const trk = (t, pts, w = 15, z = 0.9, delay = 0) => {
+export const trk = (t, pts, w = 15, z = 0.9, delay = 0) => {
   let v = pts[0][1];
   for (let i = 1; i < pts.length; i++) v += (pts[i][1] - pts[i - 1][1]) * spr(t - pts[i][0] - delay, w, z);
   return v;
@@ -38,7 +38,7 @@ const layerT = (cam, z) => {
 };
 
 // ====== fundo azul da identidade (cores extraídas da logo) ======
-const Bg = ({t, cam}) => {
+export const Bg = ({t, cam}) => {
   const glow = trk(t, [[0, 0.8], [1.8, 1.0], [2.4, 0.8], [4.3, 1.0], [5.3, 0.85]], 6, 1);
   return (
     <div style={{position: "absolute", left: 0, top: 0, width: 1080, height: 1920, transformOrigin: "0 0", transform: layerT(cam, 0.3)}}>
@@ -100,7 +100,7 @@ const Line = ({y, children, left}) => (
 );
 
 // curva suave (Catmull-Rom -> Bézier)
-const crPath = (Q) => {
+export const crPath = (Q) => {
   let d = `M${Q[0][0].toFixed(1)} ${Q[0][1].toFixed(1)}`;
   for (let i = 0; i < Q.length - 1; i++) {
     const p0 = Q[i - 1] || Q[i], p1 = Q[i], p2 = Q[i + 1], p3 = Q[i + 2] || p2;
