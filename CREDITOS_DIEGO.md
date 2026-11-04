@@ -19,7 +19,7 @@
 | Casa com sol (`u_casa2.jpg`) | Unsplash, foto `photo-1449844908441-8829872d2607` | Álbum: "nosso endereço" |
 | Casal na cozinha (`u_cozinha.jpg`) | Unsplash, foto `photo-1556909114-f6e7ad7d3136` | Álbum: "domingos" |
 | Sala da nova casa (`u_novacasa.jpg`) | Unsplash, foto `photo-1513694203232-719a280e022f` | Chegada na nova casa |
-| Trilha eletrônica minimalista (`musica.wav`) | Composta e sintetizada para o projeto (`scripts/diego_musica.py`) | Pad que "respira", arpejo filtrado, pulso grave suave e ticks digitais, a 95,4 BPM, com compassos que caem nas revelações da marca. Fica cerca de 15 dB abaixo da voz e abaixa sozinha durante a fala |
+| Trilha eletrônica minimalista (`musica.wav`) | Composta e sintetizada para o projeto (`scripts/diego_musica.py`) | Pad que "respira", arpejo filtrado, pulso grave suave e ticks digitais, a 95,4 BPM, com compassos que caem nas revelações da marca. Fica cerca de 21 dB abaixo da voz e abaixa sozinha durante a fala |
 | Fontes Montserrat e Caveat | Google Fonts (SIL Open Font License) | Tipografia |
 | Efeitos sonoros (`sfx.wav`) | Sintetizados para o projeto (`scripts/diego_sfx.py`) | Paleta premium de interface: passagens de ar curtas, toques de vidro, bipes digitais, impactos graves suaves, brilhos e páginas |
 

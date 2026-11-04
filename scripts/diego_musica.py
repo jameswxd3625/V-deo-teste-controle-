@@ -173,7 +173,7 @@ duck = 1 - 0.5 * sm
 
 mix = np.stack([L, R], 1) * (curve * duck)[:, None]
 mix = np.tanh(mix / (np.abs(mix).max() + 1e-9) * 1.1)
-mix *= 0.07  # bem no fundo (~15 dB abaixo da voz)
+mix *= 0.035  # bem no fundo (~21 dB abaixo da voz)
 out = os.path.join(ROOT, "public", "diego", "musica.wav")
 with wave.open(out, "wb") as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
