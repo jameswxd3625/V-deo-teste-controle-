@@ -64,7 +64,7 @@ export const Shot1 = ({t}) => {
     cam = KO(t, [[5.6, {tx: -300, ty: -300, tz: 520, yaw: 24, pitch: 38, dist: 900, persp: 1300}], [7.05, {tx: -290, ty: -290, tz: 520, yaw: 14, pitch: 42, dist: 820, persp: 1300}]], ES);
   } else if (t < 8.55) {
     shot = "C";
-    cam = KO(t, [[7.05, {tx: 250, ty: -300, tz: -950, yaw: 26, pitch: 20, dist: 1650, persp: 1500}], [8.55, {tx: 260, ty: -320, tz: -950, yaw: 16, pitch: 16, dist: 1450, persp: 1500}]], ES);
+    cam = KO(t, [[7.05, {tx: 250, ty: -360, tz: -950, yaw: -34, pitch: 12, dist: 2100, persp: 1500}], [8.55, {tx: 260, ty: -340, tz: -950, yaw: -28, pitch: 10, dist: 1800, persp: 1500}]], ES);
   } else if (t < 10.1) {
     shot = "D";
     cam = {tx: 300, ty: -700, tz: -700, yaw: 6, pitch: 4, dist: 2200, persp: 1500};
@@ -96,7 +96,7 @@ export const Shot1 = ({t}) => {
   const flaps = 1 - P(t, 5.62, 6.05, EIO);
   const tape = P(t, 6.15, 6.85, EIO);
   // ----- lençol caindo (plano C) -----
-  const sheet = t < 7.05 ? 0 : cl(SP(t, 7.15, 7.5, 0.55), 0, 1.04);
+  const sheet = t < 7.05 ? 0 : cl(SP(t, 7.15, 5.2, 0.6), 0, 1.03);
 
   return (
     <AbsoluteFill style={{background: "#1A2036"}}>

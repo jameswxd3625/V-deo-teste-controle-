@@ -56,13 +56,13 @@ export const UNITS = UNITS_TXT.map(([txt, pos]) => {
 export const Subtitles = ({t}) => {
   const i = UNITS.findIndex((u, k) => {
     const next = UNITS[k + 1];
-    const end = next ? Math.min(u.t1 + 0.55, next.t0 - 0.06) : u.t1 + 0.6;
+    const end = next ? Math.min(u.t1 + 0.55, next.t0 - 0.06) : Math.min(u.t1 + 0.6, 55.15);
     return t >= u.t0 - 0.12 && t < end;
   });
   if (i < 0) return null;
   const u = UNITS[i];
   const next = UNITS[i + 1];
-  const end = next ? Math.min(u.t1 + 0.55, next.t0 - 0.06) : u.t1 + 0.6;
+  const end = next ? Math.min(u.t1 + 0.55, next.t0 - 0.06) : Math.min(u.t1 + 0.6, 55.15);
   const pin = P(t, u.t0 - 0.12, u.t0 + 0.12, EO);
   const pout = 1 - P(t, end - 0.12, end, EI);
   const o = Math.min(pin, pout);
