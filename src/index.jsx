@@ -2,6 +2,7 @@ import React from "react";
 import {registerRoot, Composition, AbsoluteFill, Audio, Img, staticFile, useCurrentFrame, interpolate} from "remotion";
 import {C, FONT, BlueBg, WhiteBg, Scene, Group, Txt, Coin, Card, Draw, Words, pop, slide, sec, ease} from "./parts";
 import {MotionV2, FPS_V2} from "./v2";
+import {Ad as ConttroleAd, DURATION as AD_DUR} from "./ad/Ad";
 import {MotionV3, FPS_V3} from "./v3";
 import {CoinArrows, IconTech, IconAI, IconChart, Check, Building, Gear, Hammer, GavelBase, Man} from "./icons";
 
@@ -259,6 +260,7 @@ const Ad = () => {
 
 registerRoot(() => (
   <>
+    <Composition id="ConttroleAd" component={ConttroleAd} durationInFrames={AD_DUR} fps={30} width={1080} height={1920} />
     <Composition id="Anuncio" component={Ad} durationInFrames={900} fps={30} width={1080} height={1920} />
     <Composition id="ConttroleMotionV3" component={MotionV3} durationInFrames={6 * FPS_V3} fps={FPS_V3} width={1080} height={1920} />
     <Composition id="ConttroleMotionV2" component={MotionV2} durationInFrames={6 * FPS_V2} fps={FPS_V2} width={1080} height={1920} />
