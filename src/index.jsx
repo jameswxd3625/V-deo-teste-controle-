@@ -1,6 +1,7 @@
 import React from "react";
 import {registerRoot, Composition, AbsoluteFill, Audio, Img, staticFile, useCurrentFrame, interpolate} from "remotion";
 import {C, FONT, BlueBg, WhiteBg, Scene, Group, Txt, Coin, Card, Draw, Words, pop, slide, sec, ease} from "./parts";
+import {MotionV2, FPS_V2} from "./v2";
 import {CoinArrows, IconTech, IconAI, IconChart, Check, Building, Gear, Hammer, GavelBase, Man} from "./icons";
 
 const cl = (v) => Math.max(0, Math.min(1, v));
@@ -255,4 +256,9 @@ const Ad = () => {
   );
 };
 
-registerRoot(() => <Composition id="Anuncio" component={Ad} durationInFrames={900} fps={30} width={1080} height={1920} />);
+registerRoot(() => (
+  <>
+    <Composition id="Anuncio" component={Ad} durationInFrames={900} fps={30} width={1080} height={1920} />
+    <Composition id="ConttroleMotionV2" component={MotionV2} durationInFrames={6 * FPS_V2} fps={FPS_V2} width={1080} height={1920} />
+  </>
+));
