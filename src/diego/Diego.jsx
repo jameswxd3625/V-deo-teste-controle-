@@ -668,6 +668,7 @@ export const DiegoFilm = () => {
 
       <Audio src={staticFile("diego/locucao.mp3")} volume={1} />
       <Audio src={staticFile("diego/sfx.wav")} volume={1} />
+      <Audio src={staticFile("diego/musica.wav")} volume={1} />
     </AbsoluteFill>
   );
 };

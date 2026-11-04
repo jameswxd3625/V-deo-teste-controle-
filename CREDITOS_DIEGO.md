@@ -19,8 +19,9 @@
 | Casa com sol (`u_casa2.jpg`) | Unsplash, foto `photo-1449844908441-8829872d2607` | Álbum: "nosso endereço" |
 | Casal na cozinha (`u_cozinha.jpg`) | Unsplash, foto `photo-1556909114-f6e7ad7d3136` | Álbum: "domingos" |
 | Sala da nova casa (`u_novacasa.jpg`) | Unsplash, foto `photo-1513694203232-719a280e022f` | Chegada na nova casa |
+| Trilha ambiente (`musica.wav`) | Composta e sintetizada para o projeto (`scripts/diego_musica.py`) | Pads e notas esparsas de piano abafado em Ré maior, sem bateria. Os acordes seguem a narração e a música abaixa sozinha sob a voz (cerca de 13 dB abaixo dela) |
 | Fontes Montserrat e Caveat | Google Fonts (SIL Open Font License) | Tipografia |
-| Efeitos e ambiências (`sfx.wav`) | Sintetizados para o projeto (`scripts/diego_sfx.py`) | Páginas, caixas, fita, deslocamentos, impactos e ambiência. Sem música, melodia ou batida |
+| Efeitos e ambiências (`sfx.wav`) | Sintetizados para o projeto (`scripts/diego_sfx.py`) | Páginas, caixas, fita, deslocamentos, impactos e ambiência. Sem batida |
 
 As fotos do Unsplash seguem a [Licença Unsplash](https://unsplash.com/license): uso comercial gratuito, sem atribuição obrigatória. Cada foto pode ser consultada em `https://unsplash.com/photos/<id>`, ou pela imagem em `https://images.unsplash.com/<id>`.
 O vídeo de referência serviu apenas para estudar a linguagem de movimento. Nenhum trecho dele foi incluído no filme.
@@ -39,6 +40,7 @@ O vídeo de referência serviu apenas para estudar a linguagem de movimento. Nen
 ```bash
 npm install
 python3 scripts/diego_sfx.py                     # efeitos (requer numpy)
+python3 scripts/diego_musica.py                  # trilha ambiente (requer numpy e ffmpeg)
 npx remotion studio src/index.jsx                # edição/preview (composição "DiegoMudancas")
 npx remotion render src/index.jsx DiegoMudancas out/_raw.mp4 --crf=18 --audio-bitrate=256k
 # normalização para redes sociais (-15 LUFS), vídeo copiado sem recompressão
