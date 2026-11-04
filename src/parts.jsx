@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef, useLayoutEffect} from "react";
 import {interpolate, Easing} from "remotion";
 
 export const FPS = 30;
@@ -31,16 +31,59 @@ export const WhiteBg = ({f}) => (
   </div>
 );
 
-// ---------- cena com fade/escala ----------
-export const Scene = ({frame, a, b, children, drift = 0.0005}) => {
+// ---------- verificação de margem lateral (70 px) ----------
+const SAFE = 70;
+const chk = (el, abs, clip) => {
+  if (!el) return;
+  let o = 1, n = el;
+  while (n && n.nodeType === 1) { o *= parseFloat(getComputedStyle(n).opacity); n = n.parentElement; }
+  if (o < 0.15) return;
+  const r = el.getBoundingClientRect();
+  let L = r.left, R = r.right;
+  if (clip) { const c = clip.getBoundingClientRect(); L = Math.max(L, c.left); R = Math.min(R, c.right); }
+  if (R > L && (L < SAFE - 1 || R > 1080 - SAFE + 1)) console.log(`VIOL f=${abs} "${(el.textContent || "").slice(0, 30)}" L=${L.toFixed(0)} R=${R.toFixed(0)}`);
+};
+export const Txt = ({children, f, a = 0, style}) => {
+  const ref = useRef();
+  useLayoutEffect(() => chk(ref.current, f + sec(a)));
+  return <div ref={ref} style={style}>{children}</div>;
+};
+
+// ---------- fundo compartilhado entre cenas (continuidade) ----------
+export const Group = ({frame, a, b, kind = "blue", children}) => {
+  const A = sec(a), B = sec(b);
+  if (frame < A - 8 || frame > B + 8) return null;
+  const o = interpolate(frame, [A - 8, A, B, B + 8], [0, 1, 1, 0], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
+  const f = frame - A;
+  return <div style={{position: "absolute", inset: 0, opacity: o}}>{kind === "blue" ? <BlueBg f={f} /> : <WhiteBg f={f} />}{children && children(f)}</div>;
+};
+
+// ---------- cena: fade, deslocamento coordenado, wipe, push ----------
+export const Scene = ({frame, a, b, children, drift = 0.0003, inY = 0, wipe = false, push = null, bgless = false}) => {
   const A = sec(a), B = sec(b);
   if (frame < A - 2 || frame > B + 8) return null;
-  const o = interpolate(frame, [A - 2, A + 6, B - 2, B + 8], [0, 1, 1, 0], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const exit = cl((frame - (B - 2)) / 10);
   const f = frame - A;
+  let o = 1, tx = 0, ty = 0, sc = 1 + f * drift, clip;
+  if (wipe) {
+    const p = ease(cl((frame - A) / 15));
+    clip = `inset(0 0 0 ${(1 - p) * 100}%)`;
+    if (frame > B) return null;
+  } else {
+    const inn = ease(cl((frame - A) / 12));
+    const out = ease(cl((frame - (B - 4)) / 12));
+    o = Math.min(cl((frame - (A - 2)) / 8), 1 - out);
+    ty = (1 - inn) * inY - out * inY * 0.6;
+    if (push) {
+      const pp = ease(cl((frame - sec(push)) / 15));
+      o = cl((frame - (A - 2)) / 8);
+      tx = -pp * 170; ty = 0;
+      if (frame > B) return null;
+    }
+  }
   return (
-    <div style={{position: "absolute", inset: 0, opacity: o, transform: `scale(${1 + f * drift + exit * 0.04})`, transformOrigin: "50% 50%"}}>
+    <div style={{position: "absolute", inset: 0, opacity: o, clipPath: clip, transform: `translate(${tx}px,${ty}px) scale(${sc})`, transformOrigin: "50% 50%"}}>
       {children(f)}
+      {wipe && <div style={{position: "absolute", top: 0, bottom: 0, width: 16, left: `${(1 - ease(cl((frame - A) / 15))) * 100}%`, background: C.gold, boxShadow: "0 0 30px rgba(246,181,42,0.8)", opacity: frame - A < 15 ? 1 : 0}} />}
     </div>
   );
 };
@@ -77,16 +120,23 @@ export const Draw = ({d, p, stroke = C.gold, width = 10, w = 1080, h = 1920, sty
 );
 
 // ---------- palavras sincronizadas (at em segundos absolutos; a = início da cena) ----------
-export const Words = ({items, f, a, size = 130, color = "#fff", gold = C.gold, weight = 800, justify = "center", gap = 0.26, from = "up", style}) => (
-  <div style={{display: "flex", flexWrap: "wrap", justifyContent: justify, columnGap: size * gap, rowGap: size * 0.04, fontFamily: FONT, fontWeight: weight, fontSize: size, lineHeight: 1.1, letterSpacing: -size * 0.02, color, ...style}}>
-    {items.map((it, i) => {
-      const at = sec(it.at) - sec(a);
-      const p = slide(f, at, 14);
-      const dx = from === "right" ? (1 - p) * 260 : 0;
-      const dy = from === "up" ? (1 - p) * 50 : 0;
-      return (
-        <span key={i} style={{opacity: cl((f - at) / 8), transform: `translate(${dx}px,${dy}px) scale(${0.92 + 0.08 * p})`, color: it.gold ? gold : it.color || color, filter: p < 1 ? `blur(${(1 - p) * 6}px)` : undefined, textShadow: it.gold ? "0 0 24px rgba(246,181,42,0.35)" : undefined}}>{it.t}</span>
-      );
-    })}
-  </div>
-);
+// peso base leve; palavras-chave (gold ou b) em peso forte
+const WordSpan = ({it, at, f, abs, base, gold, color, from, clip}) => {
+  const ref = useRef();
+  const p = slide(f, at, 14);
+  useLayoutEffect(() => chk(ref.current, abs, clip && clip.current));
+  const dx = from === "right" ? (1 - p) * 180 : 0;
+  const dy = from === "up" ? (1 - p) * 40 : 0;
+  const strong = it.gold || it.b;
+  return (
+    <span ref={ref} style={{opacity: cl((f - at) / 8), transform: `translate(${dx}px,${dy}px)`, fontWeight: strong ? 800 : base, color: it.gold ? gold : it.color || color, filter: p < 1 ? `blur(${(1 - p) * 5}px)` : undefined, whiteSpace: "nowrap"}}>{it.t}</span>
+  );
+};
+export const Words = ({items, f, a, size = 120, color = "#fff", gold = C.gold, weight = 500, justify = "center", gap = 0.26, from = "up", style}) => {
+  const clip = useRef();
+  return (
+    <div ref={clip} style={{display: "flex", flexWrap: "wrap", justifyContent: justify, columnGap: size * gap, rowGap: size * 0.02, fontFamily: FONT, fontWeight: weight, fontSize: size, lineHeight: 1.12, letterSpacing: -size * 0.02, color, overflow: from === "right" ? "hidden" : "visible", padding: from === "right" ? "0.1em 0" : 0, maxWidth: 920, ...style}}>
+      {items.map((it, i) => <WordSpan key={i} it={it} at={sec(it.at) - sec(a)} f={f} abs={f + sec(a)} base={weight} gold={gold} color={color} from={from} clip={from === "right" ? clip : null} />)}
+    </div>
+  );
+};
