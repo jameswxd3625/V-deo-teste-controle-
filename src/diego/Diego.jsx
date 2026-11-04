@@ -1,7 +1,7 @@
 // DIEGO MUDANÇAS — filme vertical 1080x1920 sincronizado à locução (tempos em segundos absolutos)
 import React from "react";
 import {AbsoluteFill, Audio, Img, staticFile, useCurrentFrame} from "remotion";
-import {FPS, W, H, C, FONT, HAND, EO, EI, EIO, ip, kf, on, fit, El, Big, Sub, Hi, Bg, Bands, WaveWipe, Logo, Lion, Paulo, Icon, Box3D, Print, PhotoCard, Chip, T_SUB} from "./kit";
+import {FPS, W, H, C, FONT, HAND, EO, EI, EIO, ip, kf, on, fit, El, Big, Sub, Hi, Bg, Bands, WaveWipe, Logo, LOGO_LION, Lion, Paulo, Icon, Box3D, Print, PhotoCard, Chip, T_SUB} from "./kit";
 
 export const DIEGO_DURATION = 62; // locução termina em 59,7 s; 2,3 s de leitura da marca
 
@@ -68,8 +68,8 @@ const Album = ({open = 0, turn = 0, page, next, wrap = 0, shadow = 1}) => (
       </div>
       {wrap > 0 && (
         <div style={{position: "absolute", left: -34, top: -34, width: AW + 70, height: AH + 68, borderRadius: 34, clipPath: `inset(${(1 - wrap) * 100}% -40px -40px -40px round 34px)`, background: "repeating-linear-gradient(45deg, rgba(255,255,255,0.10) 0 3px, transparent 3px 52px), repeating-linear-gradient(-45deg, rgba(0,0,40,0.22) 0 3px, transparent 3px 52px), linear-gradient(160deg, #2A6BFF, #1446E0 45%, #0A2A9A)", boxShadow: "inset 0 0 0 8px #0A2A8F, inset 0 0 50px rgba(0,0,0,0.35), 0 40px 80px rgba(0,6,24,0.6)", transform: "translateZ(30px)"}}>
-          <div style={{position: "absolute", left: (AW + 70) / 2 - 130, top: (AH + 68) / 2 - 130, width: 260, height: 260}}>
-            <Logo size={260} glow={0} />
+          <div style={{position: "absolute", left: (AW + 70) / 2 - 125, top: (AH + 68) / 2 - 150, width: 300, height: 300}}>
+            <Logo size={300} glow={0.6} />
           </div>
         </div>
       )}
@@ -360,19 +360,23 @@ const Scene5 = ({t}) => {
   const lg = ip(t, 35.12, 35.75);
   const lout = ip(t, 36.35, 36.85, 0, 1, EI);
   const mud = fit("ESSA MUDANÇA,", TW, 130);
+  const LG = LOGO_LION(760);
   return (
     <AbsoluteFill>
-      <Lion x={-930 + (t - 31.4) * 22 - ip(t, 34.5, 35.35, 0, 1, EI) * 220} y={380 - ip(t, 34.5, 35.35, 0, 1, EI) * 60} size={1700} o={ip(t, 31.45, 32.1) * (1 - ip(t, 34.9, 35.35))} bright={0.5 + 0.28 * ip(t, 31.7, 32.7) - 0.16 * ip(t, 33.3, 33.7)} sweep={ip(t, 31.55, 32.75, 0, 1, (x) => x)} blur={ip(t, 34.6, 35.35) * 12} />
       <Rays t={t} o={lg * (1 - lout)} />
+      {/* o leão grande percorre a tela e assume o lugar do leão da logo */}
+      <div style={{position: "absolute", inset: 0, transformOrigin: "540px 920px", transform: `scale(${1 + lout * 1.8})`, opacity: 1 - lout, filter: lout > 0.02 ? `blur(${lout * 20}px)` : undefined}}>
+        <Lion x={t < 34.5 ? -930 + (t - 31.4) * 22 : kf(t, [34.5, 35.45], [-930 + 3.1 * 22, LG.x + 160])} y={kf(t, [34.5, 35.45], [380, LG.y + 540])} size={kf(t, [34.5, 35.45], [1700, LG.size])} o={ip(t, 31.45, 32.1)} bright={kf(t, [31.7, 32.7, 33.3, 33.7, 34.5, 35.45], [0.5, 0.78, 0.78, 0.62, 0.62, 1])} sweep={t < 34 ? ip(t, 31.55, 32.75, 0, 1, (x) => x) : ip(t, 35.55, 36.3, 0, 1, (x) => x)} blur={swing(t, 34.5, 35.45, 6)} />
+        {t >= 35.1 && (
+          <div style={{position: "absolute", left: 160, top: 540}}>
+            <Logo size={760} p={ip(t, 35.15, 36.15, 0, 1, (x) => x)} lion={false} glow={lg} />
+          </div>
+        )}
+      </div>
       <Line t={t} a={31.38} out={34.45} y={640}><Words t={t} size={60} words={[["Na", 31.42], ["hora", 31.52], ["de", 31.72], ["escolher", 31.96]]} /></Line>
       <Line t={t} a={32.36} out={34.45} y={724}><Words t={t} size={60} words={[["quem", 32.4], ["vai", 32.66], ["acompanhar", 32.92]]} /></Line>
       <El t={t} inn={[33.42, 0.5, "left"]} out={[34.45, 0.35, "zoom"]} x={0} y={812} w={W}><Big size={mud} grad italic>ESSA MUDANÇA,</Big></El>
       <El t={t} inn={[34.56, 0.4, "up"]} mask out={[36.35, 0.3, "up"]} x={M} y={470} w={TW}><Words t={t} size={58} words={[["conheça", 34.6], ["a", 34.98]]} /></El>
-      {t >= 35.1 && (
-        <div style={{position: "absolute", left: 540 - 330, top: 600, width: 660, height: 660, transform: `scale(${(1.5 - 0.5 * lg) * (1 + lout * 1.8)})`, opacity: Math.min(1, lg * 2) * (1 - lout), filter: (1 - lg) + lout > 0.02 ? `blur(${(1 - lg) * 24 + lout * 20}px)` : undefined}}>
-          <Logo size={660} glow={lg} />
-        </div>
-      )}
       <div style={{position: "absolute", inset: 0, transform: `translateY(${(1 - ip(t, 35.1, 35.9)) * 700 + lout * 900}px)`}}><Bands y={1620} amp={230} /></div>
     </AbsoluteFill>
   );
@@ -572,7 +576,7 @@ const AlbumNew = ({t}) => {
 // ======================= CENA 9 — MARCA E CONVITE =======================
 const Scene9 = ({t}) => {
   const lg = ip(t, 55.2, 55.95);
-  const ly = kf(t, [55.2, 56.3], [700, 610]);
+  const ly = kf(t, [55.2, 56.6], [300, 236]);
   const sh = ((t - 58.9) % 2.2) / 2.2;
   const cta = ip(t, 58.6, 59.05, 0, 1, EO);
   return (
@@ -581,17 +585,17 @@ const Scene9 = ({t}) => {
       <div style={{position: "absolute", inset: 0, transform: `translateY(${(1 - ip(t, 55.0, 56.0)) * 500}px)`}}>
         <Bands y={1650 + Math.sin(t * 0.8) * 14} amp={240} />
       </div>
-      <div style={{position: "absolute", left: 540 - 320, top: ly - 320, width: 640, height: 640, transform: `scale(${1.45 - 0.45 * lg})`, opacity: Math.min(1, lg * 2), filter: lg < 0.99 ? `blur(${(1 - lg) * 22}px)` : undefined}}>
-        <Logo size={640} glow={lg} />
+      <div style={{position: "absolute", left: 160, top: ly}}>
+        <Logo size={760} p={ip(t, 55.25, 56.5, 0, 1, (x) => x)} lionIn={0.6} glow={lg} sweep={ip(t, 57.0, 57.9, 0, 1, (x) => x)} />
       </div>
-      <El t={t} inn={[57.18, 0.3, "fade"]} x={M} y={1000} w={TW}><Words t={t} size={58} words={[["Fale", 57.22], ["com", 57.36], ["a", 57.58], ["nossa", 57.64], ["equipe", 57.84], ["e", 58.34]]} /></El>
-      <div style={{position: "absolute", left: 0, width: W, top: 1150, display: "flex", justifyContent: "center", opacity: cta, transform: `scale(${0.7 + 0.3 * cta})`, filter: cta < 0.99 ? `blur(${(1 - cta) * 10}px)` : undefined}}>
+      <El t={t} inn={[57.18, 0.3, "fade"]} x={M} y={1045} w={TW}><Words t={t} size={58} words={[["Fale", 57.22], ["com", 57.36], ["a", 57.58], ["nossa", 57.64], ["equipe", 57.84], ["e", 58.34]]} /></El>
+      <div style={{position: "absolute", left: 0, width: W, top: 1160, display: "flex", justifyContent: "center", opacity: cta, transform: `scale(${0.7 + 0.3 * cta})`, filter: cta < 0.99 ? `blur(${(1 - cta) * 10}px)` : undefined}}>
         <div style={{position: "relative", overflow: "hidden", padding: "30px 64px", borderRadius: 80, background: "linear-gradient(90deg, #1446E0, #22C7F5)", boxShadow: "0 20px 50px rgba(0,8,40,0.6), 0 0 60px rgba(34,199,245,0.55), inset 0 0 0 3px rgba(255,255,255,0.35)", fontFamily: FONT, fontWeight: 900, fontSize: fit("PEÇA SEU ORÇAMENTO", 780, 64), color: "#fff", whiteSpace: "nowrap", letterSpacing: "0.01em"}}>
           PEÇA SEU ORÇAMENTO
           <div style={{position: "absolute", top: 0, bottom: 0, width: 140, left: -200 + sh * 1300, background: "linear-gradient(100deg, transparent, rgba(255,255,255,0.55), transparent)", transform: "skewX(-20deg)", opacity: t > 58.9 ? 1 : 0}} />
         </div>
       </div>
-      <El t={t} inn={[59.3, 0.6, "up"]} x={M} y={1335} w={TW}>
+      <El t={t} inn={[59.3, 0.6, "up"]} x={M} y={1350} w={TW}>
         <div style={{display: "flex", flexDirection: "column", alignItems: "center", gap: 10, fontFamily: FONT, fontWeight: 700, fontSize: 40, color: "rgba(255,255,255,0.92)", textShadow: "0 4px 18px rgba(0,0,0,0.6)"}}>
           <div style={{display: "flex", alignItems: "center", gap: 14}}>
             <svg width={40} height={40} viewBox="0 0 40 40"><rect x={3} y={3} width={34} height={34} rx={10} fill="none" stroke="#fff" strokeWidth={3.5} /><circle cx={20} cy={20} r={8} fill="none" stroke="#fff" strokeWidth={3.5} /><circle cx={30} cy={10} r={2.5} fill="#fff" /></svg>

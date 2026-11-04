@@ -1,6 +1,7 @@
 // Kit visual Diego Mudanças: cores, easing, fundo, texto, objetos e transições.
 import React from "react";
 import {AbsoluteFill, Img, staticFile, interpolate, Easing, random, delayRender, continueRender} from "remotion";
+import LAY from "./logo_layout.json";
 
 export const FPS = 30;
 export const W = 1080;
@@ -189,12 +190,33 @@ export const WaveWipe = ({t, t0, dur = 1.1}) => {
   );
 };
 
-// ---------- logo quadrada (assinatura): sem máscara, proporção 1:1 preservada ----------
-export const Logo = ({size = 600, glow = 1, style}) => (
-  <div style={{position: "relative", width: size, height: size, boxShadow: `0 30px 70px rgba(0,6,30,0.7), 0 0 ${90 * glow}px rgba(34,199,245,${0.45 * glow})`, ...style}}>
-    <Img src={staticFile("diego/logo_diego.png")} style={{width: size, height: size, display: "block"}} />
-  </div>
-);
+// ---------- logo em camadas, sem fundo branco (leão + ondas + letreiro) ----------
+// p: progresso da revelação (ondas → leão → letreiro); lion=false quando o leão vem de outra camada
+const cl01 = (v) => Math.max(0, Math.min(1, v));
+export const LOGO_LION = (size) => {
+  const k = size / LAY.size;
+  return {x: LAY.leao.x * k, y: LAY.leao.y * k, size: LAY.size * LAY.leao.s * k};
+};
+export const Logo = ({size = 600, p = 1, lion = true, sweep = -1, glow = 1, lionIn = 0, style}) => {
+  const k = size / LAY.size;
+  const pw = cl01(p / 0.6), pl = cl01((p - 0.1) / 0.55), pt = cl01((p - 0.42) / 0.58);
+  const L = LOGO_LION(size);
+  const ew = EO(pw), et = EO(pt), el = EO(pl);
+  return (
+    <div style={{position: "relative", width: size, height: size, ...style}}>
+      <div style={{position: "absolute", left: size * 0.02, top: size * 0.12, width: size * 0.6, height: size * 0.6, borderRadius: "50%", background: "radial-gradient(closest-side, rgba(34,199,245,0.35), rgba(20,70,224,0.15) 55%, transparent)", opacity: glow * el}} />
+      {lion && (
+        <div style={{position: "absolute", inset: 0, opacity: el, transform: `translateX(${(1 - el) * -lionIn * size}px) scale(${1 + (1 - el) * 0.08})`, transformOrigin: "30% 50%", filter: el < 0.99 ? `blur(${(1 - el) * 14}px)` : undefined}}>
+          <Lion x={L.x} y={L.y} size={L.size} bright={1} sweep={sweep} />
+        </div>
+      )}
+      <Img src={staticFile("diego/logo_ondas.png")} style={{position: "absolute", left: 0, top: LAY.ondas_top * k, width: size, clipPath: `inset(-2% ${(1 - ew) * 100}% -2% 0)`, filter: "drop-shadow(0 0 18px rgba(34,199,245,0.35))"}} />
+      <div style={{position: "absolute", left: LAY.letreiro[0] * k, top: LAY.letreiro[1] * k, width: 654 * k, clipPath: `inset(-20% ${(1 - et) * 100}% -20% -5%)`, transform: `translateX(${(1 - et) * 40 * k}px)`, filter: `drop-shadow(0 0 ${22 * k + 6}px rgba(34,199,245,${0.55 * glow})) drop-shadow(0 ${8 * k + 2}px ${16 * k + 4}px rgba(0,6,30,0.6))`}}>
+        <Img src={staticFile("diego/logo_letreiro.png")} style={{width: "100%", display: "block"}} />
+      </div>
+    </div>
+  );
+};
 
 // ---------- leão (camada independente integrada ao fundo azul) ----------
 // x, y, size em px; o = opacidade; bright = luz; sweep 0..1 = passagem de luz sobre o leão

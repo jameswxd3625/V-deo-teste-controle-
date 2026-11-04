@@ -6,10 +6,10 @@
 
 | Material | Origem | Uso |
 |---|---|---|
-| Nova logo quadrada (`public/diego/logo_diego.png`) | Enviada pelo cliente | Assinaturas da marca (apresentação e encerramento), etiqueta da capa protetora do álbum e aplicação nos caminhões. Sem máscara, proporção 1:1 |
+| Nova logo quadrada (`public/diego/logo_diego.png`) | Enviada pelo cliente | Fonte da versão em camadas sem fundo branco: `logo_letreiro.png` (letreiro em versão branca), `logo_ondas.png` (ondas) e `leao.png` alinhado, gerados por `scripts/diego_logo_camadas.py`. Usada na apresentação da marca, na etiqueta da capa do álbum e no encerramento, com proporções preservadas |
 | Leão sem fundo (`leao.png`) | Enviado pelo cliente | Camada independente: abertura (discreto), revelação por passagem de luz antes da marca e horizonte do mapa |
 | Personagem Paulo (`paulo.png`) | Enviado pelo cliente | Apresentação "Esse aqui é o Paulo" e retorno em "Assim como o Paulo" |
-| Caminhões plotados (`caminhoes.jpg`) | Post "Seja bem-vindo, Novembro" (@diegomudancasbh); emblema antigo substituído pela nova logo com `scripts/diego_caminhoes.py` (fonte: `caminhoes_foto_original.jpg`) | Cena "Veja nossos caminhões" (proporção original 1272×482) |
+| Caminhões plotados (`caminhoes.jpg`) | Post "Seja bem-vindo, Novembro" (@diegomudancasbh), plotagem original sem alterações | Cena "Veja nossos caminhões" (proporção original 1272×482) |
 | Proteção (`diego_protecao.jpg`) | Recorte do Reels "A geladeira" (@diegomudancasbh), enquadrado acima da etiqueta antiga "Diego Fretes BH" | Carrossel: PROTEÇÃO |
 | Capas de proteção (`capas.jpg`) | Recorte do post "Mudança sem dor de cabeça" (@diegomudancasbh) | Carrossel: ORGANIZAÇÃO |
 | Locução (`locucao.mp3`) | Enviada pelo cliente (ElevenLabs, voz "Will") | Áudio principal, sem cortes nem alteração de velocidade |
@@ -30,7 +30,7 @@ O vídeo de referência serviu apenas para estudar a linguagem de movimento. Nen
 - `src/diego/kit.jsx`: cores, fontes, easing, fundo com rede poligonal, faixas da marca, transição com ondas, ícones luminosos, caixa 3D, fotos e selos.
 - `src/diego/Diego.jsx`: cenas sincronizadas com a locução, com tempos em segundos absolutos tirados de `src/diego_words.json`.
 - `src/diego_words.json`: transcrição da locução com o tempo de cada palavra.
-- `scripts/diego_caminhoes.py`: aplica a nova logo na foto dos caminhões.
+- `scripts/diego_logo_camadas.py`: separa a logo em camadas (letreiro, ondas e posição do leão) em `src/diego/logo_layout.json`.
 - `scripts/diego_sfx.py`: gera `public/diego/sfx.wav` a partir da lista de eventos sonoros.
 - `scripts/stills.mjs`: gera quadros de teste. Exemplo: `node scripts/stills.mjs pasta 0.4 2.2 12.2`
 
