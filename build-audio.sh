@@ -1,23 +1,34 @@
 #!/bin/bash
-# Gera trilha ambiente + efeitos (whoosh/impacto) em public/bed.wav
+# Mixagem final do áudio -> public/mix.wav (29,6 s)
+# Fontes: ver CREDITS.md. Narração = master (sem alteração de tempo/tom, só ganho).
+set -e
 cd "$(dirname "$0")"
-D=30
-T=(2.0 4.5 6.1 7.7 8.6 10.3 12.9 16.7 19.7 21.3 24.3 27.8)
-IN=(-f lavfi -t $D -i "sine=f=110:r=44100" -f lavfi -t $D -i "sine=f=164.81:r=44100" -f lavfi -t $D -i "sine=f=220:r=44100" -f lavfi -t $D -i "sine=f=277.18:r=44100")
-FC="[0]volume=0.5[a0];[1]volume=0.35[a1];[2]volume=0.3[a2];[3]volume=0.2[a3];[a0][a1][a2][a3]amix=inputs=4:normalize=0,tremolo=f=0.25:d=0.3,lowpass=f=700,volume=0.35,afade=t=in:d=1.5,afade=t=out:st=27:d=3[pad];"
-n=4; MIX="[pad]"
-for t in "${T[@]}"; do
-  ms=$(python3 -c "print(int($t*1000))")
-  IN+=(-f lavfi -t 0.7 -i "anoisesrc=c=pink:r=44100:a=0.8")
-  FC+="[$n]highpass=f=500,lowpass=f=6000,afade=t=in:d=0.35,afade=t=out:st=0.35:d=0.35,volume=0.35,adelay=${ms}|${ms}[w$n];"
-  MIX+="[w$n]"; n=$((n+1))
-done
-for t in 0.0 7.75 27.85; do
-  ms=$(python3 -c "print(int($t*1000)+1)")
-  IN+=(-f lavfi -t 1.2 -i "sine=f=55:r=44100")
-  FC+="[$n]afade=t=in:d=0.01,afade=t=out:st=0.05:d=1.1,volume=0.9,adelay=${ms}|${ms}[w$n];"
-  MIX+="[w$n]"; n=$((n+1))
-done
-cnt=$((n-3+3-0)); cnt=$(( (n-4) + 1 ))
-FC+="${MIX}amix=inputs=$cnt:normalize=0,alimiter=limit=0.7[out]"
-ffmpeg -v error -y "${IN[@]}" -filter_complex "$FC" -map "[out]" -t $D public/bed.wav
+A=assets/audio
+DUR=29.6
+MOFF=9.48   # início do trecho de "Ouroboros": a virada da música (17,40 s da faixa) cai em 7,92 s ("Na Conttrole")
+
+# whoosh: ciclo 0,55–1,75 s do loop (pico ~0,75 s após o início do trecho)
+# impacto grave: golpe em 3,499 s do arquivo
+W="atrim=0.55:1.75,asetpts=PTS-STARTPTS,afade=t=in:d=0.25,afade=t=out:st=0.85:d=0.35"
+I="atrim=3.48:4.4,asetpts=PTS-STARTPTS,afade=t=out:st=0.4:d=0.5"
+
+ffmpeg -v error -y \
+  -i public/narracao.mp3 \
+  -ss $MOFF -t $DUR -i $A/Ouroboros_KevinMacLeod.mp3 \
+  -i $A/air-whoosh_pyranostudios_CC0.wav \
+  -i $A/impact_qubodup_CC0.ogg \
+  -filter_complex "
+[0:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=8dB,apad=whole_dur=$DUR,asplit=2[vo][key];
+[1:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=-14dB,afade=t=in:d=0.25,afade=t=out:st=27.4:d=2.2[mus];
+[mus][key]sidechaincompress=threshold=0.04:ratio=5:attack=25:release=350:makeup=1[duck];
+[2:a]asplit=4[w1][w2][w3][w4];
+[w1]$W,volume=-13dB,adelay=1350|1350[s1];
+[w2]$W,volume=-9dB,adelay=7200|7200[s2];
+[w3]$W,volume=-11dB,adelay=20800|20800[s3];
+[w4]$W,volume=-9dB,adelay=25350|25350[s4];
+[3:a]aformat=sample_rates=44100:channel_layouts=stereo,asplit=2[i1][i2];
+[i1]$I,lowpass=f=380,volume=-2dB,adelay=0|0[k1];
+[i2]$I,lowpass=f=600,volume=-4dB,adelay=26080|26080[k2];
+[vo][duck][s1][s2][s3][s4][k1][k2]amix=inputs=8:normalize=0:duration=first,alimiter=limit=0.89:level=false[out]" \
+  -map "[out]" -t $DUR -ar 44100 public/mix.wav
+ffmpeg -hide_banner -i public/mix.wav -af ebur128 -f null - 2>&1 | grep -E "^\s+I:" | tail -1
