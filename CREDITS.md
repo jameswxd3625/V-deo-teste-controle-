@@ -20,3 +20,10 @@ Final (quando aprovado): mesmo comando sem `--scale`.
 - Whoosh: "Air whoosh" — pyranostudios, OpenGameArt, CC0 (https://opengameart.org/content/air-whoosh)
 - Impacto: "Impact" — qubodup, OpenGameArt, CC0 (https://opengameart.org/content/impact)
 - Fonte: Montserrat (SIL OFL 1.1), via @fontsource — `public/fonts/`.
+
+## v2 — "o faturamento e a fatia" (em andamento)
+Projeto: `src/conttrole/Film2.jsx` + `engine3d.js` (3D próprio em SVG: perspectiva, luz, sombras, reflexo). Composição `ConttroleV2`.
+Prova 0–8,5 s: `npx remotion render src/conttrole/index.jsx ConttroleV2 out/Conttrole_v2_prova_0-8s_540x960.mp4 --frames=0-254 --scale=0.5`
+Áudio: `python3 build_audio2.py` -> `public/mix2.wav`.
+- Efeitos de interface (corte, ticks mensais, encaixes): "Interface Sounds" — Kenney (www.kenney.nl), CC0 — `assets/audio/kenney_interface_CC0/`
+  (https://opengameart.org/content/interface-sounds)
