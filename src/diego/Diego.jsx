@@ -1,7 +1,7 @@
 // DIEGO MUDANÇAS — filme vertical 1080x1920 sincronizado à locução (tempos em segundos absolutos)
 import React from "react";
 import {AbsoluteFill, Audio, Img, staticFile, useCurrentFrame} from "remotion";
-import {FPS, W, H, C, FONT, HAND, EO, EI, EIO, ip, kf, on, fit, El, Big, Sub, Hi, Bg, Bands, WaveWipe, Logo, Icon, Box3D, Print, PhotoCard, Chip, T_SUB} from "./kit";
+import {FPS, W, H, C, FONT, HAND, EO, EI, EIO, ip, kf, on, fit, El, Big, Sub, Hi, Bg, Bands, WaveWipe, Logo, Lion, Paulo, Icon, Box3D, Print, PhotoCard, Chip, T_SUB} from "./kit";
 
 export const DIEGO_DURATION = 62; // locução termina em 59,7 s; 2,3 s de leitura da marca
 
@@ -69,7 +69,7 @@ const Album = ({open = 0, turn = 0, page, next, wrap = 0, shadow = 1}) => (
       {wrap > 0 && (
         <div style={{position: "absolute", left: -34, top: -34, width: AW + 70, height: AH + 68, borderRadius: 34, clipPath: `inset(${(1 - wrap) * 100}% -40px -40px -40px round 34px)`, background: "repeating-linear-gradient(45deg, rgba(255,255,255,0.10) 0 3px, transparent 3px 52px), repeating-linear-gradient(-45deg, rgba(0,0,40,0.22) 0 3px, transparent 3px 52px), linear-gradient(160deg, #2A6BFF, #1446E0 45%, #0A2A9A)", boxShadow: "inset 0 0 0 8px #0A2A8F, inset 0 0 50px rgba(0,0,0,0.35), 0 40px 80px rgba(0,6,24,0.6)", transform: "translateZ(30px)"}}>
           <div style={{position: "absolute", left: (AW + 70) / 2 - 130, top: (AH + 68) / 2 - 130, width: 260, height: 260}}>
-            <Logo size={260} style={{filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.4))"}} />
+            <Logo size={260} glow={0} />
           </div>
         </div>
       )}
@@ -122,8 +122,8 @@ const ALB = {
   fx: [280, 280, 280, 280, 280, 280, 280, 190, 190, 360, 360, 210, 210, 280, 280, 280, 280, 280],
   fy: [360, 360, 360, 360, 360, 360, 360, 175, 175, 400, 400, 560, 560, 360, 360, 360, 360, 360],
   s: [0.46, 0.46, 0.5, 0.82, 0.86, 1.25, 1.25, 1.8, 1.8, 1.8, 1.8, 1.6, 1.6, 1.25, 1.25, 1.16, 1.16, 1.6],
-  sx: [540, 540, 540, 540, 540, 560, 560, 540, 540, 540, 540, 540, 540, 560, 560, 540, 540, 540],
-  sy: [1450, 1010, 1010, 1150, 1150, 1180, 1180, 1250, 1250, 1250, 1250, 1300, 1300, 1180, 1180, 1150, 1150, 1100],
+  sx: [700, 700, 700, 540, 540, 560, 560, 540, 540, 540, 540, 540, 540, 560, 560, 540, 540, 540],
+  sy: [1450, 1000, 1000, 1150, 1150, 1180, 1180, 1250, 1250, 1250, 1250, 1300, 1300, 1180, 1180, 1150, 1150, 1100],
   rz: [0, -7, -7, -2, 0, 0, 0, -1, -1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
   ry: [0, 10, 10, 4, 0, -4, -4, 0, 0, 0, 0, 0, 0, -4, -4, 0, 0, 0],
 };
@@ -184,6 +184,7 @@ const Scene1 = ({t}) => {
   const s1 = fit("PENSANDO", TW, 190);
   return (
     <AbsoluteFill style={{opacity: 1 - exit, filter: exit > 0 ? `blur(${exit * 14}px)` : undefined, transform: `translateY(${-exit * 160}px)`}}>
+      <Lion x={-800 + t * 14} y={560} size={1500} o={0.32 * ip(t, 0, 1.4) * (1 - ip(t, 3.6, 4.6))} bright={0.55} />
       <El t={t} inn={[0.0, 0.5, "fade"]} out={[2.45, 0.3, "up"]} x={M} y={560} w={TW}>
         <Words t={t} size={58} words={[["Eu", 0.0], ["sei", 0.26], ["que", 0.5], ["você", 0.68], ["está", 0.94]]} />
       </El>
@@ -280,7 +281,9 @@ const Scene3 = ({t}) => {
   const pull = kf(t, [13.0, 14.5, 15.2], [1.18, 1.12, 1]);
   const dof = ip(t, 17.5, 18.6, 0, 1, EIO); // foco no álbum
   const exitTxt = 19.4;
-  const nameS = fit("PAULO.", TW, 230);
+  const nameS = fit("PAULO.", TW, 200);
+  const pin = ip(t, 13.0, 13.8, 0, 1, EO);
+  const pgone = ip(t, 19.3, 19.85);
   const tape = ip(t, 13.75, 14.25, 0, 1, EIO);
   const side = (a) => ip(t, a, a + 0.45);
   const front = (
@@ -290,6 +293,9 @@ const Scene3 = ({t}) => {
   );
   return (
     <AbsoluteFill style={{transform: `translateY(${(1 - pan) * 1920}px)`, filter: pb > 0.5 ? `blur(${pb}px)` : undefined}}>
+      {/* Paulo: camada inteira, entra com a apresentação e fica atrás das caixas */}
+      <div style={{position: "absolute", left: 408 - 420, top: 880 - 420, width: 840, height: 840, borderRadius: "50%", background: "radial-gradient(closest-side, rgba(34,199,245,0.32), rgba(20,70,224,0.12) 60%, transparent)", opacity: pin * (1 - pgone)}} />
+      <Paulo x={60} y={640 + (1 - pin) * 300} w={720} o={Math.min(1, pin * 1.8) * (1 - pgone)} blur={(1 - pin) * 16 + dof * 9} bright={1 - dof * 0.35} style={{transform: `scale(${(0.9 + 0.1 * pin) * kf(t, [13.8, 17.5], [1, 1.04], (x) => x)})`, transformOrigin: "50% 100%"}} />
       {/* caixas ao fundo */}
       <AbsoluteFill style={{transform: `scale(${pull})`, transformOrigin: "540px 1350px", opacity: 1 - dof * 0.55, filter: dof > 0 ? `blur(${dof * 9}px)` : undefined}}>
         <div style={{position: "absolute", left: 150 - (1 - side(14.5)) * 700, top: 1490, perspective: 1400, ...S3D}}><Box3D w={300} h={240} d={260} rot={18} tilt={-12} label="QUARTO" light={0.88} /></div>
@@ -300,14 +306,14 @@ const Scene3 = ({t}) => {
       {/* o álbum é desenhado entre o fundo e a caixa da frente (ver Main) */}
       {/* textos */}
       <AbsoluteFill style={{opacity: 1 - dof * 0.25}}>
-        <Line t={t} a={13.02} out={exitTxt} y={300}><Words t={t} size={56} words={[["Esse", 13.06], ["aqui", 13.32], ["é", 13.58], ["o", 13.7]]} /></Line>
-        <El t={t} inn={[13.86, 0.55, "zoom"]} out={[exitTxt, 0.35, "up"]} x={0} y={372} w={W}><Big size={nameS} grad>PAULO.</Big></El>
-        <El t={t} inn={[13.9, 0.6, "fade"]} out={[exitTxt, 0.3, "up"]} x={0} y={372 + nameS * 1.02} w={W}>
+        <Line t={t} a={13.02} out={exitTxt} y={228}><Words t={t} size={56} words={[["Esse", 13.06], ["aqui", 13.32], ["é", 13.58], ["o", 13.7]]} /></Line>
+        <El t={t} inn={[13.86, 0.55, "zoom"]} out={[exitTxt, 0.35, "up"]} x={0} y={290} w={W}><Big size={nameS} grad>PAULO.</Big></El>
+        <El t={t} inn={[13.9, 0.6, "fade"]} out={[exitTxt, 0.3, "up"]} x={0} y={290 + nameS * 1.0} w={W}>
           <div style={{width: 420 * ip(t, 14.0, 14.6, 0, 1, EIO), height: 6, borderRadius: 3, background: "linear-gradient(90deg, transparent, #22C7F5, transparent)", boxShadow: "0 0 20px #22C7F5"}} />
         </El>
-        <Line t={t} a={14.46} out={15.62} y={720}><Words t={t} size={56} words={[["No", 14.5], ["meio", 14.64], ["das", 14.82], ["caixas,", 15.12, true]]} /></Line>
-        <Line t={t} a={15.78} out={17.4} y={720}><Words t={t} size={56} words={[["ele", 15.82], ["encontrou", 16.06], ["um", 16.36], ["álbum", 16.62, true], ["de", 16.92], ["família", 17.22, true]]} /></Line>
-        <Line t={t} a={17.5} out={exitTxt} y={720}><Words t={t} size={56} words={[["e", 17.56], ["parou", 18.14], ["por", 18.48], ["um", 18.68], ["instante.", 18.92]]} style={{letterSpacing: `${ip(t, 18.0, 19.4) * 0.04}em`}} /></Line>
+        <Line t={t} a={14.46} out={15.62} y={548}><Words t={t} size={56} words={[["No", 14.5], ["meio", 14.64], ["das", 14.82], ["caixas,", 15.12, true]]} /></Line>
+        <Line t={t} a={15.78} out={17.4} y={548}><Words t={t} size={56} words={[["ele", 15.82], ["encontrou", 16.06], ["um", 16.36], ["álbum", 16.62, true], ["de", 16.92], ["família", 17.22, true]]} /></Line>
+        <Line t={t} a={17.5} out={exitTxt} y={548}><Words t={t} size={56} words={[["e", 17.56], ["parou", 18.14], ["por", 18.48], ["um", 18.68], ["instante.", 18.92]]} style={{letterSpacing: `${ip(t, 18.0, 19.4) * 0.04}em`}} /></Line>
       </AbsoluteFill>
       {front}
     </AbsoluteFill>
@@ -356,6 +362,7 @@ const Scene5 = ({t}) => {
   const mud = fit("ESSA MUDANÇA,", TW, 130);
   return (
     <AbsoluteFill>
+      <Lion x={-930 + (t - 31.4) * 22 - ip(t, 34.5, 35.35, 0, 1, EI) * 220} y={380 - ip(t, 34.5, 35.35, 0, 1, EI) * 60} size={1700} o={ip(t, 31.45, 32.1) * (1 - ip(t, 34.9, 35.35))} bright={0.5 + 0.28 * ip(t, 31.7, 32.7) - 0.16 * ip(t, 33.3, 33.7)} sweep={ip(t, 31.55, 32.75, 0, 1, (x) => x)} blur={ip(t, 34.6, 35.35) * 12} />
       <Rays t={t} o={lg * (1 - lout)} />
       <Line t={t} a={31.38} out={34.45} y={640}><Words t={t} size={60} words={[["Na", 31.42], ["hora", 31.52], ["de", 31.72], ["escolher", 31.96]]} /></Line>
       <Line t={t} a={32.36} out={34.45} y={724}><Words t={t} size={60} words={[["quem", 32.4], ["vai", 32.66], ["acompanhar", 32.92]]} /></Line>
@@ -363,8 +370,7 @@ const Scene5 = ({t}) => {
       <El t={t} inn={[34.56, 0.4, "up"]} mask out={[36.35, 0.3, "up"]} x={M} y={470} w={TW}><Words t={t} size={58} words={[["conheça", 34.6], ["a", 34.98]]} /></El>
       {t >= 35.1 && (
         <div style={{position: "absolute", left: 540 - 330, top: 600, width: 660, height: 660, transform: `scale(${(1.5 - 0.5 * lg) * (1 + lout * 1.8)})`, opacity: Math.min(1, lg * 2) * (1 - lout), filter: (1 - lg) + lout > 0.02 ? `blur(${(1 - lg) * 24 + lout * 20}px)` : undefined}}>
-          <div style={{position: "absolute", inset: -40, borderRadius: "50%", boxShadow: `0 0 ${120 * lg}px rgba(34,199,245,0.55)`}} />
-          <Logo size={660} />
+          <Logo size={660} glow={lg} />
         </div>
       )}
       <div style={{position: "absolute", inset: 0, transform: `translateY(${(1 - ip(t, 35.1, 35.9)) * 700 + lout * 900}px)`}}><Bands y={1620} amp={230} /></div>
@@ -374,9 +380,8 @@ const Scene5 = ({t}) => {
 
 // ======================= CENA 6 — CAMINHÕES E TRABALHO =======================
 const CARDS = [
-  {src: "diego_geladeira.jpg", w: 640, h: 590, f: 38.42, chip: "PROTEÇÃO", pos: "50% 40%"},
-  {src: "capas.jpg", w: 640, h: 571, f: 39.08, chip: "ORGANIZAÇÃO"},
-  {src: "frota.jpg", w: 470, h: 578, f: 39.74, chip: null},
+  {src: "diego_protecao.jpg", w: 680, h: 470, f: 38.55, chip: "PROTEÇÃO"},
+  {src: "capas.jpg", w: 640, h: 571, f: 39.45, chip: "ORGANIZAÇÃO"},
 ];
 const Scene6 = ({t}) => {
   const tin = ip(t, 36.45, 37.15);
@@ -387,6 +392,7 @@ const Scene6 = ({t}) => {
   const cardsOut = ip(t, 40.3, 40.75, 0, 1, EI);
   return (
     <AbsoluteFill>
+      <div style={{position: "absolute", inset: 0, opacity: ip(t, 36.4, 37.0) * (1 - ip(t, 40.2, 40.7)), transform: `translateY(${(1 - ip(t, 36.4, 37.3)) * 420 + ip(t, 40.2, 40.7, 0, 1, EI) * 500}px)`}}><Bands y={1540} amp={190} /></div>
       <Line t={t} a={36.54} out={38.25} y={260}><Words t={t} size={60} words={[["Veja", 36.58], ["nossos", 36.82]]} /></Line>
       <El t={t} inn={[37.08, 0.5, "zoom"]} out={[38.25, 0.3, "left"]} x={0} y={336} w={W}><Big size={cam} grad>CAMINHÕES</Big></El>
       {/* faixa fotográfica dos caminhões, proporção original 1272x482 */}
@@ -397,8 +403,8 @@ const Scene6 = ({t}) => {
           </div>
         </div>
       )}
-      <Line t={t} a={38.32} out={39.36} y={260}><Words t={t} size={60} words={[["acompanhe", 38.36], ["nosso", 38.64]]} /></Line>
-      <El t={t} inn={[38.88, 0.45, "left"]} out={[39.36, 0.3, "up"]} x={0} y={336} w={W}><Big size={trab} grad>TRABALHO</Big></El>
+      <Line t={t} a={38.32} out={39.28} y={260}><Words t={t} size={60} words={[["acompanhe", 38.36], ["nosso", 38.64]]} /></Line>
+      <El t={t} inn={[38.88, 0.45, "left"]} out={[39.28, 0.3, "up"]} x={0} y={336} w={W}><Big size={trab} grad>TRABALHO</Big></El>
       {/* carrossel de trabalho: um foco por vez */}
       {on(t, 38.2, 40.8) && (
         <div style={{position: "absolute", left: 0, top: 0, width: W, height: H, perspective: 1600, opacity: 1 - cardsOut}}>
@@ -460,6 +466,7 @@ const Scene7 = ({t}) => {
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{transformOrigin: `${B[0]}px ${B[1] - 60}px`, transform: `scale(${zs})`, opacity: 1 - ip(t, 45.2, 45.6), filter: zoom > 0.02 ? `blur(${zoom * 10}px)` : undefined}}>
+        <Lion x={-600 + (t - 40.3) * 10} y={300} size={1150} o={0.3 * enter} bright={0.6} />
         {/* plano do mapa em perspectiva */}
         <div style={{position: "absolute", left: 0, top: 560, width: W, height: 1360, perspective: 1300, opacity: enter}}>
           <div style={{position: "absolute", left: -500, top: -60, width: 2080, height: 1800, transform: `rotateX(${58 - enter * 6}deg) translateY(${(1 - enter) * 200}px)`, transformOrigin: "50% 40%", background: "repeating-linear-gradient(0deg, rgba(155,235,255,0.13) 0 2px, transparent 2px 90px), repeating-linear-gradient(90deg, rgba(155,235,255,0.13) 0 2px, transparent 2px 90px), radial-gradient(60% 50% at 50% 40%, rgba(20,70,224,0.45), transparent 70%)", maskImage: "radial-gradient(70% 60% at 50% 40%, black 30%, transparent 75%)", WebkitMaskImage: "radial-gradient(70% 60% at 50% 40%, black 30%, transparent 75%)"}}>
@@ -495,7 +502,7 @@ const Scene7 = ({t}) => {
       </AbsoluteFill>
       {/* textos */}
       <AbsoluteFill style={{opacity: 1 - ip(t, 44.85, 45.2)}}>
-        <Line t={t} a={39.4} out={42.45} y={250}><Words t={t} size={58} words={[["e", 39.4], ["conte", 39.82], ["para", 40.08], ["a", 40.36], ["gente", 40.42]]} /></Line>
+        <Line t={t} a={39.58} out={42.45} y={250}><Words t={t} size={58} words={[["e", 39.6], ["conte", 39.82], ["para", 40.08], ["a", 40.36], ["gente", 40.42]]} /></Line>
         <Line t={t} a={40.66} out={42.45} y={325}><Words t={t} size={58} words={[["de", 40.7], ["onde", 41.16], ["você", 41.38], ["está", 41.72]]} /></Line>
         <El t={t} inn={[41.86, 0.45, "zoom"]} out={[42.45, 0.3, "left"]} x={0} y={400} w={W}><Big size={said} grad italic>SAINDO,</Big></El>
         <Line t={t} a={42.6} out={43.36} y={260}><Words t={t} size={60} words={[["para", 42.64], ["onde", 42.82]]} /></Line>
@@ -526,6 +533,7 @@ const Scene8 = ({t}) => {
       <AbsoluteFill style={{background: "linear-gradient(180deg, rgba(4,21,69,0.25), rgba(6,32,95,0.2))", mixBlendMode: "multiply"}} />
       <AbsoluteFill style={{background: `linear-gradient(180deg, rgba(2,10,34,0.95) 0%, rgba(2,10,34,0.82) 22%, rgba(2,10,34,0.25) 42%, rgba(2,10,34,0) 55%, rgba(2,10,34,0.55) 100%)`}} />
       <AbsoluteFill style={{background: C.ink, opacity: dark}} />
+      <Paulo x={-40 - (1 - ip(t, 45.1, 45.8, 0, 1, EO)) * 380 - ip(t, 48.8, 49.35, 0, 1, EI) * 460} y={800} w={700} o={Math.min(1, ip(t, 45.1, 45.8) * 2) * (1 - ip(t, 48.8, 49.35))} blur={(1 - ip(t, 45.1, 45.8)) * 14 + ip(t, 48.8, 49.35) * 14} />
       <Line t={t} a={45.2} out={48.8} y={250}><Words t={t} size={58} words={[["Assim", 45.24], ["como", 45.56], ["o", 45.88], ["Paulo,", 46.02, true]]} /></Line>
       <Line t={t} a={46.4} out={48.8} y={325}><Words t={t} size={58} words={[["você", 46.44], ["tem", 46.74], ["uma", 46.9]]} /></Line>
       <El t={t} inn={[47.28, 0.5, "zoom"]} out={[48.8, 0.32, "up"]} x={0} y={405} w={W}><Big size={hist} grad>NOVA HISTÓRIA</Big></El>
@@ -548,10 +556,10 @@ const Scene8 = ({t}) => {
 const AlbumNew = ({t}) => {
   const land = ip(t, 45.45, 46.25, 0, 1, EO);
   const open = ip(t, 49.0, 49.75, 0, 1, EIO);
-  const push = kf(t, [49.0, 49.8, 52.3, 54.7], [0.95, 1.02, 1.08, 1.0]);
+  const push = kf(t, [48.9, 49.8, 52.3, 54.7], [0.8, 1.02, 1.08, 1.0]);
   const s = push * (1 + (1 - land) * 0.4);
-  const y = kf(t, [45.45, 46.25, 49.0, 49.8, 52.3, 54.7], [1900, 1230, 1230, 1180, 1200, 1300], EO);
-  const cam = {sx: 540 + open * 30, sy: y, s, fx: 280, fy: 360, rz: -4 * (1 - land) + 2 * (1 - open) - 1, ry: -6 * open};
+  const y = kf(t, [45.45, 46.25, 49.0, 49.8, 52.3, 54.7], [1900, 1240, 1240, 1180, 1200, 1300], EO);
+  const cam = {sx: kf(t, [45.45, 46.25, 48.9, 49.8], [820, 770, 770, 570]), sy: y, s, fx: 280, fy: 360, rz: -4 * (1 - land) + 2 * (1 - open) - 1, ry: -6 * open};
   return (
     <div style={{opacity: Math.min(1, land * 3), position: "absolute", inset: 0}}>
       <CamAlbum t={t} cam={cam} blur={(1 - land) * 14}>
@@ -574,8 +582,7 @@ const Scene9 = ({t}) => {
         <Bands y={1650 + Math.sin(t * 0.8) * 14} amp={240} />
       </div>
       <div style={{position: "absolute", left: 540 - 320, top: ly - 320, width: 640, height: 640, transform: `scale(${1.45 - 0.45 * lg})`, opacity: Math.min(1, lg * 2), filter: lg < 0.99 ? `blur(${(1 - lg) * 22}px)` : undefined}}>
-        <div style={{position: "absolute", inset: -30, borderRadius: "50%", boxShadow: `0 0 ${140 * lg}px rgba(34,199,245,0.5)`}} />
-        <Logo size={640} />
+        <Logo size={640} glow={lg} />
       </div>
       <El t={t} inn={[57.18, 0.3, "fade"]} x={M} y={1000} w={TW}><Words t={t} size={58} words={[["Fale", 57.22], ["com", 57.36], ["a", 57.58], ["nossa", 57.64], ["equipe", 57.84], ["e", 58.34]]} /></El>
       <div style={{position: "absolute", left: 0, width: W, top: 1150, display: "flex", justifyContent: "center", opacity: cta, transform: `scale(${0.7 + 0.3 * cta})`, filter: cta < 0.99 ? `blur(${(1 - cta) * 10}px)` : undefined}}>

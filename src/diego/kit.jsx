@@ -189,10 +189,38 @@ export const WaveWipe = ({t, t0, dur = 1.1}) => {
   );
 };
 
-// ---------- logo (sempre íntegra, proporção 1:1) ----------
-export const Logo = ({size = 600, style}) => (
-  <Img src={staticFile("diego/logo.png")} style={{width: size, height: size, display: "block", filter: "drop-shadow(0 24px 50px rgba(0,6,30,0.65)) drop-shadow(0 0 40px rgba(34,199,245,0.35))", ...style}} />
+// ---------- logo quadrada (assinatura): sem máscara, proporção 1:1 preservada ----------
+export const Logo = ({size = 600, glow = 1, style}) => (
+  <div style={{position: "relative", width: size, height: size, boxShadow: `0 30px 70px rgba(0,6,30,0.7), 0 0 ${90 * glow}px rgba(34,199,245,${0.45 * glow})`, ...style}}>
+    <Img src={staticFile("diego/logo_diego.png")} style={{width: size, height: size, display: "block"}} />
+  </div>
 );
+
+// ---------- leão (camada independente integrada ao fundo azul) ----------
+// x, y, size em px; o = opacidade; bright = luz; sweep 0..1 = passagem de luz sobre o leão
+export const Lion = ({x, y, size, o = 1, bright = 0.8, sweep = -1, blur = 0}) => {
+  const mask = "radial-gradient(62% 64% at 56% 50%, black 72%, transparent 100%)";
+  const sw = sweep * 150 - 30;
+  return (
+    <div style={{position: "absolute", left: x, top: y, width: size, height: size, opacity: o, filter: blur > 0.4 ? `blur(${blur}px)` : undefined, maskImage: mask, WebkitMaskImage: mask, pointerEvents: "none"}}>
+      <Img src={staticFile("diego/leao.png")} style={{position: "absolute", inset: 0, width: "100%", height: "100%", filter: `brightness(${bright}) contrast(1.1) drop-shadow(0 0 ${size * 0.03}px rgba(34,199,245,0.45))`}} />
+      {sweep > 0 && sweep < 1 && (
+        <Img src={staticFile("diego/leao.png")} style={{position: "absolute", inset: 0, width: "100%", height: "100%", filter: "brightness(2.4) saturate(0.7)", mixBlendMode: "screen", maskImage: `linear-gradient(110deg, transparent ${sw - 18}%, black ${sw}%, transparent ${sw + 18}%)`, WebkitMaskImage: `linear-gradient(110deg, transparent ${sw - 18}%, black ${sw}%, transparent ${sw + 18}%)`}} />
+      )}
+    </div>
+  );
+};
+
+// ---------- Paulo (personagem pronto, animado como camada inteira) ----------
+export const Paulo = ({x, y, w = 720, o = 1, blur = 0, bright = 1, style}) => {
+  const h = (w * 1312) / 1199;
+  const mask = "linear-gradient(180deg, black 82%, transparent 99%)";
+  return (
+    <div style={{position: "absolute", left: x, top: y, width: w, height: h, opacity: o, filter: `${blur > 0.4 ? `blur(${blur}px) ` : ""}brightness(${bright}) drop-shadow(0 0 22px rgba(34,199,245,0.35)) drop-shadow(0 30px 40px rgba(0,6,30,0.55))`, ...style}}>
+      <Img src={staticFile("diego/paulo.png")} style={{width: w, height: h, display: "block", maskImage: mask, WebkitMaskImage: mask}} />
+    </div>
+  );
+};
 
 // ---------- ícones de linha luminosos (desenho por traço) ----------
 const ICONS = {
