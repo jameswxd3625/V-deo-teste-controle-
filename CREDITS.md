@@ -27,3 +27,7 @@ Prova 0–8,5 s: `npx remotion render src/conttrole/index.jsx ConttroleV2 out/Co
 Áudio: `python3 build_audio2.py` -> `public/mix2.wav`.
 - Efeitos de interface (corte, ticks mensais, encaixes): "Interface Sounds" — Kenney (www.kenney.nl), CC0 — `assets/audio/kenney_interface_CC0/`
   (https://opengameart.org/content/interface-sounds)
+
+## v3 — prova 0–8,5 s (atual)
+`src/conttrole/Film3.jsx` (composição `ConttroleV3`), áudio `python3 build_audio3.py` -> `public/mix3.wav`.
+Render: `npx remotion render src/conttrole/index.jsx ConttroleV3 out/Conttrole_v3_prova_0-8s_540x960.mp4 --frames=0-254 --scale=0.5`
