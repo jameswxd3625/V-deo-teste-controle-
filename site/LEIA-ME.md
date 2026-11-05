@@ -1,6 +1,8 @@
 # Site Diego Mudanças
 
-Site estático (HTML + CSS + JS, sem build). Publique a pasta `site/` em qualquer hospedagem (Hostinger, Netlify, Vercel, GitHub Pages...). A hospedagem precisa servir vídeos normalmente (todas as citadas servem).
+Site estático (HTML + CSS + JS, sem build). **No ar em:** https://jameswxd3625.github.io/V-deo-teste-controle-/ (publicar alterações: `scripts/publicar_site.sh`).
+
+Para outra hospedagem, publique a pasta `site/` (Hostinger, Netlify, Vercel...).
 
 ## Editar
 - **Contatos:** `config.js` (WhatsApp, Instagram, site, cidade). O botão, o formulário e o rodapé usam esses dados.
