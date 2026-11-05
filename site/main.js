@@ -83,7 +83,7 @@
   hero.src = matchMedia("(max-width: 640px)").matches ? hero.dataset.srcMob : hero.dataset.srcDesk;
   hero.addEventListener("playing", function () { hero.classList.add("ready"); });
   loops.forEach(function (v) { if (v.dataset.src) v.src = v.dataset.src; v.dataset.user = ""; });
-  function tryPlay(v) { if (reduce.matches || v.dataset.user === "paused") return; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+  function tryPlay(v) { if (reduce.matches || v.dataset.user === "paused" || (v.classList.contains("once") && v.ended)) return; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
   var lo = new IntersectionObserver(function (es) {
     es.forEach(function (e) { if (e.isIntersecting) tryPlay(e.target); else e.target.pause(); });
   }, {threshold: 0.2});
@@ -96,8 +96,10 @@
       $("use", b).setAttribute("href", paused ? "#i-play" : "#i-pause");
     }
     b.addEventListener("click", function () {
+      if (v.ended) { v.currentTime = 0; v.dataset.user = ""; tryPlay(v); return; }
       if (v.paused) { v.dataset.user = ""; tryPlay(v); } else { v.dataset.user = "paused"; v.pause(); }
     });
+    v.addEventListener("ended", function () { b.setAttribute("aria-label", "Ver a animação de novo"); $("use", b).setAttribute("href", "#i-play"); });
     v.addEventListener("play", sync); v.addEventListener("pause", sync); sync();
   });
 
@@ -126,7 +128,17 @@
       if (jv.dataset.user !== "paused") tryPlay(jv);
     });
   });
-  syncList($("#protectVideo"), $$("#protectSteps li"), [0.9, 2.5, 4.1, 5.7, 7.2], 8.9);
+  var pItems = $$("#protectSteps li");
+  syncList($("#protectVideo"), pItems.concat([pItems[0]]), [0, 4.25, 8.85, 13.45]);
+  // linha de percurso dos serviços: desenha conforme a rolagem
+  var svc = $(".services"), svr = $(".svc-route");
+  function routeDraw() {
+    var r = svc.getBoundingClientRect(), vh = innerHeight;
+    var p = Math.max(0, Math.min(1, (vh * 0.85 - r.top) / (r.height + vh * 0.2)));
+    svr.style.setProperty("--rp", reduce.matches ? 1 : p.toFixed(3));
+  }
+  addEventListener("scroll", function () { requestAnimationFrame(routeDraw); }, {passive: true});
+  routeDraw();
 
   /* ---------- trilho de vídeos reais ---------- */
   var V = [

@@ -68,7 +68,7 @@
 <!-- ABERTURA -->
 <section class="hero" aria-labelledby="hero-t">
   <div class="hero-media" aria-hidden="true">
-    <video class="loop" id="heroVideo" muted playsinline loop preload="none" data-src-desk="media/loops/hero-desktop.mp4" data-src-mob="media/loops/hero-mobile.mp4"></video>
+    <video class="loop once" id="heroVideo" muted playsinline preload="auto" data-src-desk="media/v2/hero-desktop.mp4" data-src-mob="media/v2/hero-mobile.mp4"></video>
   </div>
   <div class="wrap hero-in">
     <p class="eyebrow in-1">Mudanças e transportes · Belo Horizonte e região</p>
@@ -85,25 +85,42 @@
       <li><svg class="ic"><use href="#i-store"/></svg>Guarda-móveis</li>
     </ul>
   </div>
-  <button class="loop-toggle hero-toggle" data-for="heroVideo" aria-label="Pausar animação de fundo"><svg><use href="#i-pause"/></svg></button>
+  <button class="loop-toggle hero-toggle" data-for="heroVideo" aria-label="Pausar animação da abertura"><svg><use href="#i-pause"/></svg></button>
   <a class="scroll-cue" href="#servicos" aria-label="Rolar para os serviços"><span></span></a>
 </section>
 
 <!-- O QUE FAZEMOS -->
-<section class="sec" id="servicos" aria-labelledby="serv-t">
+<section class="sec services" id="servicos" aria-labelledby="serv-t">
+
   <div class="wrap">
     <div class="head">
       <p class="eyebrow reveal">O que fazemos</p>
       <h2 id="serv-t" class="reveal">Tudo o que a sua mudança precisa, <em>em um só lugar.</em></h2>
       <p class="lead reveal">Você não precisa coordenar várias empresas. A gente embala, protege, transporta e, se precisar, guarda.</p>
     </div>
-    <div class="cards">
-      <article class="card reveal"><svg class="ci"><use href="#i-home"/></svg><h3>Mudanças residenciais</h3><p>Casas e apartamentos, com cada móvel embalado e protegido.</p><p class="help">Para você: mais tranquilidade no dia da mudança.</p></article>
-      <article class="card reveal"><svg class="ci"><use href="#i-building"/></svg><h3>Mudanças comerciais</h3><p>Escritórios e lojas, com logística organizada.</p><p class="help">Para você: liberar o imóvel com organização e voltar à rotina.</p></article>
-      <article class="card reveal"><svg class="ci"><use href="#i-pin"/></svg><h3>Intermunicipais e interestaduais</h3><p>De BH para outras cidades e estados.</p><p class="help">Para você: o mesmo cuidado, qualquer que seja a distância.</p></article>
-      <article class="card reveal"><svg class="ci"><use href="#i-box"/></svg><h3>Embalagem completa</h3><p>Item por item: livros, vidros e frágeis embalados um a um antes de ir para a caixa.</p><p class="help">Para você: não precisar embalar nada.</p></article>
-      <article class="card reveal"><svg class="ci"><use href="#i-fridge"/></svg><h3>Eletrodomésticos protegidos</h3><p>Capa protetora, plástico stretch, frente identificada e cuidado na hora de descer.</p><p class="help">Para você: atenção especial à “queridinha da casa”.</p></article>
-      <article class="card reveal"><svg class="ci"><use href="#i-store"/></svg><h3>Guarda-móveis</h3><p>Local seguro para guardar seus móveis, pelo tempo que você precisar.</p><p class="help">Para você: uma solução durante reformas ou entre um endereço e outro.</p></article>
+    <div class="svc">
+  <svg class="svc-route" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
+        <path class="rl-dots" d="M500 0 C 500 120 120 140 120 330 S 880 470 880 640 S 300 820 500 1000" />
+        <path class="rl rl-w" d="M500 0 C 500 120 120 140 120 330 S 880 470 880 640 S 300 820 500 1000" pathLength="1" />
+        <path class="rl rl-c" d="M500 0 C 500 120 120 140 120 330 S 880 470 880 640 S 300 820 500 1000" pathLength="1" />
+        <path class="rl rl-b" d="M500 0 C 500 120 120 140 120 330 S 880 470 880 640 S 300 820 500 1000" pathLength="1" />
+      </svg>
+      <article class="sv ov s-casa reveal">
+        <div class="sv-media"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-casa.webp" data-src="media/v2/sv-casa.mp4" aria-hidden="true"></video></div>
+        <div class="sv-copy"><p class="sv-k">Mudanças</p><h3>Residenciais e comerciais</h3><p>Casas, apartamentos, escritórios e lojas, com cada peça embalada e protegida.</p><p class="help">Para você: mais tranquilidade no dia da mudança e o imóvel liberado com organização.</p></div>
+      </article>
+      <article class="sv st s-emb reveal">
+        <div class="sv-media"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-embalagem.webp" data-src="media/v2/sv-embalagem.mp4" aria-hidden="true"></video></div>
+        <div class="sv-copy"><p class="sv-k">Embalagem completa</p><h3>A capa da Diego em cada peça</h3><p>Item por item: frágeis embalados um a um, móveis e eletrodomésticos com capa acolchoada.</p><p class="help">Para você: não precisar embalar nada.</p></div>
+      </article>
+      <article class="sv st s-tr reveal">
+        <div class="sv-media"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-transporte.webp" data-src="media/v2/sv-transporte.mp4" aria-hidden="true"></video></div>
+        <div class="sv-copy"><p class="sv-k">Transporte</p><h3>Frota própria, perto ou longe</h3><p>Dentro de BH e região, para outras cidades e para outros estados.</p><p class="help">Para você: o mesmo cuidado, qualquer que seja a distância.</p></div>
+      </article>
+      <article class="sv ov s-gm reveal">
+        <div class="sv-media"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-guarda.webp" data-src="media/v2/sv-guarda.mp4" aria-hidden="true"></video></div>
+        <div class="sv-copy"><p class="sv-k">Guarda-móveis</p><h3>Seus móveis protegidos e organizados</h3><p>Local seguro para guardar tudo pelo tempo que você precisar.</p><p class="help">Para você: uma solução durante reformas ou entre um endereço e outro.</p></div>
+      </article>
     </div>
   </div>
 </section>
@@ -135,19 +152,18 @@
 <section class="sec" id="protecao" aria-labelledby="prot-t">
   <div class="wrap split rev">
     <div>
-      <p class="eyebrow reveal">Proteção em camadas</p>
-      <h2 id="prot-t" class="reveal">Cada móvel recebe a <em>proteção adequada.</em></h2>
-      <p class="lead reveal">Para ir ao guarda-móveis, por exemplo, cada peça é protegida em camadas, como mostramos nos nossos vídeos:</p>
-      <ol class="layers" id="protectSteps">
-        <li class="reveal"><i style="--c:#C9A06C"></i><span><strong>Papelão</strong> para proteger quinas e superfícies</span></li>
-        <li class="reveal"><i style="--c:#BFE6FF"></i><span><strong>Plástico</strong> contra poeira e sujeira</span></li>
-        <li class="reveal"><i style="--c:#E8F6FF"></i><span><strong>Plástico-bolha</strong> para amortecer</span></li>
-        <li class="reveal"><i style="--c:#1F5BFF"></i><span><strong>Manta Diego</strong> para firmar e finalizar</span></li>
-        <li class="reveal"><i style="--c:#22C7F5"></i><span><strong>Pronto</strong> para guardar ou transportar</span></li>
+      <p class="eyebrow reveal">Proteção</p>
+      <h2 id="prot-t" class="reveal">Uma capa para <em>cada móvel.</em></h2>
+      <p class="lead reveal">Cada peça recebe a capa acolchoada da Diego, ajustada ao formato dela, antes de sair de casa.</p>
+      <ol class="layers objs" id="protectSteps">
+        <li class="reveal"><i style="--c:#1D4FD8"></i><span><strong>Geladeira</strong> capa acolchoada, plástico stretch e frente identificada</span></li>
+        <li class="reveal"><i style="--c:#1D4FD8"></i><span><strong>Sofá</strong> capa envolvendo todo o estofado</span></li>
+        <li class="reveal"><i style="--c:#1D4FD8"></i><span><strong>Cama</strong> capa sobre o colchão para o transporte</span></li>
       </ol>
+      <p class="fine reveal">Animação ilustrativa: o modelo da capa varia conforme a peça.</p>
     </div>
     <div class="demo reveal">
-      <video class="loop" id="protectVideo" muted playsinline loop preload="none" poster="media/loops/protecao.webp" data-src="media/loops/protecao.mp4" aria-label="Animação: um móvel recebendo papelão, plástico, plástico-bolha e manta"></video>
+      <video class="loop" id="protectVideo" muted playsinline loop preload="none" poster="media/v2/protecao.webp" data-src="media/v2/protecao.mp4" aria-label="Animação: geladeira, sofá e cama recebendo a capa da Diego Mudanças"></video>
       <button class="loop-toggle" data-for="protectVideo" aria-label="Pausar animação"><svg><use href="#i-pause"/></svg></button>
     </div>
   </div>
