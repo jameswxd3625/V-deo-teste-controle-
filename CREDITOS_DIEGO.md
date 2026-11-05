@@ -46,3 +46,11 @@ npx remotion render src/index.jsx DiegoMudancas out/_raw.mp4 --crf=18 --audio-bi
 # normalização para redes sociais (-15 LUFS), vídeo copiado sem recompressão
 ffmpeg -i out/_raw.mp4 -c:v copy -af loudnorm=I=-15:TP=-1.5:LRA=11 -ar 48000 -c:a aac -b:a 256k out/DiegoMudancas_1080x1920.mp4
 ```
+
+## Vídeo "Equipe 02 em execução, Paquetá" (`out/Equipe02_Paqueta_1080x1920.mp4`)
+
+- **Imagem:** vídeo de drone enviado pelo cliente (`public/diego/drone_original.mp4`), ampliado para 1080×1920 por `scripts/equipe02_prep.sh`. O áudio original foi substituído.
+- **Mapeamento do caminhão:** `src/diego/drone_track.json` (caixa do caminhão ao longo do tempo). O texto fica fora dela e uma marcação o acompanha.
+- **Edição:** `src/diego/Equipe02.jsx` (composição `Equipe02`, 24 fps, 20 s). Usa a logo em camadas, o leão e a tipografia do filme principal.
+- **Áudio:** `scripts/equipe02_audio.py` (efeitos premium e cama eletrônica discreta, sem voz).
+- **Render:** `npx remotion render src/index.jsx Equipe02 out/_eq_raw.mp4 --crf=18`, depois `ffmpeg -i out/_eq_raw.mp4 -c:v copy -af loudnorm=I=-16:TP=-1.5:LRA=11 -c:a aac -b:a 256k out/Equipe02_Paqueta_1080x1920.mp4`.
