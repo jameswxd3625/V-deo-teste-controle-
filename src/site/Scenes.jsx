@@ -15,18 +15,18 @@ const LET = staticFile("diego/logo_letreiro.png");
 const LION = staticFile("diego/leao.png");
 
 // ---------------- estúdio ----------------
-export const Studio = ({w, h, floorY, light = 0.5, warm = 0}) => (
+export const Studio = ({w, h, floorY, light = 0.5, warm = 0, paper = false}) => (
   <>
     <defs>
-      <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#030C2A" /><stop offset="1" stopColor="#0A2A86" /></linearGradient>
-      <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#0B2C8C" /><stop offset="0.35" stopColor="#061C5C" /><stop offset="1" stopColor="#020A22" /></linearGradient>
+      <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">{paper ? <><stop offset="0" stopColor="#F4F1EA" /><stop offset="1" stopColor="#E9E5DC" /></> : <><stop offset="0" stopColor="#030C2A" /><stop offset="1" stopColor="#0A2A86" /></>}</linearGradient>
+      <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">{paper ? <><stop offset="0" stopColor="#DCD6CB" /><stop offset="1" stopColor="#EDE9E1" /></> : <><stop offset="0" stopColor="#0B2C8C" /><stop offset="0.35" stopColor="#061C5C" /><stop offset="1" stopColor="#020A22" /></>}</linearGradient>
       <radialGradient id="spot" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stopColor="#5FB8FF" stopOpacity="0.55" /><stop offset="0.55" stopColor="#1446E0" stopOpacity="0.18" /><stop offset="1" stopColor="#1446E0" stopOpacity="0" /></radialGradient>
       <radialGradient id="warmspot" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stopColor="#FFC98A" stopOpacity="0.5" /><stop offset="1" stopColor="#FFC98A" stopOpacity="0" /></radialGradient>
       <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#9BEBFF" stopOpacity="0.22" /><stop offset="1" stopColor="#9BEBFF" stopOpacity="0" /></linearGradient>
     </defs>
-    <rect x={0} y={-3000} width={w} height={3000} fill="#030C2A" /><rect x={0} y={0} width={w} height={floorY + 2} fill="url(#wall)" />
+    <rect x={0} y={-3000} width={w} height={3000} fill={paper ? "#F4F1EA" : "#030C2A"} /><rect x={0} y={0} width={w} height={floorY + 2} fill="url(#wall)" />
     <rect x={0} y={floorY} width={w} height={h - floorY} fill="url(#floor)" />
-    <rect x={0} y={floorY - 1} width={w} height={2} fill="#4FA8FF" opacity={0.35} />
+    <rect x={0} y={floorY - 1} width={w} height={2} fill={paper ? "#B9B1A3" : "#4FA8FF"} opacity={0.35} />
   </>
 );
 
@@ -211,7 +211,7 @@ export const Piece = ({m, x, floorY, scale = 1, p = 0, settle = 0, id, glow = 1,
     <g transform={`translate(${x} ${y}) scale(${scale})`}>
       <ellipse cx={m.w / 2} cy={m.h} rx={m.w * 0.62} ry={22} fill="#000" opacity={0.45} style={{filter: "blur(14px)"}} />
       <ellipse cx={m.w / 2} cy={m.h - 4} rx={m.w * 0.5} ry={8} fill="#000" opacity={0.55} style={{filter: "blur(4px)"}} />
-      <g style={{filter: `drop-shadow(0 0 ${18 * glow}px rgba(34,199,245,0.35))`}}>{m.draw}</g>
+      <g style={glow ? {filter: `drop-shadow(0 0 ${18 * glow}px rgba(34,199,245,0.35))`} : undefined}>{m.draw}</g>
       <Cover id={id} shape={m.shape} shade={m.shade} box={m.box} p={p} settle={settle} logo={m.logo} folds={m.folds} seed={id.length + 3} px={px || m.px || null} />
     </g>
   );
@@ -372,7 +372,7 @@ export const HeroScene = ({mobile = false}) => {
 export const PROT_P = 4.6; // duração de cada móvel
 export const PROT_D = 2.8;  // passagem para o detalhe real
 export const PROT_T = PROT_P * 3 + PROT_D;
-export const ProtectScene = () => {
+export const ProtectScene = ({paper = false}) => {
   const f = useCurrentFrame();
   const {width: W, height: H, fps} = useVideoConfig();
   const t = f / fps;
@@ -385,13 +385,13 @@ export const ProtectScene = () => {
   const zx = W / 2 - 60, zy = FY - 150;
   const real = ip(t, T3 - 0.1, T3 + 0.5) * (1 - ip(t, PROT_T - 0.75, PROT_T - 0.05));
   return (
-    <AbsoluteFill style={{background: "#020A22"}}>
+    <AbsoluteFill style={{background: paper ? "#F4F1EA" : "#020A22"}}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
         <g transform={`translate(${zx} ${zy}) scale(${zs}) translate(${-zx} ${-zy})`}>
-        <Studio w={W} h={H} floorY={FY} />
-        <path d={`M ${W / 2 - 170} -40 L ${W / 2 + 170} -40 L ${W / 2 + 470} ${FY} L ${W / 2 - 470} ${FY} Z`} fill="url(#beam)" />
-        <ellipse cx={W / 2} cy={FY - 220} rx={560} ry={460} fill="url(#spot)" />
-        <ellipse cx={W / 2} cy={FY + 30} rx={460} ry={70} fill="#1F7BFF" opacity={0.22} style={{filter: "blur(30px)"}} />
+        <Studio w={W} h={H} floorY={FY} paper={paper} />
+        <path d={`M ${W / 2 - 170} -40 L ${W / 2 + 170} -40 L ${W / 2 + 470} ${FY} L ${W / 2 - 470} ${FY} Z`} fill="url(#beam)" opacity={paper ? 0 : 1} />
+        <ellipse cx={W / 2} cy={FY - 220} rx={560} ry={460} fill={paper ? "#FFFFFF" : "url(#spot)"} opacity={paper ? 0.55 : 1} style={paper ? {filter: "blur(60px)"} : undefined} />
+        <ellipse cx={W / 2} cy={FY + 30} rx={460} ry={70} fill={paper ? "#8C8270" : "#1F7BFF"} opacity={paper ? 0.18 : 0.22} style={{filter: "blur(30px)"}} />
         <g transform={`translate(${-((t / PROT_T) * 3 * 1100) % 1100} 0)`}>
           {[0, 1, 2].map((k) => <Route key={k} d={`M ${-560 + k * 1100} ${FY + 90} C ${-200 + k * 1100} ${FY + 140} ${200 + k * 1100} ${FY + 40} ${540 + k * 1100} ${FY + 90}`} p={1} w={0.7} dots={false} />)}
         </g>
@@ -406,7 +406,7 @@ export const ProtectScene = () => {
           const w = m.w * sc;
           return (
             <g key={k} transform={`translate(${xIn} 0)`} opacity={1 - Math.abs(xIn) / 1600}>
-              <Piece m={m} id={"p" + k} x={W / 2 - w / 2} floorY={FY + 10} scale={sc} p={p} settle={settle} />
+              <Piece m={m} id={"p" + k} x={W / 2 - w / 2} floorY={FY + 10} scale={sc} p={p} settle={settle} glow={paper ? 0 : 1} />
             </g>
           );
         })}

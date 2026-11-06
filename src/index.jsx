@@ -270,6 +270,7 @@ registerRoot(() => (
     <Composition id="Descarregar" component={Descarregar} durationInFrames={Math.round(DESC_DURATION * DESC_FPS)} fps={DESC_FPS} width={1080} height={1920} />
     <Composition id="HeroV2Desktop" component={HeroScene} durationInFrames={HERO_T * 30} fps={30} width={1920} height={1080} defaultProps={{mobile: false}} />
     <Composition id="HeroV2Mobile" component={HeroScene} durationInFrames={HERO_T * 30} fps={30} width={1080} height={1920} defaultProps={{mobile: true}} />
+    <Composition id="ProtectPaper" component={ProtectScene} durationInFrames={Math.round(PROT_T * 30)} fps={30} width={1080} height={1080} defaultProps={{paper: true}} />
     <Composition id="ProtectV2" component={ProtectScene} durationInFrames={Math.round(PROT_T * 30)} fps={30} width={1080} height={1080} />
     <Composition id="HeroReal" component={HeroReal} durationInFrames={Math.round(HERO3_T * 30)} fps={30} width={1080} height={1440} />
     <Composition id="SvHome" component={SvHome} durationInFrames={SV_T * 30} fps={30} width={1080} height={1440} />
