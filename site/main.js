@@ -199,14 +199,9 @@
   G.to(track, {
     x: function () { return -dist(); }, ease: "none",
     scrollTrigger: {
-      trigger: spin, pin: true, start: "top top", end: function () { return "+=" + dist(); }, scrub: 0.6, invalidateOnRefresh: true, anticipatePin: 1,
+      trigger: spin, pin: true, start: "top top", end: function () { return "+=" + dist(); }, scrub: 0.3, invalidateOnRefresh: true, anticipatePin: 1,
       onUpdate: function (s) {
         spin.style.setProperty("--rp", s.progress.toFixed(4));
-        panels.forEach(function (m) {
-          var r = m.getBoundingClientRect(), d = (r.left + r.width / 2 - innerWidth / 2) / innerWidth;
-          m.style.setProperty("--ps", (1.06 + Math.min(Math.abs(d), 1) * 0.18).toFixed(3));
-          m.style.transform = "rotate(" + clamp(d * 3, -2.5, 2.5).toFixed(2) + "deg)";
-        });
       }
     }
   });
@@ -224,7 +219,7 @@
   hb.forEach(function (b, i) { b.addEventListener("click", function () { jumpTo(howST, i === 3 ? 0.8 : (jT[i] + 0.4) / 8); }); });
   hb[0].classList.add("on");
   js.set(0);
-  ST.create({trigger: ".how", start: "top 250%", once: true, onEnter: function () { js.load(); }});
+  ST.create({trigger: ".how", start: "top 160%", once: true, onEnter: function () { js.load(); }});
 
   /* 4. Proteção: a capa veste geladeira, sofá e cama (0 a 13,2 s) */
   var cs = seq($("#protectSeq"), "media/seq/protecao/", 132), pi = $$(".prot-items li"), pT = [0, 4.25, 8.85], pk = -1;
@@ -238,16 +233,14 @@
   });
   pi.forEach(function (li, i) { $("button", li).addEventListener("click", function () { jumpTo(protST, [2.6, 7.2, 12.2][i] / 13.2); }); });
   cs.set(0);
-  ST.create({trigger: ".prot", start: "top 250%", once: true, onEnter: function () { cs.load(); }});
+  ST.create({trigger: ".prot", start: "top 160%", once: true, onEnter: function () { cs.load(); }});
 
   /* artes: deslizam com a rolagem e inclinam com a velocidade */
-  var row = $(".arts-row"), skew = G.quickTo(row, "skewX", {duration: 0.5, ease: "power3"});
+  var row = $(".arts-row");
   G.to(row, {
     x: function () { return -(row.scrollWidth - innerWidth * 0.92); }, ease: "none",
-    scrollTrigger: {trigger: ".arts", start: "top bottom", end: "bottom top", scrub: 0.4, invalidateOnRefresh: true,
-      onUpdate: function (s) { skew(clamp(s.getVelocity() / -260, -8, 8)); }}
+    scrollTrigger: {trigger: ".arts", start: "top bottom", end: "bottom top", scrub: 0.4, invalidateOnRefresh: true}
   });
-  ST.addEventListener("scrollEnd", function () { skew(0); });
 
   /* 5. Seu Daniel: a foto se abre até tomar a tela */
   var sf = $(".story-frame"), words = $$(".story .w");
