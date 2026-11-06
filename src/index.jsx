@@ -8,7 +8,7 @@ import {Equipe02, EQUIPE_DURATION, EQ_FPS} from "./diego/Equipe02";
 import {Descarregar, DESC_DURATION, DESC_FPS} from "./diego/Descarregar";
 import {HeroLoop, JourneyLoop, ProtectLoop, JOURNEY_T, PROTECT_T} from "./site/SiteLoops";
 import {HeroReal, HERO3_T} from "./site/HeroReal";
-import {HeroScene, ProtectScene, HERO_T, PROT_T, SvHome, SvWrap, SvTruck, SvStorage, SV_T} from "./site/Scenes";
+import {Stage, HeroScene, ProtectScene, HERO_T, PROT_T, SvHome, SvWrap, SvTruck, SvStorage, SV_T} from "./site/Scenes";
 import {CoinArrows, IconTech, IconAI, IconChart, Check, Building, Gear, Hammer, GavelBase, Man} from "./icons";
 
 const cl = (v) => Math.max(0, Math.min(1, v));
@@ -270,6 +270,10 @@ registerRoot(() => (
     <Composition id="Descarregar" component={Descarregar} durationInFrames={Math.round(DESC_DURATION * DESC_FPS)} fps={DESC_FPS} width={1080} height={1920} />
     <Composition id="HeroV2Desktop" component={HeroScene} durationInFrames={HERO_T * 30} fps={30} width={1920} height={1080} defaultProps={{mobile: false}} />
     <Composition id="HeroV2Mobile" component={HeroScene} durationInFrames={HERO_T * 30} fps={30} width={1080} height={1920} defaultProps={{mobile: true}} />
+    <Composition id="StageDesk" component={Stage} durationInFrames={120} fps={30} width={2400} height={1300} defaultProps={{item: "sofa", fill: 0.4}} />
+    <Composition id="StageMob" component={Stage} durationInFrames={120} fps={30} width={1200} height={1300} defaultProps={{item: "sofa", fill: 0.84}} />
+    <Composition id="StageFridge" component={Stage} durationInFrames={120} fps={30} width={1200} height={1200} defaultProps={{item: "fridge"}} />
+    <Composition id="StageBed" component={Stage} durationInFrames={120} fps={30} width={1200} height={1200} defaultProps={{item: "bed"}} />
     <Composition id="ProtectPaper" component={ProtectScene} durationInFrames={Math.round(PROT_T * 30)} fps={30} width={1080} height={1080} defaultProps={{paper: true}} />
     <Composition id="ProtectV2" component={ProtectScene} durationInFrames={Math.round(PROT_T * 30)} fps={30} width={1080} height={1080} />
     <Composition id="HeroReal" component={HeroReal} durationInFrames={Math.round(HERO3_T * 30)} fps={30} width={1080} height={1440} />

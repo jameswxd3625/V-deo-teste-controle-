@@ -26,11 +26,12 @@
     else { sheet.classList.remove("open"); setTimeout(function () { if (mb.getAttribute("aria-expanded") === "false") sheet.hidden = true; }, 320); }
   }
   mb.addEventListener("click", function () { setMenu(mb.getAttribute("aria-expanded") !== "true"); });
+  var sc = $(".sheet-close"); if (sc) sc.addEventListener("click", function () { setMenu(false); mb.focus(); });
   $$("a", sheet).forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
   addEventListener("keydown", function (e) { if (e.key === "Escape" && mb.getAttribute("aria-expanded") === "true") { setMenu(false); mb.focus(); } });
 
   /* revelação suave (só o que está abaixo da primeira tela) */
-  var rvEls = $$(".sec-head, .steps li, .prot-copy, .stage, .real figure, .story-copy, .story-media, .svc li, .faq details, .quote-copy, .form");
+  var rvEls = $$(".b-head, .frame, .panel, .tile, .steps li, .story-media, .story-copy, .card, .faq details, .vhead, .q-head, .form");
   rvEls.forEach(function (el, i) {
     if (el.getBoundingClientRect().top < innerHeight) return;
     el.classList.add("rv");
@@ -41,10 +42,11 @@
   $$(".rv").forEach(function (el) { rv.observe(el); });
 
   /* ============ o percurso que atravessa a página ============ */
-  var J = $("#journey"), jPaths = $$("path", J), jTruck = $(".j-truck", J), jMain = $(".j-b", J);
+  var J = $("#journey"), jPaths = J ? $$("path", J) : [], jTruck = J && $(".j-truck", J), jMain = J && $(".j-b", J);
   var jLen = 0, jTop = 0, jBottom = 0;
   function absPos(el, fx, fy) { var r = el.getBoundingClientRect(); return [r.left + scrollX + r.width * fx, r.top + scrollY + r.height * fy]; }
   function buildJourney() {
+    if (!J || !$(".hero-art")) return;
     var W = doc.clientWidth, mob = W < 980;
     var hero = $(".hero-art"), dest = $("#dest");
     var start = mob ? [13, absPos(hero, 0.5, 0.9)[1]] : absPos(hero, 0.92, 0.9); // sai da ilustração
@@ -74,7 +76,7 @@
     drawJourney();
   }
   function drawJourney() {
-    if (!jLen) return;
+    if (!jLen || !J) return;
     var target = scrollY + innerHeight * 0.62;
     var p = reduce ? 1 : Math.max(0, Math.min(1, (target - jTop) / (jBottom - jTop)));
     // progresso por distância vertical aproximada ao longo da curva
@@ -121,7 +123,7 @@
   if (reduce) setStep(3);
 
   /* ============ capas: Geladeira · Sofá · Cama ============ */
-  var cv = $("#capas"), pBtns = $$("#pieces button"), pNote = $("#pieceNote");
+  var cv = $("#capas"), pBtns = $$("#pieces button[role=tab]"), pNote = $("#pieceNote");
   var pTimes = pBtns.map(function (b) { return parseFloat(b.dataset.at); });
   var NOTES = ["Geladeira: o tecido encontra primeiro as quinas e desce pelas laterais.", "Sofá: a capa se acomoda nos braços e depois no assento.", "Cama: a capa acompanha a espessura e os cantos do colchão."];
   var pCur = -1;

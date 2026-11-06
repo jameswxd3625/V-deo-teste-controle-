@@ -549,3 +549,32 @@ export const SvStorage = () => {
     </AbsoluteFill>
   );
 };
+
+// =====================================================================
+// 4. PALCO (estilo exposição): uma peça vestida com a capa, sobre preto absoluto
+// =====================================================================
+export const Stage = ({item = "sofa", reveal = false, fill = 0.62}) => {
+  const f = useCurrentFrame(); const {width: W, height: H, fps} = useVideoConfig(); const t = f / fps;
+  const m = item === "fridge" ? FRIDGE : item === "bed" ? BED : SOFA;
+  const sc = Math.min((W * fill) / m.w, (H * 0.56) / m.h);
+  const FY = H * 0.74;
+  const p = reveal ? ip(t, 0.6, 2.4, 0, 1, EH) : 1;
+  const settle = reveal ? ip(t, 2.4, 3.0, 0, 1, (x) => x) : 1;
+  return (
+    <AbsoluteFill style={{background: "#000"}}>
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+        <defs>
+          <radialGradient id="stKey" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stopColor="#2a2a2e" stopOpacity="0.9" /><stop offset="1" stopColor="#000" stopOpacity="0" /></radialGradient>
+          <radialGradient id="stFloor" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stopColor="#1d1d1f" /><stop offset="1" stopColor="#000" stopOpacity="0" /></radialGradient>
+          <linearGradient id="stRim" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#9ec5ff" stopOpacity="0" /><stop offset="0.5" stopColor="#9ec5ff" stopOpacity="0.5" /><stop offset="1" stopColor="#9ec5ff" stopOpacity="0" /></linearGradient>
+        </defs>
+        <ellipse cx={W / 2} cy={FY - m.h * sc * 0.45} rx={W * 0.42} ry={H * 0.42} fill="url(#stKey)" />
+        <ellipse cx={W / 2} cy={FY + 6} rx={m.w * sc * 0.9} ry={40} fill="url(#stFloor)" />
+        <g style={{filter: "drop-shadow(0 -2px 18px rgba(120,170,255,0.18))"}}>
+          <Piece m={m} id={"st" + item} x={W / 2 - (m.w * sc) / 2} floorY={FY} scale={sc} p={p} settle={settle} glow={0} />
+        </g>
+        <rect x={W / 2 - m.w * sc * 0.5} y={FY - m.h * sc - 2} width={m.w * sc} height={3} fill="url(#stRim)" opacity={0.6} />
+      </svg>
+    </AbsoluteFill>
+  );
+};
