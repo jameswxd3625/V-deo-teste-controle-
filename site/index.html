@@ -38,14 +38,14 @@
 <header class="hd">
   <a class="brand" href="#topo" aria-label="Diego Mudanças, início"><img src="assets/leao-xs.webp" alt="" width="40" height="40"><img src="assets/letreiro.png" alt="Diego Mudanças" width="66" height="36"></a>
   <nav class="nav" aria-label="Principal">
-    <a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#experiencia">Experiência</a><a href="#videos">Vídeos</a><a href="#duvidas">Dúvidas</a>
+    <a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#experiencia">Experiência</a><a href="#galeria">Galeria</a><a href="#videos">Vídeos</a><a href="#duvidas">Dúvidas</a>
   </nav>
   <a class="btn btn-sm hd-cta" href="#orcamento"><span class="lg">Pedir orçamento</span><span class="sm">Orçamento</span></a>
   <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menu"><span></span><span></span></button>
 </header>
 <div class="sheet" id="menu" hidden>
   <nav aria-label="Menu">
-    <a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#experiencia">Experiência</a><a href="#videos">Vídeos</a><a href="#duvidas">Dúvidas</a><a href="#orcamento">Pedir orçamento</a>
+    <a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#experiencia">Experiência</a><a href="#galeria">Galeria</a><a href="#videos">Vídeos</a><a href="#duvidas">Dúvidas</a><a href="#orcamento">Pedir orçamento</a>
   </nav>
 </div>
 
@@ -106,29 +106,17 @@
 </section>
 
 <section class="sec dark" id="como-funciona" aria-labelledby="como-t">
-  <div class="wrap how">
-    <div class="scene" id="routeScene">
-      <div class="scene-media">
-        <video id="routeVideo" muted playsinline preload="none" poster="media/anim/rota3d-inicio.webp" data-src="media/anim/rota3d.mp4" aria-label="Animação ilustrativa: o caminhão da Diego sai do endereço de origem e percorre o bairro até o destino"></video>
-        <button class="scene-replay" type="button" hidden><svg class="ic"><use href="#i-redo"/></svg>Ver percurso novamente</button>
-      </div>
-      <div class="ctrl">
-        <button class="ctrl-btn" type="button" id="routeBtn" aria-label="Pausar percurso"><svg class="ic"><use href="#i-pause"/></svg></button>
-        <span class="ctrl-l" id="routeLbl">Demonstração ilustrativa do percurso</span>
-      </div>
-    </div>
-    <div>
-      <header class="sec-head">
-        <p class="eyebrow">Como funciona</p>
-        <h2 id="como-t">Do seu endereço à casa nova</h2>
-      </header>
-      <ol class="steps" id="routeSteps">
-        <li data-t="0"><button type="button"><span><b>Você conta</b> de onde sai e para onde vai, pelo formulário ou pelo WhatsApp.</span></button></li>
-        <li data-t="2.0"><button type="button"><span><b>A equipe embala, protege e carrega</b> o caminhão no endereço de saída.</span></button></li>
-        <li data-t="3.6"><button type="button"><span><b>O caminhão da Diego segue o trajeto</b> até o novo endereço.</span></button></li>
-        <li data-t="13.6"><button type="button"><span><b>Na chegada, a equipe descarrega</b> e coloca cada coisa no cômodo que você indicar.</span></button></li>
-      </ol>
-    </div>
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="eyebrow">Como funciona</p>
+      <h2 id="como-t">Do primeiro contato à casa nova</h2>
+    </header>
+    <ol class="etapas">
+      <li><figure><img src="media/etapas/1-conversa.webp" alt="Diego conversando com um cliente na entrada do prédio" width="640" height="800" loading="lazy"></figure><div><span class="n">01</span><h3>Você conta</h3><p>De onde sai, para onde vai e o que precisa levar. Pelo formulário ou pelo WhatsApp.</p></div></li>
+      <li><figure><img src="media/etapas/2-embalagem.webp" alt="Integrante da equipe passando plástico stretch sobre um guarda-roupa coberto com a capa azul" width="640" height="800" loading="lazy"></figure><div><span class="n">02</span><h3>A equipe embala e protege</h3><p>Frágeis um a um, móveis com capa acolchoada e plástico stretch.</p></div></li>
+      <li><figure><img src="media/etapas/3-transporte.webp" alt="Vista do alto de um caminhão da Diego Mudanças estacionado em uma rua de Belo Horizonte" width="640" height="800" loading="lazy"></figure><div><span class="n">03</span><h3>O caminhão da Diego leva</h3><p>Em caminhão próprio, dentro de BH, para outras cidades e estados.</p></div></li>
+      <li><figure><img src="media/etapas/4-chegada.webp" alt="Lateral do baú de um caminhão da Diego, com o leão azul e o letreiro" width="640" height="800" loading="lazy"></figure><div><span class="n">04</span><h3>Na chegada, tudo no lugar</h3><p>A equipe descarrega e coloca cada coisa no cômodo que você indicar.</p></div></li>
+    </ol>
   </div>
 </section>
 
@@ -187,6 +175,28 @@
     <div class="exp-cta">
       <a class="btn" data-wa-msg="Olá! Vou fazer uma mudança e queria contar o que me preocupa:" href="#orcamento"><svg class="ic"><use href="#i-wa"/></svg>Conte o que preocupa você na sua mudança</a>
     </div>
+  </div>
+</section>
+
+<section class="sec light" id="galeria" aria-labelledby="gal-t">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="eyebrow">Galeria</p>
+      <h2 id="gal-t">Fotos e artes da Diego</h2>
+      <p class="lead">A frota, as capas e os cuidados que aparecem no nosso Instagram. Toque para ampliar.</p>
+    </header>
+    <div class="gal">
+      <button class="gi" type="button" data-full="media/galeria/caminhao.webp" aria-label="Ampliar: Caminhão da Diego Mudanças estacionado na rua"><img src="media/galeria/p-caminhao.webp" alt="Caminhão da Diego Mudanças estacionado na rua" loading="lazy"></button>
+      <button class="gi" type="button" data-full="media/galeria/capas.webp" aria-label="Ampliar: Móveis cobertos com as capas azuis acolchoadas da Diego"><img src="media/galeria/p-capas.webp" alt="Móveis cobertos com as capas azuis acolchoadas da Diego" loading="lazy"></button>
+      <button class="gi" type="button" data-full="media/galeria/novembro.webp" aria-label="Ampliar: Arte de boas-vindas a novembro com dois caminhões da frota"><img src="media/galeria/p-novembro.webp" alt="Arte de boas-vindas a novembro com dois caminhões da frota" loading="lazy"></button>
+      <button class="gi" type="button" data-full="media/galeria/arte-sem-dor-de-cabeca.webp" aria-label="Ampliar: Arte: Mudança sem dor de cabeça, com móveis protegidos"><img src="media/galeria/p-arte-sem-dor-de-cabeca.webp" alt="Arte: Mudança sem dor de cabeça, com móveis protegidos" loading="lazy"></button>
+      <button class="gi" type="button" data-full="media/galeria/arte-antes-depois.webp" aria-label="Ampliar: Arte: antes e depois de um guarda-roupa embalado"><img src="media/galeria/p-arte-antes-depois.webp" alt="Arte: antes e depois de um guarda-roupa embalado" loading="lazy"></button>
+      <button class="gi" type="button" data-full="media/galeria/arte-boas-maos.webp" aria-label="Ampliar: Arte: Seus móveis em boas mãos"><img src="media/galeria/p-arte-boas-maos.webp" alt="Arte: Seus móveis em boas mãos" loading="lazy"></button>
+      <button class="gi" type="button" data-full="media/galeria/arte-cada-detalhe.webp" aria-label="Ampliar: Arte: Proteção em cada detalhe, com equipe embalando um espelho"><img src="media/galeria/p-arte-cada-detalhe.webp" alt="Arte: Proteção em cada detalhe, com equipe embalando um espelho" loading="lazy"></button>
+      <button class="gi" type="button" data-full="media/galeria/arte-protecao-adequada.webp" aria-label="Ampliar: Arte: Cada móvel recebe a proteção adequada"><img src="media/galeria/p-arte-protecao-adequada.webp" alt="Arte: Cada móvel recebe a proteção adequada" loading="lazy"></button>
+      <button class="gi" type="button" data-full="media/galeria/arte-compromisso.webp" aria-label="Ampliar: Arte: Sua mudança, nosso compromisso"><img src="media/galeria/p-arte-compromisso.webp" alt="Arte: Sua mudança, nosso compromisso" loading="lazy"></button>
+    </div>
+    <p class="gal-more"><a data-ig href="#" target="_blank" rel="noopener"><svg class="ic"><use href="#i-ig"/></svg>Ver mais no Instagram</a></p>
   </div>
 </section>
 
@@ -271,6 +281,7 @@
 <a class="wa-fab" data-wa-msg="Olá! Vim pelo site da Diego Mudanças e gostaria de um orçamento." href="#orcamento" aria-label="Falar com a Diego no WhatsApp"><svg><use href="#i-wa"/></svg></a>
 
 <dialog class="player" id="player" aria-label="Vídeo"><button class="player-x" type="button" aria-label="Fechar vídeo"><svg class="ic"><use href="#i-close"/></svg></button><video controls playsinline></video></dialog>
+<dialog class="imgbox" id="imgbox" aria-label="Imagem ampliada"><button class="player-x" type="button" aria-label="Fechar imagem"><svg class="ic"><use href="#i-close"/></svg></button><img alt=""></dialog>
 
 <script src="config.js"></script>
 <script src="main.js" defer></script>

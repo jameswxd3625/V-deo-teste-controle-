@@ -45,46 +45,6 @@
   var ro = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); ro.unobserve(e.target); } }); }, {rootMargin: "0px 0px -8% 0px"});
   rvs.forEach(function (el) { ro.observe(el); });
 
-  /* ---------- percurso: começa sozinho quando a cena está visível; pausa fora da tela; não reinicia ---------- */
-  var rv = $("#routeVideo"), rBtn = $("#routeBtn"), rLbl = $("#routeLbl"), rReplay = $(".scene-replay", $("#routeScene"));
-  var steps = $$("#routeSteps li"), T = steps.map(function (li) { return parseFloat(li.dataset.t); });
-  var rUserPaused = false, rVisible = false, rLoaded = false;
-  function rLoad() { if (!rLoaded) { rLoaded = true; rv.src = rv.dataset.src; rv.preload = "auto"; } }
-  function stepAt(t) { var k = 0; T.forEach(function (x, i) { if (t >= x) k = i; }); return k; }
-  function markStep(k) { steps.forEach(function (li, i) { li.classList.toggle("on", i === k); }); }
-  function rPlay() { rLoad(); rReplay.hidden = true; var p = rv.play(); if (p && p.catch) p.catch(function () {}); }
-  function rSync() {
-    var playing = !rv.paused && !rv.ended;
-    rBtn.setAttribute("aria-label", playing ? "Pausar percurso" : rv.ended ? "Ver percurso novamente" : "Reproduzir percurso");
-    $("use", rBtn).setAttribute("href", playing ? "#i-pause" : rv.ended ? "#i-redo" : "#i-play");
-    rLbl.textContent = playing ? "Demonstração ilustrativa do percurso" : rv.ended ? "Percurso concluído" : (rv.currentTime > 0 ? "Percurso pausado" : "Demonstração ilustrativa do percurso");
-  }
-  ["play", "pause", "ended"].forEach(function (e) { rv.addEventListener(e, rSync); });
-  rv.addEventListener("ended", function () { rReplay.hidden = false; markStep(3); });
-  rv.addEventListener("timeupdate", function () { if (!rv.ended) markStep(stepAt(rv.currentTime)); });
-  function rReplayGo() { rUserPaused = false; rv.currentTime = 0; markStep(0); rPlay(); }
-  rReplay.addEventListener("click", rReplayGo);
-  rBtn.addEventListener("click", function () {
-    if (rv.ended) return rReplayGo();
-    if (rv.paused) { rUserPaused = false; rPlay(); } else { rUserPaused = true; rv.pause(); }
-  });
-  if (reduced) { rv.poster = "media/anim/rota3d-fim.webp"; markStep(-1); }
-  else markStep(0);
-  rSync();
-  new IntersectionObserver(function (es) { if (es[0].isIntersecting) rLoad(); }, {rootMargin: "600px 0px"}).observe(rv);
-  new IntersectionObserver(function (es) {
-    var r = es[0].intersectionRatio;
-    if (r >= 0.6) { rVisible = true; if (!reduced && !rUserPaused && !rv.ended && rv.paused) rPlay(); }
-    else if (r < 0.25) { rVisible = false; if (!rv.paused) rv.pause(); }
-  }, {threshold: [0, 0.25, 0.6, 1]}).observe(rv);
-  steps.forEach(function (li, i) {
-    $("button", li).addEventListener("click", function () {
-      rLoad(); markStep(i); rReplay.hidden = true;
-      var go = function () { rv.currentTime = T[i] + 0.05; if (!reduced) { rUserPaused = false; rPlay(); } };
-      if (rv.readyState >= 1) go(); else rv.addEventListener("loadedmetadata", go, {once: true});
-    });
-  });
-
   /* ---------- proteção: começa pelo toque do visitante ---------- */
   var P = {
     geladeira: {my: "minha geladeira", your: "sua geladeira", done: "Geladeira protegida"},
@@ -144,7 +104,7 @@
     es.forEach(function (e) { sceneVis[e.target.id] = e.isIntersecting; });
     fab.classList.toggle("hide-for-scene", Object.keys(sceneVis).some(function (k) { return sceneVis[k]; }));
   }, {threshold: 0.15});
-  so2.observe($("#routeScene")); so2.observe($("#protScene"));
+  so2.observe($("#protScene"));
 
   /* player em tela cheia */
   var player = $("#player"), fv = $("video", player), lastFocus = null;
@@ -159,11 +119,19 @@
   player.addEventListener("close", function () { fv.pause(); if (lastFocus) lastFocus.focus(); });
   $$("[data-video]").forEach(function (b) { b.addEventListener("click", function () { openVideo(b.dataset.video); }); });
 
+  /* galeria: imagem ampliada */
+  var ib = $("#imgbox"), ibImg = $("img", ib);
+  $$(".gi").forEach(function (b) { b.addEventListener("click", function () { ibImg.src = b.dataset.full; ibImg.alt = $("img", b).alt; lastFocus = b; if (ib.showModal) ib.showModal(); else ib.setAttribute("open", ""); }); });
+  $(".player-x", ib).addEventListener("click", function () { ib.close(); });
+  ib.addEventListener("click", function (e) { if (e.target === ib) ib.close(); });
+  ib.addEventListener("close", function () { if (lastFocus) lastFocus.focus(); });
+
   /* vídeos: trilho com setas */
   var V = [
     ["media/ig/video-09", "Mais uma mudança entregue", "Palavra de cliente"],
     ["media/ig/video-02", "Como protegemos a geladeira", "Capa e plástico stretch"],
     ["media/ig/video-08", "Guarda-roupa embalado", "Capa e plástico stretch"],
+    ["media/ig/video-15", "Capa e stretch, passo a passo", "Proteção do guarda-roupa"],
     ["media/ig/video-01", "Guarda-móveis", "Proteção em camadas"],
     ["media/equipe-02-paqueta", "Equipe 02 em execução", "Bairro Paquetá, BH"],
     ["media/hora-de-descarregar", "Hora de descarregar", "Caminhão da frota"],
