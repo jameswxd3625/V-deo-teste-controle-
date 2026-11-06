@@ -79,9 +79,6 @@
 
   /* ---------- animações (vídeos Remotion em loop) ---------- */
   var loops = $$("video.loop");
-  var hero = $("#heroVideo");
-  hero.src = matchMedia("(max-width: 640px)").matches ? hero.dataset.srcMob : hero.dataset.srcDesk;
-  hero.addEventListener("playing", function () { hero.classList.add("ready"); });
   loops.forEach(function (v) { if (v.dataset.src) v.src = v.dataset.src; v.dataset.user = ""; });
   function tryPlay(v) { if (reduce.matches || v.dataset.user === "paused" || (v.classList.contains("once") && v.ended)) return; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
   var lo = new IntersectionObserver(function (es) {
@@ -128,17 +125,36 @@
       if (jv.dataset.user !== "paused") tryPlay(jv);
     });
   });
-  var pItems = $$("#protectSteps li");
-  syncList($("#protectVideo"), pItems.concat([pItems[0]]), [0, 4.25, 8.85, 13.45]);
-  // linha de percurso dos serviços: desenha conforme a rolagem
-  var svc = $(".services"), svr = $(".svc-route");
-  function routeDraw() {
-    var r = svc.getBoundingClientRect(), vh = innerHeight;
-    var p = Math.max(0, Math.min(1, (vh * 0.85 - r.top) / (r.height + vh * 0.2)));
-    svr.style.setProperty("--rp", reduce.matches ? 1 : p.toFixed(3));
+  /* capas: Geladeira · Sofá · Cama */
+  var pv = $("#protectVideo"), pBtns = $$("#protectSteps button"), pNote = $("#pieceNote");
+  var pTimes = pBtns.map(function (b) { return parseFloat(b.dataset.at); });
+  var NOTES = ["Geladeira: o tecido encontra primeiro as quinas e desce pelas laterais.", "Sofá: a capa se acomoda nos braços e depois no assento.", "Cama: a capa acompanha a espessura e os cantos do colchão."];
+  var pCur = -1;
+  function pSet(k) {
+    if (k === pCur) return; pCur = k;
+    pBtns.forEach(function (b, i) { b.setAttribute("aria-selected", i === k); });
+    pNote.textContent = NOTES[k];
   }
-  addEventListener("scroll", function () { requestAnimationFrame(routeDraw); }, {passive: true});
-  routeDraw();
+  function pTick() { var t = pv.currentTime, k = 0; for (var i = 0; i < pTimes.length; i++) if (t >= pTimes[i] - 0.4) k = i; pSet(k); if (!pv.paused) requestAnimationFrame(pTick); }
+  pv.addEventListener("play", function () { requestAnimationFrame(pTick); });
+  pv.addEventListener("seeked", pTick);
+  pBtns.forEach(function (b, i) {
+    b.addEventListener("click", function () { pv.currentTime = pTimes[i] + 0.05; pSet(i); if (pv.dataset.user !== "paused") tryPlay(pv); });
+  });
+  pSet(0);
+
+  /* história real: ouvir com som (escolha do visitante) */
+  var sm = $("#storyMedia"), sPlay = $(".story-play", sm);
+  function playStory() {
+    $$("video").forEach(function (o) { if (!o.muted) o.pause(); });
+    var v = $("video", sm);
+    if (!v) { v = document.createElement("video"); v.src = sPlay.dataset.src; v.controls = true; v.playsInline = true; v.poster = $("img", sm).src; sm.appendChild(v); }
+    sm.classList.add("on"); v.muted = false;
+    var pr = v.play(); if (pr && pr.catch) pr.catch(function () {});
+    sm.scrollIntoView({block: "nearest", behavior: reduce.matches ? "auto" : "smooth"});
+  }
+  sPlay.addEventListener("click", playStory);
+  $("#storyBtn").addEventListener("click", playStory);
 
   /* ---------- trilho de vídeos reais ---------- */
   var V = [
@@ -187,6 +203,20 @@
 
   /* ---------- orçamento: monta a mensagem e abre o WhatsApp ---------- */
   var form = $("#form");
+  var gmOnly = $(".gm-only", form), lO = $("[data-l-origem]", form), lD = $("[data-l-destino]", form), dIn = form.elements.destino;
+  function tipoChanged() {
+    var gm = form.elements.tipo.value === "guarda-móveis";
+    gmOnly.hidden = !gm;
+    lO.textContent = gm ? "Onde os móveis estão" : "Saindo de";
+    lD.innerHTML = gm ? 'Endereço final <small>(se já souber)</small>' : "Indo para";
+    dIn.required = !gm;
+    dIn.placeholder = gm ? "Ainda não sei / bairro e cidade" : "Bairro e cidade";
+    if (gm) dIn.closest(".field").classList.remove("bad");
+  }
+  $$("input[name=tipo]", form).forEach(function (r) { r.addEventListener("change", tipoChanged); });
+  $$("[data-tipo]").forEach(function (a) {
+    a.addEventListener("click", function () { var r = $('input[name=tipo][value="' + a.dataset.tipo + '"]', form); if (r) { r.checked = true; tipoChanged(); } });
+  });
   function check(inp) {
     var ok = inp.value.trim().length > 1;
     inp.closest(".field").classList.toggle("bad", !ok);
@@ -202,10 +232,14 @@
     var bad = $$("[required]", form).filter(function (i) { return !check(i); });
     if (bad.length) { bad[0].focus(); return; }
     var f = new FormData(form);
+    var gm = f.get("tipo") === "guarda-móveis";
     var t = "Olá! Meu nome é " + f.get("nome").trim() + ".\n" +
-      "Gostaria de um orçamento (" + f.get("tipo") + ").\n" +
-      "Saindo de: " + f.get("origem").trim() + "\n" +
-      "Indo para: " + f.get("destino").trim() +
+      "Gostaria de um orçamento: " + (gm ? "guarda-móveis" : "mudança " + f.get("tipo")) + ".\n" +
+      (gm ? "Os móveis estão em: " + f.get("origem").trim() + "\n" +
+            "Endereço final: " + (f.get("destino").trim() || "ainda não definido") +
+            (f.get("tempo").trim() ? "\nPor quanto tempo: " + f.get("tempo").trim() : "")
+          : "Saindo de: " + f.get("origem").trim() + "\n" +
+            "Indo para: " + f.get("destino").trim()) +
       (f.get("itens").trim() ? "\nPreciso levar: " + f.get("itens").trim() : "") +
       (f.get("data").trim() ? "\nData aproximada: " + f.get("data").trim() : "") +
       "\n\n(Mensagem enviada pelo site)";

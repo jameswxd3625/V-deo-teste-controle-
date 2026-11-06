@@ -2,7 +2,7 @@
 // Sistema único: estúdio azul, móveis desenhados com volume, capa de tecido da Diego
 // (sombreado de estofado, costura, dobras, marca acompanhando a superfície) e a linha de percurso.
 import React from "react";
-import {AbsoluteFill, staticFile, useCurrentFrame, useVideoConfig, interpolate, Easing} from "remotion";
+import {AbsoluteFill, OffthreadVideo, staticFile, useCurrentFrame, useVideoConfig, interpolate, Easing} from "remotion";
 
 const TAU = Math.PI * 2;
 const cl = (v) => Math.max(0, Math.min(1, v));
@@ -33,11 +33,12 @@ export const Studio = ({w, h, floorY, light = 0.5, warm = 0}) => (
 // ---------------- capa de tecido ----------------
 // Desenha a capa azul sobre a silhueta `shape` (JSX). p = quanto já desceu (0..1).
 let _uid = 0;
-export const Cover = ({id, shape, box, p, logo, folds = [], shade = null, dil = 9, seed = 3, settle = 0, color = "#1D4FD8"}) => {
+export const Cover = ({id, shape, box, p, logo, folds = [], shade = null, dil = 9, seed = 3, settle = 0, color = "#2C6FD1", px = null}) => {
   const [bx, by, bw, bh] = box;
   const fx = bx - 80, fy = by - 120, fw = bw + 160, fh = bh + 220;
   const edge = by - 40 + p * (bh + 110); // borda inferior da capa descendo
-  const wave = (x) => edge + Math.sin(x / 38 + p * 9) * 10 * (1 - p * 0.6) + Math.sin(x / 13 + p * 4) * 3;
+  const pp = (x) => (px ? px(x, p) : p);
+  const wave = (x) => by - 40 + pp(x) * (bh + 110) + Math.sin(x / 38 + p * 9) * 10 * (1 - p * 0.6) + Math.sin(x / 13 + p * 4) * 3;
   let d = `M ${fx} ${fy} L ${fx + fw} ${fy} L ${fx + fw} ${wave(fx + fw)}`;
   for (let x = fx + fw; x >= fx; x -= 12) d += ` L ${x} ${wave(x)}`;
   d += " Z";
@@ -70,10 +71,11 @@ export const Cover = ({id, shape, box, p, logo, folds = [], shade = null, dil = 
           <feTurbulence type="fractalNoise" baseFrequency="0.02 0.05" numOctaves="1" seed={seed + 4} result="n" />
           <feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G" />
         </filter>
-        <pattern id={`qt${id}`} width="34" height="34" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-          <path d="M0 0 H34 M0 0 V34" stroke="#04134A" strokeWidth="3" opacity="0.5" />
-          <path d="M2 2 H34 M2 2 V34" stroke="#A9CBFF" strokeWidth="1.2" opacity="0.32" strokeDasharray="4 3" />
-          <rect x="5" y="5" width="24" height="24" rx="10" fill="#6E9BFF" opacity="0.10" />
+        <pattern id={`qt${id}`} width="76" height="400" patternUnits="userSpaceOnUse" x={bx + 8}>
+          <rect x="0" y="0" width="76" height="400" fill="#000" opacity="0" />
+          <path d="M1 0 V400" stroke="#0A2A72" strokeWidth="3.4" opacity="0.55" />
+          <path d="M4.5 0 V400" stroke="#BFE0FF" strokeWidth="1.3" opacity="0.4" strokeDasharray="5 4" />
+          <rect x="6" y="0" width="30" height="400" fill="#fff" opacity="0.05" />
         </pattern>
         <mask id={`rv${id}`} maskUnits="userSpaceOnUse" x={fx} y={fy} width={fw} height={fh}><path d={d} fill="#fff" /></mask>
         <mask id={`ms${id}`} maskUnits="userSpaceOnUse" x={fx} y={fy} width={fw} height={fh}><g filter={`url(#cm${id})`}>{shape}</g></mask>
@@ -123,7 +125,9 @@ export const FRIDGE = (() => {
   );
   const shape = <path d="M0 52 Q0 46 6 44 L70 16 L300 16 L300 548 L232 578 L8 578 Q0 578 0 570 Z" fill="#000" />;
   const shade = <g><path d="M232 46 L300 18 L300 548 L232 576 Z" fill="#020A22" opacity={0.42} /><path d="M0 46 L68 18 L300 18 L232 46 Z" fill="#CFE4FF" opacity={0.22} /><rect x={0} y={208} width={232} height={14} fill="#020A22" opacity={0.18} /></g>;
-  return {draw, shape, shade, box: [0, 16, 300, 562], w: 300, h: 590, logo: [26, 280, 180], folds: ["M30 560 Q60 520 52 470", "M170 572 Q190 530 214 520", "M250 540 Q262 500 286 480"]};
+  // tecido encontra primeiro as quinas superiores e desce pelas laterais
+  const px = (x, p) => cl(p * 1.12 - (1 - Math.min(1, Math.abs(x - 150) / 150)) * 0.12);
+  return {draw, shape, shade, px, box: [0, 16, 300, 562], w: 300, h: 590, logo: [26, 280, 180], folds: ["M30 560 Q60 520 52 470", "M170 572 Q190 530 214 520", "M250 540 Q262 500 286 480"]};
 })();
 
 export const SOFA = (() => {
@@ -152,7 +156,9 @@ export const SOFA = (() => {
     <g fill="#000"><rect x={58} y={20} width={484} height={170} rx={36} /><rect x={40} y={150} width={520} height={116} rx={22} /><rect x={0} y={112} width={86} height={160} rx={34} /><rect x={514} y={112} width={86} height={160} rx={34} /></g>
   );
   const shade = <g fill="#020A22"><rect x={70} y={150} width={460} height={22} rx={10} opacity={0.4} /><rect x={86} y={150} width={14} height={110} opacity={0.32} /><rect x={500} y={150} width={14} height={110} opacity={0.32} /><rect x={40} y={226} width={520} height={40} opacity={0.28} /><rect x={296} y={36} width={8} height={130} opacity={0.22} /><rect x={296} y={170} width={8} height={50} opacity={0.22} /></g>;
-  return {draw, shape, shade, box: [0, 20, 600, 256], w: 600, h: 282, logo: [205, 58, 190], folds: ["M70 250 Q90 200 76 150", "M530 250 Q512 205 524 150", "M300 230 Q296 205 304 182", "M150 262 Q170 230 160 214", "M440 262 Q426 232 440 214"]};
+  // acomoda-se primeiro nos braços, depois no encosto e no assento
+  const px = (x, p) => (x < 90 || x > 510 ? cl(p / 0.5) : cl((p - 0.38) / 0.62));
+  return {draw, shape, shade, px, box: [0, 20, 600, 256], w: 600, h: 282, logo: [205, 58, 190], folds: ["M70 250 Q90 200 76 150", "M530 250 Q512 205 524 150", "M300 230 Q296 205 304 182", "M150 262 Q170 230 160 214", "M440 262 Q426 232 440 214"]};
 })();
 
 export const BED = (() => {
@@ -177,7 +183,9 @@ export const BED = (() => {
   );
   const shape = <g fill="#000"><path d="M40 140 L600 140 L640 236 L640 298 L0 298 L0 236 Z" /><path d="M118 150 Q114 132 140 128 L290 128 Q314 130 312 150 L316 182 L110 180 Z M338 150 Q334 132 360 128 L510 128 Q534 130 532 150 L536 182 L330 180 Z" /></g>;
   const shade = <g><path d="M0 236 L640 236 L640 298 L0 298 Z" fill="#020A22" opacity={0.36} /><path d="M40 120 L600 120 L640 236 L0 236 Z" fill="#CFE4FF" opacity={0.12} /><path d="M118 150 Q114 132 140 128 L290 128 Q314 130 312 150 L316 182 Q316 196 296 198 L130 198 Q108 196 110 180 Z M338 150 Q334 132 360 128 L510 128 Q534 130 532 150 L536 182 Q536 196 516 198 L350 198 Q328 196 330 180 Z" fill="#CFE4FF" opacity={0.18} /></g>;
-  return {draw, shape, shade, box: [0, 120, 640, 178], w: 640, h: 336, logo: [226, 210, 190, "translate(320 236) scale(1 0.62) translate(-320 -236)"], folds: ["M30 296 Q60 262 46 240", "M612 296 Q584 262 600 240", "M200 296 Q214 270 206 250", "M450 296 Q436 268 446 250"]};
+  // cobre o tampo e desce pela espessura, os cantos por último
+  const px = (x, p) => cl(p * 1.18 - Math.pow(Math.abs(x - 320) / 320, 3) * 0.18);
+  return {draw, shape, shade, px, box: [0, 120, 640, 178], w: 640, h: 336, logo: [226, 210, 190, "translate(320 236) scale(1 0.62) translate(-320 -236)"], folds: ["M30 296 Q60 262 46 240", "M612 296 Q584 262 600 240", "M200 296 Q214 270 206 250", "M450 296 Q436 268 446 250"]};
 })();
 
 export const ARMCHAIR = (() => {
@@ -197,14 +205,14 @@ export const ARMCHAIR = (() => {
 })();
 
 // móvel no chão com sombra de contato e luz de recorte
-export const Piece = ({m, x, floorY, scale = 1, p = 0, settle = 0, id, glow = 1}) => {
+export const Piece = ({m, x, floorY, scale = 1, p = 0, settle = 0, id, glow = 1, px = null}) => {
   const y = floorY - m.h * scale;
   return (
     <g transform={`translate(${x} ${y}) scale(${scale})`}>
       <ellipse cx={m.w / 2} cy={m.h} rx={m.w * 0.62} ry={22} fill="#000" opacity={0.45} style={{filter: "blur(14px)"}} />
       <ellipse cx={m.w / 2} cy={m.h - 4} rx={m.w * 0.5} ry={8} fill="#000" opacity={0.55} style={{filter: "blur(4px)"}} />
       <g style={{filter: `drop-shadow(0 0 ${18 * glow}px rgba(34,199,245,0.35))`}}>{m.draw}</g>
-      <Cover id={id} shape={m.shape} shade={m.shade} box={m.box} p={p} settle={settle} logo={m.logo} folds={m.folds} seed={id.length + 3} />
+      <Cover id={id} shape={m.shape} shade={m.shade} box={m.box} p={p} settle={settle} logo={m.logo} folds={m.folds} seed={id.length + 3} px={px || m.px || null} />
     </g>
   );
 };
@@ -362,32 +370,39 @@ export const HeroScene = ({mobile = false}) => {
 // 2. PROTEÇÃO: geladeira → sofá → cama, uma capa por vez (loop)
 // =====================================================================
 export const PROT_P = 4.6; // duração de cada móvel
-export const PROT_T = PROT_P * 3;
+export const PROT_D = 2.8;  // passagem para o detalhe real
+export const PROT_T = PROT_P * 3 + PROT_D;
 export const ProtectScene = () => {
   const f = useCurrentFrame();
   const {width: W, height: H, fps} = useVideoConfig();
   const t = f / fps;
   const FY = 880;
   const items = [[FRIDGE, 0.98], [SOFA, 1.18], [BED, 1.12]];
+  const T3 = PROT_P * 3;
+  // aproximação final na costura da capa da cama
+  const zIn = ip(t, T3 - 1.4, T3 + 0.4, 0, 1, EIO);
+  const zs = 1 + zIn * 4.2;
+  const zx = W / 2 - 60, zy = FY - 150;
+  const real = ip(t, T3 - 0.1, T3 + 0.5) * (1 - ip(t, PROT_T - 0.75, PROT_T - 0.05));
   return (
     <AbsoluteFill style={{background: "#020A22"}}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+        <g transform={`translate(${zx} ${zy}) scale(${zs}) translate(${-zx} ${-zy})`}>
         <Studio w={W} h={H} floorY={FY} />
         <path d={`M ${W / 2 - 170} -40 L ${W / 2 + 170} -40 L ${W / 2 + 470} ${FY} L ${W / 2 - 470} ${FY} Z`} fill="url(#beam)" />
         <ellipse cx={W / 2} cy={FY - 220} rx={560} ry={460} fill="url(#spot)" />
         <ellipse cx={W / 2} cy={FY + 30} rx={460} ry={70} fill="#1F7BFF" opacity={0.22} style={{filter: "blur(30px)"}} />
-        {/* linha de percurso no chão, que passa de um móvel ao outro */}
         <g transform={`translate(${-((t / PROT_T) * 3 * 1100) % 1100} 0)`}>
           {[0, 1, 2].map((k) => <Route key={k} d={`M ${-560 + k * 1100} ${FY + 90} C ${-200 + k * 1100} ${FY + 140} ${200 + k * 1100} ${FY + 40} ${540 + k * 1100} ${FY + 90}`} p={1} w={0.7} dots={false} />)}
         </g>
         {items.map(([m, sc], k) => {
-          // tempo local do móvel k (loop sem corte): entra em [-0.8, 0], sai em [P-0.8, P]
-          let u = (((t - k * PROT_P) % PROT_T) + PROT_T) % PROT_T;
-          if (u > PROT_T - 0.8) u -= PROT_T;
-          if (u > PROT_P + 0.05) return null;
-          const xIn = kf(u, [-0.8, 0, PROT_P - 0.8, PROT_P], [1100, 0, 0, -1100], EH);
-          const p = ip(u, 0.35, 1.9, 0, 1, EH);
-          const settle = ip(u, 1.9, 2.5, 0, 1, (x) => x);
+          let u = t - k * PROT_P;
+          if (k === 0 && t > PROT_T - 0.8) u = t - PROT_T; // a geladeira volta no fim do loop
+          const last = k === 2;
+          if (u < -0.8 || u > (last ? PROT_P + PROT_D : PROT_P + 0.05)) return null;
+          const xIn = last ? kf(u, [-0.8, 0], [1100, 0], EH) : kf(u, [-0.8, 0, PROT_P - 0.8, PROT_P], [1100, 0, 0, -1100], EH);
+          const p = ip(u, 1.0, 2.7, 0, 1, EH); // um instante para reconhecer a peça antes da capa
+          const settle = ip(u, 2.7, 3.3, 0, 1, (x) => x);
           const w = m.w * sc;
           return (
             <g key={k} transform={`translate(${xIn} 0)`} opacity={1 - Math.abs(xIn) / 1600}>
@@ -395,7 +410,17 @@ export const ProtectScene = () => {
             </g>
           );
         })}
+        </g>
       </svg>
+      {/* detalhe real: costura da capa filmada pela equipe (vídeo 08) */}
+      {real > 0 && (
+        <AbsoluteFill style={{opacity: real, overflow: "hidden"}}>
+          <div style={{position: "absolute", left: 0, top: 0, width: W, height: H, transform: `scale(${1.08 - 0.08 * ip(t, T3, PROT_T)})`}}>
+            <img src={staticFile("diego/capa_real_detalhe.jpg")} style={{position: "absolute", inset: 0, width: W, height: H, objectFit: "cover"}} />
+          </div>
+          <AbsoluteFill style={{background: "radial-gradient(80% 80% at 50% 50%, transparent 55%, rgba(2,10,34,0.45))"}} />
+        </AbsoluteFill>
+      )}
     </AbsoluteFill>
   );
 };

@@ -49,7 +49,7 @@
       <img src="assets/letreiro.png" alt="Diego Mudanças" width="70" height="38">
     </a>
     <nav class="nav" aria-label="Principal">
-      <a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#confianca">Quem somos</a><a href="#duvidas">Dúvidas</a>
+      <a href="#historia">História de cliente</a><a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#duvidas">Dúvidas</a>
     </nav>
     <a class="btn btn-sm only-desk" href="#orcamento">Pedir orçamento</a>
     <button class="menu-btn" aria-expanded="false" aria-controls="menu" aria-label="Abrir menu"><span></span><span></span></button>
@@ -58,7 +58,7 @@
 
 <div class="sheet" id="menu" hidden>
   <nav aria-label="Menu">
-    <a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#confianca">Quem somos</a><a href="#videos">Vídeos</a><a href="#duvidas">Dúvidas</a>
+    <a href="#historia">História de cliente</a><a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#videos">Vídeos</a><a href="#duvidas">Dúvidas</a><a href="#orcamento">Pedir orçamento</a>
   </nav>
   <a class="btn btn-lg" data-wa-msg="Olá! Vim pelo site da Diego Mudanças e gostaria de um orçamento." href="#orcamento"><svg class="ic"><use href="#i-wa"/></svg>Falar no WhatsApp</a>
 </div>
@@ -67,59 +67,69 @@
 
 <!-- ABERTURA -->
 <section class="hero" aria-labelledby="hero-t">
-  <div class="hero-media" aria-hidden="true">
-    <video class="loop once" id="heroVideo" muted playsinline preload="auto" data-src-desk="media/v2/hero-desktop.mp4" data-src-mob="media/v2/hero-mobile.mp4"></video>
-  </div>
-  <div class="wrap hero-in">
-    <p class="eyebrow in-1">Mudanças e transportes · Belo Horizonte e região</p>
-    <h1 id="hero-t" class="in-2">Conectando destinos, <em>transportando recomeços.</em></h1>
-    <p class="hero-lead in-3">Da embalagem ao último móvel no lugar, a Diego cuida da sua mudança para você atravessar essa fase com tranquilidade.</p>
-    <div class="hero-cta in-4">
-      <a class="btn btn-lg" href="#orcamento">Pedir orçamento<svg class="ic"><use href="#i-arrow"/></svg></a>
-      <a class="btn btn-lg ghost" href="#como-funciona">Ver como funciona</a>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Mudanças em Belo Horizonte e região</p>
+      <h1 id="hero-t">É a sua casa que vai <em>nesse caminhão.</em></h1>
+      <p class="hero-lead">Embalamos peça por peça, levamos com frota própria e entregamos no seu novo endereço.</p>
+      <div class="hero-cta">
+        <a class="btn btn-lg" href="#orcamento">Pedir orçamento<svg class="ic"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-lg ghost" href="#historia">Ver uma história real</a>
+      </div>
     </div>
-    <ul class="trust in-5" aria-label="Diferenciais">
-      <li><svg class="ic"><use href="#i-truck"/></svg>Frota própria</li>
-      <li><svg class="ic"><use href="#i-team"/></svg>Equipe especializada</li>
-      <li><svg class="ic"><use href="#i-box"/></svg>Embalagem completa</li>
-      <li><svg class="ic"><use href="#i-store"/></svg>Guarda-móveis</li>
-    </ul>
+    <div class="hero-frame">
+      <video id="heroVideo" class="loop once" muted playsinline preload="auto" poster="media/v3/abertura-inicio.webp" data-src="media/v3/abertura.mp4" aria-label="Uma profissional da Diego embrulha uma peça em papel; a dobra do papel revela um caminhão da Diego e a faixa azul da pintura desenha o caminho até um novo endereço"></video>
+      <img class="hero-still" src="media/v3/abertura-final.webp" alt="Caminhão da Diego Mudanças estacionado na rua, com a rota azul até um novo endereço" width="810" height="1080">
+      <button class="loop-toggle" data-for="heroVideo" aria-label="Pausar animação"><svg><use href="#i-pause"/></svg></button>
+    </div>
   </div>
-  <button class="loop-toggle hero-toggle" data-for="heroVideo" aria-label="Pausar animação da abertura"><svg><use href="#i-pause"/></svg></button>
-  <a class="scroll-cue" href="#servicos" aria-label="Rolar para os serviços"><span></span></a>
 </section>
 
-<!-- O QUE FAZEMOS -->
-<section class="sec services" id="servicos" aria-labelledby="serv-t">
+<!-- HISTÓRIA REAL -->
+<section class="sec story" id="historia" aria-labelledby="hist-t">
+  <div class="wrap story-grid">
+    <figure class="story-media" id="storyMedia">
+      <img src="media/v3/abraco.webp" alt="Seu Daniel abraça o profissional da Diego Mudanças na casa nova" width="900" height="1042">
+      <button class="story-play" type="button" data-src="media/v3/historia-daniel.mp4" aria-label="Ouvir a história do seu Daniel (vídeo com som e legendas)"><i><svg><use href="#i-play"/></svg></i><span>Ouvir a história</span><small>32 s · com som e legendas</small></button>
+    </figure>
+    <div class="story-copy">
+      <p class="eyebrow">História de cliente</p>
+      <h2 id="hist-t">Depois de 30 anos <em>na mesma casa</em></h2>
+      <p class="lead">O seu Daniel morou quase trinta anos no mesmo endereço. Na hora de sair, deu um aperto. Na chegada, ele mesmo contou como foi:</p>
+      <blockquote class="quote-big">“Mas na hora que eu cheguei, meus amigos… dá uma tranquilidade.”</blockquote>
+      <p class="story-sub">E sobre a cristaleira e a mesa de mármore, que eram a preocupação: <strong>“Do jeito que veio, chegou.”</strong></p>
+      <div class="story-cta"><button class="btn" type="button" id="storyBtn"><svg class="ic"><use href="#i-play"/></svg>Ouvir a história</button><a class="link-arrow" href="#videos">Mais vídeos de clientes e da equipe<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+    </div>
+  </div>
+</section>
 
+<!-- SERVIÇOS -->
+<section class="sec services2" id="servicos" aria-labelledby="serv-t">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow reveal">O que fazemos</p>
-      <h2 id="serv-t" class="reveal">Tudo o que a sua mudança precisa, <em>em um só lugar.</em></h2>
-      <p class="lead reveal">Você não precisa coordenar várias empresas. A gente embala, protege, transporta e, se precisar, guarda.</p>
+      <p class="eyebrow">Serviços</p>
+      <h2 id="serv-t">O que você precisa <em>agora?</em></h2>
     </div>
-    <div class="svc">
-  <svg class="svc-route" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
-        <path class="rl-dots" d="M500 0 C 500 120 120 140 120 330 S 880 470 880 640 S 300 820 500 1000" />
-        <path class="rl rl-w" d="M500 0 C 500 120 120 140 120 330 S 880 470 880 640 S 300 820 500 1000" pathLength="1" />
-        <path class="rl rl-c" d="M500 0 C 500 120 120 140 120 330 S 880 470 880 640 S 300 820 500 1000" pathLength="1" />
-        <path class="rl rl-b" d="M500 0 C 500 120 120 140 120 330 S 880 470 880 640 S 300 820 500 1000" pathLength="1" />
-      </svg>
-      <article class="sv ov s-casa reveal">
-        <div class="sv-media"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-casa.webp" data-src="media/v2/sv-casa.mp4" aria-hidden="true"></video></div>
-        <div class="sv-copy"><p class="sv-k">Mudanças</p><h3>Residenciais e comerciais</h3><p>Casas, apartamentos, escritórios e lojas, com cada peça embalada e protegida.</p><p class="help">Para você: mais tranquilidade no dia da mudança e o imóvel liberado com organização.</p></div>
+    <div class="svc2">
+      <article class="s2">
+        <div class="s2-media"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-casa.webp" data-src="media/v2/sv-casa.mp4" aria-hidden="true"></video></div>
+        <h3>Mudança residencial ou comercial</h3><p>Casa, apartamento, escritório ou loja, em BH, para outra cidade ou outro estado.</p>
+        <a class="s2-go" href="#orcamento" data-tipo="residencial">Pedir orçamento<svg class="ic"><use href="#i-arrow"/></svg></a>
       </article>
-      <article class="sv st s-emb reveal">
-        <div class="sv-media"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-embalagem.webp" data-src="media/v2/sv-embalagem.mp4" aria-hidden="true"></video></div>
-        <div class="sv-copy"><p class="sv-k">Embalagem completa</p><h3>A capa da Diego em cada peça</h3><p>Item por item: frágeis embalados um a um, móveis e eletrodomésticos com capa acolchoada.</p><p class="help">Para você: não precisar embalar nada.</p></div>
+      <article class="s2">
+        <div class="s2-media"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-embalagem.webp" data-src="media/v2/sv-embalagem.mp4" aria-hidden="true"></video></div>
+        <h3>Embalagem completa</h3><p>Frágeis embalados um a um e uma capa acolchoada para cada móvel.</p>
+        <a class="s2-go" href="#protecao">Ver as capas<svg class="ic"><use href="#i-arrow"/></svg></a>
       </article>
-      <article class="sv st s-tr reveal">
-        <div class="sv-media"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-transporte.webp" data-src="media/v2/sv-transporte.mp4" aria-hidden="true"></video></div>
-        <div class="sv-copy"><p class="sv-k">Transporte</p><h3>Frota própria, perto ou longe</h3><p>Dentro de BH e região, para outras cidades e para outros estados.</p><p class="help">Para você: o mesmo cuidado, qualquer que seja a distância.</p></div>
+      <article class="s2">
+        <div class="s2-media wide"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-transporte.webp" data-src="media/v2/sv-transporte.mp4" aria-hidden="true"></video></div>
+        <h3>Transporte com frota própria</h3><p>Caminhões da casa, perto ou longe.</p>
+        <a class="s2-go" href="#como-funciona">Ver o percurso<svg class="ic"><use href="#i-arrow"/></svg></a>
       </article>
-      <article class="sv ov s-gm reveal">
-        <div class="sv-media"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-guarda.webp" data-src="media/v2/sv-guarda.mp4" aria-hidden="true"></video></div>
-        <div class="sv-copy"><p class="sv-k">Guarda-móveis</p><h3>Seus móveis protegidos e organizados</h3><p>Local seguro para guardar tudo pelo tempo que você precisar.</p><p class="help">Para você: uma solução durante reformas ou entre um endereço e outro.</p></div>
+      <article class="s2">
+        <div class="s2-media"><video class="loop" muted playsinline loop preload="none" poster="media/v2/sv-guarda.webp" data-src="media/v2/sv-guarda.mp4" aria-hidden="true"></video></div>
+        <h3>Guarda-móveis</h3><p>Seus móveis protegidos pelo tempo que precisar, durante reforma ou entre endereços.</p>
+        <a class="s2-go" href="#orcamento" data-tipo="guarda-móveis">Orçar guarda-móveis<svg class="ic"><use href="#i-arrow"/></svg></a>
       </article>
     </div>
   </div>
@@ -154,16 +164,15 @@
     <div>
       <p class="eyebrow reveal">Proteção</p>
       <h2 id="prot-t" class="reveal">Uma capa para <em>cada móvel.</em></h2>
-      <p class="lead reveal">Cada peça recebe a capa acolchoada da Diego, ajustada ao formato dela, antes de sair de casa.</p>
-      <ol class="layers objs" id="protectSteps">
-        <li class="reveal"><i style="--c:#1D4FD8"></i><span><strong>Geladeira</strong> capa acolchoada, plástico stretch e frente identificada</span></li>
-        <li class="reveal"><i style="--c:#1D4FD8"></i><span><strong>Sofá</strong> capa envolvendo todo o estofado</span></li>
-        <li class="reveal"><i style="--c:#1D4FD8"></i><span><strong>Cama</strong> capa sobre o colchão para o transporte</span></li>
-      </ol>
-      <p class="fine reveal">Animação ilustrativa: o modelo da capa varia conforme a peça.</p>
+      <p class="lead reveal">Cada peça sai de casa vestida com a capa acolchoada da Diego, no formato dela.</p>
+      <div class="pieces reveal" id="protectSteps" role="tablist" aria-label="Escolha a peça">
+        <button type="button" role="tab" data-at="0">Geladeira</button><span aria-hidden="true">·</span><button type="button" role="tab" data-at="4.6">Sofá</button><span aria-hidden="true">·</span><button type="button" role="tab" data-at="9.2">Cama</button>
+      </div>
+      <p class="piece-note reveal" id="pieceNote" aria-live="polite">Toque em uma peça para ver a capa vestindo o móvel.</p>
+      <p class="fine reveal">Animação ilustrativa. No fim, a capa real filmada pela nossa equipe.</p>
     </div>
     <div class="demo reveal">
-      <video class="loop" id="protectVideo" muted playsinline loop preload="none" poster="media/v2/protecao.webp" data-src="media/v2/protecao.mp4" aria-label="Animação: geladeira, sofá e cama recebendo a capa da Diego Mudanças"></video>
+      <video class="loop" id="protectVideo" muted playsinline loop preload="none" poster="media/v3/capas.webp" data-src="media/v3/capas.mp4" aria-label="Animação: a capa azul da Diego veste uma geladeira, um sofá e uma cama"></video>
       <button class="loop-toggle" data-for="protectVideo" aria-label="Pausar animação"><svg><use href="#i-pause"/></svg></button>
     </div>
   </div>
@@ -181,22 +190,6 @@
     <figure class="art reveal"><img src="assets/capas.webp" alt="Móveis protegidos com as capas azuis da Diego Mudanças" loading="lazy" width="880" height="785"></figure>
     <figure class="art reveal"><img src="assets/artes/protecao-em-cada-detalhe.webp" alt="Proteção em cada detalhe" loading="lazy" width="1080" height="1080"></figure>
     <figure class="art reveal"><img src="assets/artes/sua-mudanca-nosso-compromisso.webp" alt="Sua mudança, nosso compromisso" loading="lazy" width="1080" height="1350"></figure>
-  </div>
-</section>
-
-<!-- CONFIANÇA -->
-<section class="sec trustsec" id="confianca" aria-labelledby="conf-t">
-  <div class="wrap">
-    <div class="head">
-      <p class="eyebrow reveal">Por que confiar</p>
-      <h2 id="conf-t" class="reveal">Gente de verdade, <em>caminhões da casa.</em></h2>
-    </div>
-    <div class="bento">
-      <figure class="b-wide reveal"><img src="assets/caminhoes.webp" alt="Dois caminhões da Diego Mudanças com a plotagem do leão" loading="lazy" width="1200" height="455"><figcaption><strong>Frota própria</strong>Caminhões identificados com a marca do leão: você sabe quem está cuidando da sua mudança.</figcaption></figure>
-      <figure class="b-tall reveal"><img src="assets/protecao.webp" alt="Profissional da Diego Mudanças ao lado de uma geladeira protegida" loading="lazy" width="1200" height="830"><figcaption><strong>Equipe especializada</strong>Profissionais treinados para cuidar dos seus bens com o máximo de atenção.</figcaption></figure>
-      <div class="b-quote reveal"><p>“Servir a Deus tem nos feito muito bem!”</p><span>Lema que está em todos os nossos caminhões</span></div>
-      <a class="b-ig reveal" data-ig href="#" target="_blank" rel="noopener"><svg class="ic"><use href="#i-ig"/></svg><span><strong>Mais de 15 mil seguidores</strong>acompanham nosso dia a dia no Instagram</span><svg class="ic arr"><use href="#i-arrow"/></svg></a>
-    </div>
   </div>
 </section>
 
@@ -244,23 +237,23 @@
       <a class="direct reveal" data-wa-msg="Olá! Vim pelo site da Diego Mudanças e gostaria de um orçamento." href="#"><svg class="ic"><use href="#i-wa"/></svg>Prefere conversar direto? <u>Chamar no WhatsApp</u></a>
     </div>
     <form id="form" class="form reveal" novalidate>
-      <fieldset class="chips"><legend>Que tipo de mudança?</legend>
+      <fieldset class="chips"><legend>O que você precisa?</legend>
         <label><input type="radio" name="tipo" value="residencial" checked><span>Residencial</span></label>
         <label><input type="radio" name="tipo" value="comercial"><span>Comercial</span></label>
-        <label><input type="radio" name="tipo" value="para outra cidade ou estado"><span>Outra cidade/estado</span></label>
         <label><input type="radio" name="tipo" value="guarda-móveis"><span>Guarda-móveis</span></label>
       </fieldset>
       <div class="row">
-        <label class="field"><span>Saindo de</span><input name="origem" required placeholder="Bairro e cidade" autocomplete="address-level2"><em class="err">Conte de onde você está saindo</em></label>
-        <label class="field"><span>Indo para</span><input name="destino" required placeholder="Bairro e cidade"><em class="err">Conte para onde você vai</em></label>
+        <label class="field"><span data-l-origem>Saindo de</span><input name="origem" required placeholder="Bairro e cidade"><em class="err">Conte onde os móveis estão</em></label>
+        <label class="field"><span data-l-destino>Indo para</span><input name="destino" required placeholder="Bairro e cidade"><em class="err">Conte para onde vão</em></label>
       </div>
+      <label class="field gm-only" hidden><span>Por quanto tempo, mais ou menos? <small>(opcional)</small></span><input name="tempo" placeholder="Ex.: 2 meses, durante a reforma"></label>
       <label class="field"><span>O que precisa levar <small>(opcional)</small></span><textarea name="itens" rows="3" placeholder="Ex.: apartamento de 2 quartos, geladeira, sofá, guarda-roupa"></textarea></label>
       <div class="row">
         <label class="field"><span>Seu nome</span><input name="nome" required autocomplete="given-name" placeholder="Como podemos te chamar?"><em class="err">Diga como podemos te chamar</em></label>
         <label class="field"><span>Data aproximada <small>(opcional)</small></span><input name="data" placeholder="Ex.: fim do mês"></label>
       </div>
-      <button class="btn btn-lg full" type="submit"><svg class="ic"><use href="#i-wa"/></svg>Enviar pelo WhatsApp</button>
-      <p class="note">Nada é enviado automaticamente: você revisa a mensagem no WhatsApp antes de mandar.</p>
+      <button class="btn btn-lg full" type="submit"><svg class="ic"><use href="#i-wa"/></svg>Preparar mensagem no WhatsApp</button>
+      <p class="note">A mensagem abre pronta no WhatsApp da Diego. Você revisa antes de enviar.</p>
     </form>
   </div>
 </section>

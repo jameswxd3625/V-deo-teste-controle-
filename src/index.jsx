@@ -7,6 +7,7 @@ import {DiegoFilm, DIEGO_DURATION} from "./diego/Diego";
 import {Equipe02, EQUIPE_DURATION, EQ_FPS} from "./diego/Equipe02";
 import {Descarregar, DESC_DURATION, DESC_FPS} from "./diego/Descarregar";
 import {HeroLoop, JourneyLoop, ProtectLoop, JOURNEY_T, PROTECT_T} from "./site/SiteLoops";
+import {HeroReal, HERO3_T} from "./site/HeroReal";
 import {HeroScene, ProtectScene, HERO_T, PROT_T, SvHome, SvWrap, SvTruck, SvStorage, SV_T} from "./site/Scenes";
 import {CoinArrows, IconTech, IconAI, IconChart, Check, Building, Gear, Hammer, GavelBase, Man} from "./icons";
 
@@ -270,6 +271,7 @@ registerRoot(() => (
     <Composition id="HeroV2Desktop" component={HeroScene} durationInFrames={HERO_T * 30} fps={30} width={1920} height={1080} defaultProps={{mobile: false}} />
     <Composition id="HeroV2Mobile" component={HeroScene} durationInFrames={HERO_T * 30} fps={30} width={1080} height={1920} defaultProps={{mobile: true}} />
     <Composition id="ProtectV2" component={ProtectScene} durationInFrames={Math.round(PROT_T * 30)} fps={30} width={1080} height={1080} />
+    <Composition id="HeroReal" component={HeroReal} durationInFrames={Math.round(HERO3_T * 30)} fps={30} width={1080} height={1440} />
     <Composition id="SvHome" component={SvHome} durationInFrames={SV_T * 30} fps={30} width={1080} height={1440} />
     <Composition id="SvWrap" component={SvWrap} durationInFrames={SV_T * 30} fps={30} width={1080} height={1080} />
     <Composition id="SvTruck" component={SvTruck} durationInFrames={SV_T * 30} fps={30} width={1440} height={960} />
