@@ -94,8 +94,6 @@ h3{font-size:clamp(19px,1.6vw,21px);line-height:1.25;letter-spacing:-.01em}
 
 /* serviços: três colunas iguais, foto real 4:5, texto alinhado pela base da foto */
 .svc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,2.6vw,36px)}
-.sv figure{aspect-ratio:4/5;overflow:hidden;border-radius:var(--r);background:var(--alu2);margin-bottom:20px}
-.sv figure img{width:100%;height:100%;object-fit:cover}
 .sv h3{margin-bottom:8px}
 .sv p{color:var(--ink2)}
 .sv .note-s{margin-top:12px;padding-top:12px;border-top:1px solid var(--line-l);font-size:14.5px;font-weight:700;color:var(--ink)}
@@ -214,8 +212,6 @@ h3{font-size:clamp(19px,1.6vw,21px);line-height:1.25;letter-spacing:-.01em}
 }
 @media (max-width:960px){
   .svc{grid-template-columns:1fr;gap:28px}
-  .sv{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px;align-items:center}
-  .sv figure{margin:0;aspect-ratio:4/3}
   .how,.prot,.cli,.quote{grid-template-columns:1fr}
   .how .player-box,.prot .player-box{max-width:560px}
   .prot .player-box{order:2}
@@ -235,8 +231,6 @@ h3{font-size:clamp(19px,1.6vw,21px);line-height:1.25;letter-spacing:-.01em}
   .hero-cta{margin-bottom:20px}
   .hero-cta .btn{flex:1 1 auto;white-space:nowrap}
   .hd-cta .lg{display:none}.hd-cta .sm{display:inline}
-  .sv{grid-template-columns:1fr;gap:0}
-  .sv figure{margin-bottom:16px;aspect-ratio:4/3}
   .real{grid-template-columns:1fr}
   .row-head{display:block}
   .rail-nav{display:none}
@@ -252,13 +246,8 @@ h3{font-size:clamp(19px,1.6vw,21px);line-height:1.25;letter-spacing:-.01em}
 }
 
 /* ===== revisão: serviços compactos, cenas, experiência ===== */
-.sv .sv-t p{font-size:15.5px}
 @media (max-width:600px){
   .svc{gap:18px}
-  .sv{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1fr);gap:14px;align-items:center}
-  .sv figure{margin:0;aspect-ratio:4/5}
-  .sv h3{font-size:17.5px;margin-bottom:6px}
-  .sv .sv-t p{font-size:14.5px;line-height:1.5}
   #servicos.sec{padding-bottom:48px}
 }
 
@@ -313,18 +302,12 @@ h3{font-size:clamp(19px,1.6vw,21px);line-height:1.25;letter-spacing:-.01em}
 
 /* ===== etapas com fotos reais ===== */
 .etapas{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(16px,2.2vw,28px)}
-.etapas figure{aspect-ratio:4/5;overflow:hidden;border-radius:var(--r);background:var(--navy2);margin-bottom:16px}
-.etapas img{width:100%;height:100%;object-fit:cover}
 .etapas .n{display:block;font-weight:800;font-size:14px;color:var(--sky);margin-bottom:4px}
 .etapas h3{margin-bottom:6px}
 .etapas p{color:var(--on-dark);font-size:15.5px}
 @media (max-width:960px){.etapas{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:600px){
   .etapas{grid-template-columns:1fr;gap:16px}
-  .etapas li{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1fr);gap:14px;align-items:center}
-  .etapas figure{margin:0}
-  .etapas h3{font-size:17.5px}
-  .etapas p{font-size:14.5px;line-height:1.5}
 }
 /* ===== galeria ===== */
 .gal{columns:3 260px;column-gap:16px}
@@ -338,3 +321,37 @@ h3{font-size:clamp(19px,1.6vw,21px);line-height:1.25;letter-spacing:-.01em}
 .imgbox::backdrop{background:rgba(7,19,56,.94)}
 .imgbox img{display:block;max-width:100%;max-height:calc(100svh - 110px);border-radius:8px;margin:0 auto}
 .imgbox .player-x{position:absolute;right:0;top:-56px}
+
+/* ===== cenas ilustrativas dos serviços e das etapas: imagem inteira, 4:5, altura automática ===== */
+.sv,.etapas li{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"fig" "head" "body";align-content:start}
+.sv figure,.etapas figure{grid-area:fig;margin:0 0 16px;overflow:hidden;border-radius:var(--r);background:var(--alu2)}
+.etapas figure{background:var(--navy2)}
+.sv figure img,.etapas figure img{display:block;width:100%;height:auto}
+.sv h3{grid-area:head;margin-bottom:8px}
+.etapas .head{grid-area:head}
+.sv p,.etapas p{grid-area:body;font-size:15.5px}
+.etapas p{margin-top:0}
+.etapas .head h3{margin-bottom:6px}
+@media (max-width:960px){
+  .sv{grid-template-columns:240px minmax(0,1fr);grid-template-areas:"fig head" "fig body";column-gap:24px;align-content:center;align-items:end}
+  .sv figure{margin:0}
+  .sv p{align-self:start}
+}
+@media (max-width:600px){
+  .svc{gap:0}
+  .sv,.etapas li{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "fig" "body";justify-items:stretch;align-items:start;padding:22px 0;border-bottom:1px solid var(--line-l)}
+  .etapas li{border-bottom-color:var(--line-d)}
+  .sv:first-child,.etapas li:first-child{padding-top:0}
+  .sv:last-child,.etapas li:last-child{border-bottom:0;padding-bottom:0}
+  .sv h3,.etapas .head{margin-bottom:12px}
+  .sv figure,.etapas figure{width:min(100%,280px);margin:0 auto 12px}
+  .sv h3,.etapas .head h3{font-size:18px}
+  .sv p,.etapas p{font-size:15px;line-height:1.5;width:min(100%,280px);margin:0 auto}
+  .sv h3,.etapas .head{width:min(100%,280px);margin-left:auto;margin-right:auto}
+  .etapas{gap:0}
+  #servicos.sec{padding-bottom:48px}
+}
+@media (min-width:601px) and (max-width:960px){
+  .etapas{gap:28px 24px}
+  .etapas figure{max-width:340px}
+}
