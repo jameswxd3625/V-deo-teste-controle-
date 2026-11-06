@@ -381,3 +381,8 @@ h1{font-size:clamp(44px,6.6vw,96px);max-width:820px;margin-bottom:26px}
 @media (max-width:1000px){.hx-stack{aspect-ratio:600/560;max-width:520px;margin-top:8px}.c1{top:40%}.c2{top:20%}.c3{top:0}}
 @media (max-width:640px){.hx-stack{margin-top:10px}}
 @media (min-width:1001px){.hx-grid{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}.hero-x h1{font-size:clamp(42px,5vw,76px)}}
+
+/* sem os blocos de frota/equipe e sem o cartão de transporte */
+.s-gm{grid-column:span 12}
+@media (max-width:1000px){.s-emb,.s-gm{grid-column:span 2}}
+@media (max-width:640px){.s-emb,.s-gm{grid-column:auto}}
