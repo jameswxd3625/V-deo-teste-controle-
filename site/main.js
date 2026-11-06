@@ -138,7 +138,7 @@
   routeDraw();
 
   /* abertura: leve paralaxe dos cartões com o ponteiro */
-  var hx = $("#hxStack");
+  var hx = document.getElementById("hxStack");
   if (hx && !reduce.matches && matchMedia("(pointer:fine)").matches) {
     hx.addEventListener("pointermove", function (e) {
       var r = hx.getBoundingClientRect(), dx = (e.clientX - r.left) / r.width - .5, dy = (e.clientY - r.top) / r.height - .5;
