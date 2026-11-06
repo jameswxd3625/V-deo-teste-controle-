@@ -48,3 +48,12 @@
 - Apontar o domínio diegomudancas.com.br (falta saber onde ele está registrado).
 - Material original em alta resolução, sobretudo o vídeo do seu Daniel, que hoje está em 480p.
 - Confirmar se a foto da sede é real ou se precisa ser trocada.
+
+## Atualização: direção de arte própria (versão atual)
+- Paleta tirada da empresa: marinho do letreiro, azul royal da capa, ciano do uniforme e o alumínio branco do baú. Seções alternam marinho e alumínio.
+- Sem brilhos, partículas ou neon; títulos sem itálico/degradê (itálico só no lema "Servir a Deus tem nos feito muito bem!", no rodapé).
+- Serviços com fotos reais tiradas dos vídeos da equipe (`site/media/fotos/`).
+- Animações novas em Remotion (`src/site/Craft.jsx`): `CoverFridge`, `CoverSofa`, `CoverBed` e `Route`. Vídeos em `site/media/anim/`.
+- Foto da sede: textos ilegíveis corrigidos (arroba no capô, letreiros pequenos) e placas desfocadas.
+- Sem GSAP: JS próprio em `site/main.js`. Menu fechado usa `hidden` (não captura cliques).
+- Seção "Gente de verdade, caminhões da casa" removida.

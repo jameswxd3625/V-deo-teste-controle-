@@ -8,6 +8,7 @@ import {Equipe02, EQUIPE_DURATION, EQ_FPS} from "./diego/Equipe02";
 import {Descarregar, DESC_DURATION, DESC_FPS} from "./diego/Descarregar";
 import {HeroLoop, JourneyLoop, ProtectLoop, JOURNEY_T, PROTECT_T} from "./site/SiteLoops";
 import {HeroReal, HERO3_T} from "./site/HeroReal";
+import {CoverScene, COVER_T, RouteScene, ROUTE_T} from "./site/Craft";
 import {Stage, HeroScene, ProtectScene, HERO_T, PROT_T, SvHome, SvWrap, SvTruck, SvStorage, SV_T} from "./site/Scenes";
 import {CoinArrows, IconTech, IconAI, IconChart, Check, Building, Gear, Hammer, GavelBase, Man} from "./icons";
 
@@ -285,6 +286,10 @@ registerRoot(() => (
     <Composition id="SiteHeroMobile" component={HeroLoop} durationInFrames={240} fps={30} width={1080} height={1920} defaultProps={{mobile: true}} />
     <Composition id="SiteJourney" component={JourneyLoop} durationInFrames={JOURNEY_T * 30} fps={30} width={1080} height={1080} />
     <Composition id="SiteProtect" component={ProtectLoop} durationInFrames={PROTECT_T * 30} fps={30} width={1080} height={1080} />
+    <Composition id="CoverFridge" component={CoverScene} durationInFrames={Math.round(COVER_T * 30)} fps={30} width={1080} height={1080} defaultProps={{item: "fridge"}} />
+    <Composition id="CoverSofa" component={CoverScene} durationInFrames={Math.round(COVER_T * 30)} fps={30} width={1080} height={1080} defaultProps={{item: "sofa"}} />
+    <Composition id="CoverBed" component={CoverScene} durationInFrames={Math.round(COVER_T * 30)} fps={30} width={1080} height={1080} defaultProps={{item: "bed"}} />
+    <Composition id="Route" component={RouteScene} durationInFrames={ROUTE_T * 30} fps={30} width={1080} height={1080} />
     <Composition id="Anuncio" component={Ad} durationInFrames={900} fps={30} width={1080} height={1920} />
     <Composition id="ConttroleMotionV3" component={MotionV3} durationInFrames={6 * FPS_V3} fps={FPS_V3} width={1080} height={1920} />
     <Composition id="ConttroleMotionV2" component={MotionV2} durationInFrames={6 * FPS_V2} fps={FPS_V2} width={1080} height={1920} />
