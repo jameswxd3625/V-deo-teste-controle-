@@ -40,76 +40,111 @@
   new IntersectionObserver(function (es) { quoteIn = es[0].isIntersecting; fabUpd(); }, {threshold: 0.15}).observe(quote);
 
   /* entrada suave */
-  var rvs = $$(".sec-head, .sv, .real figure, .cli > *, .faq-list, .form, .quote-l");
+  var rvs = $$(".sec-head, .sv, .attitudes li, .cli > *, .exp-intro, .faq-list, .form, .quote-l");
   rvs.forEach(function (el) { el.classList.add("rv"); });
   var ro = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); ro.unobserve(e.target); } }); }, {rootMargin: "0px 0px -8% 0px"});
   rvs.forEach(function (el) { ro.observe(el); });
 
-  /* animações: tocam só visíveis; podem ser pausadas; com movimento reduzido, só tocam se a pessoa pedir */
-  function load(v) { if (!v.getAttribute("src")) { v.src = v.dataset.src; } }
-  function play(v) { load(v); var p = v.play(); if (p && p.catch) p.catch(function () {}); }
-  function setBtn(btn, playing, labelPlay, labelPause, iconPlay) {
-    btn.setAttribute("aria-label", playing ? labelPause : labelPlay);
-    $("use", btn).setAttribute("href", playing ? "#i-pause" : (iconPlay || "#i-play"));
-  }
-
-  /* rota: em loop, etapas acompanham o vídeo */
-  var rv = $("#routeVideo"), rBtn = $('[data-for="routeVideo"]'), rLbl = $(".ctrl-l", rBtn.parentNode), steps = $$("#routeSteps li"), userPaused = reduced, rVisible = false;
-  var T = steps.map(function (li) { return parseFloat(li.dataset.t); });
+  /* ---------- percurso: começa sozinho quando a cena está visível; pausa fora da tela; não reinicia ---------- */
+  var rv = $("#routeVideo"), rBtn = $("#routeBtn"), rLbl = $("#routeLbl"), rReplay = $(".scene-replay", $("#routeScene"));
+  var steps = $$("#routeSteps li"), T = steps.map(function (li) { return parseFloat(li.dataset.t); });
+  var rUserPaused = false, rVisible = false, rLoaded = false;
+  function rLoad() { if (!rLoaded) { rLoaded = true; rv.src = rv.dataset.src; rv.preload = "auto"; } }
   function stepAt(t) { var k = 0; T.forEach(function (x, i) { if (t >= x) k = i; }); return k; }
   function markStep(k) { steps.forEach(function (li, i) { li.classList.toggle("on", i === k); }); }
-  markStep(reduced ? -1 : 0);
-  rv.addEventListener("timeupdate", function () { markStep(stepAt(rv.currentTime)); });
-  function rSync() { setBtn(rBtn, !rv.paused, "Reproduzir animação", "Pausar animação"); rLbl.textContent = rv.paused ? "Animação pausada" : "Animação do percurso"; }
-  rv.addEventListener("play", rSync); rv.addEventListener("pause", rSync);
-  setBtn(rBtn, false, "Reproduzir animação", "Pausar animação"); rLbl.textContent = reduced ? "Toque para ver a animação" : "Animação do percurso";
-  rBtn.addEventListener("click", function () { if (rv.paused) { userPaused = false; play(rv); } else { userPaused = true; rv.pause(); } });
-  new IntersectionObserver(function (es) { rVisible = es[0].isIntersecting; if (rVisible && !userPaused) play(rv); else if (!rVisible) rv.pause(); }, {threshold: 0.4}).observe(rv);
+  function rPlay() { rLoad(); rReplay.hidden = true; var p = rv.play(); if (p && p.catch) p.catch(function () {}); }
+  function rSync() {
+    var playing = !rv.paused && !rv.ended;
+    rBtn.setAttribute("aria-label", playing ? "Pausar percurso" : rv.ended ? "Ver percurso novamente" : "Reproduzir percurso");
+    $("use", rBtn).setAttribute("href", playing ? "#i-pause" : rv.ended ? "#i-redo" : "#i-play");
+    rLbl.textContent = playing ? "Demonstração ilustrativa do percurso" : rv.ended ? "Percurso concluído" : (rv.currentTime > 0 ? "Percurso pausado" : "Demonstração ilustrativa do percurso");
+  }
+  ["play", "pause", "ended"].forEach(function (e) { rv.addEventListener(e, rSync); });
+  rv.addEventListener("ended", function () { rReplay.hidden = false; markStep(3); });
+  rv.addEventListener("timeupdate", function () { if (!rv.ended) markStep(stepAt(rv.currentTime)); });
+  function rReplayGo() { rUserPaused = false; rv.currentTime = 0; markStep(0); rPlay(); }
+  rReplay.addEventListener("click", rReplayGo);
+  rBtn.addEventListener("click", function () {
+    if (rv.ended) return rReplayGo();
+    if (rv.paused) { rUserPaused = false; rPlay(); } else { rUserPaused = true; rv.pause(); }
+  });
+  if (reduced) { rv.poster = "media/anim/rota3d-fim.webp"; markStep(-1); }
+  else markStep(0);
+  rSync();
+  new IntersectionObserver(function (es) { if (es[0].isIntersecting) rLoad(); }, {rootMargin: "600px 0px"}).observe(rv);
+  new IntersectionObserver(function (es) {
+    var r = es[0].intersectionRatio;
+    if (r >= 0.6) { rVisible = true; if (!reduced && !rUserPaused && !rv.ended && rv.paused) rPlay(); }
+    else if (r < 0.25) { rVisible = false; if (!rv.paused) rv.pause(); }
+  }, {threshold: [0, 0.25, 0.6, 1]}).observe(rv);
   steps.forEach(function (li, i) {
     $("button", li).addEventListener("click", function () {
-      load(rv); markStep(i);
-      var go = function () { rv.currentTime = T[i] + 0.05; if (!userPaused) play(rv); };
+      rLoad(); markStep(i); rReplay.hidden = true;
+      var go = function () { rv.currentTime = T[i] + 0.05; if (!reduced) { rUserPaused = false; rPlay(); } };
       if (rv.readyState >= 1) go(); else rv.addEventListener("loadedmetadata", go, {once: true});
     });
   });
 
-  /* proteção: uma peça por vez */
-  var PROT = {
-    geladeira: {t: "Capa acolchoada, plástico stretch por cima e a frente identificada. Na descida, todo o cuidado para que ela não sofra impacto.", a: "a geladeira recebe a capa acolchoada da Diego e o plástico stretch"},
-    sofa: {t: "A capa envolve braços, assento e encosto. Por cima, o plástico stretch mantém a capa firme no lugar até a casa nova.", a: "o sofá recebe a capa acolchoada da Diego e o plástico stretch"},
-    cama: {t: "Base e colchão recebem a capa acolchoada e o plástico stretch antes de sair do quarto.", a: "a cama box recebe a capa acolchoada da Diego e o plástico stretch"}
+  /* ---------- proteção: começa pelo toque do visitante ---------- */
+  var P = {
+    geladeira: {my: "minha geladeira", your: "sua geladeira", done: "Geladeira protegida"},
+    sofa: {my: "meu sofá", your: "seu sofá", done: "Sofá protegido"},
+    cama: {my: "minha cama", your: "sua cama", done: "Cama protegida"}
   };
-  var pv = $("#protVideo"), pBtn = $('[data-for="protVideo"]'), pLbl = $(".ctrl-l", pBtn.parentNode), tabs = $$('[role="tab"]'), ptext = $("#protText"), panel = $("#p-prot"), pSeen = false;
-  function pSync() {
-    if (pv.ended || (!pv.paused && false)) {}
-    var playing = !pv.paused && !pv.ended;
-    setBtn(pBtn, playing, pv.ended || pv.currentTime > 0 ? "Ver de novo" : "Reproduzir animação", "Pausar animação", pv.ended ? "#i-redo" : "#i-play");
-    pLbl.textContent = playing ? "Pausar" : (pv.ended ? "Ver de novo" : "Reproduzir");
+  var pv = $("#protVideo"), go = $("#protGo"), pst = $("#protStatus"), pdone = $("#protDone"), tabs = $$('[role="tab"]'), panel = $("#protScene");
+  var cur = "geladeira", state = "idle";
+  function setState(s) {
+    state = s;
+    var p = P[cur];
+    go.hidden = s === "done";
+    go.disabled = s === "playing";
+    go.textContent = s === "playing" ? "Nossa equipe está protegendo " + p.your : "Proteger " + p.my;
+    pdone.hidden = s !== "done";
+    pst.className = "prot-status" + (s === "done" ? " ok" : "");
+    pst.textContent = s === "done" ? "✓ " + p.done : "";
   }
-  ["play", "pause", "ended"].forEach(function (ev) { pv.addEventListener(ev, pSync); });
-  pBtn.addEventListener("click", function () { if (!pv.paused && !pv.ended) pv.pause(); else { if (pv.ended) pv.currentTime = 0; play(pv); } });
-  function choose(k, autoplay) {
+  function choose(k) {
+    if (k === cur && state === "idle") return;
+    pv.pause(); cur = k;
     tabs.forEach(function (b) { var on = b.dataset.k === k; b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; if (on) panel.setAttribute("aria-labelledby", b.id); });
-    ptext.textContent = PROT[k].t;
-    pv.setAttribute("aria-label", "Animação: " + PROT[k].a);
-    pv.poster = "media/anim/capa-" + k + (reduced ? "-fim" : "-inicio") + ".webp";
-    pv.dataset.src = "media/anim/capa-" + k + ".mp4";
     pv.removeAttribute("src"); pv.load();
-    if (autoplay && !reduced) play(pv); else pSync();
+    pv.poster = "media/anim/p3-" + k + "-inicio.webp";
+    pv.setAttribute("aria-label", "Demonstração: dois funcionários da Diego colocam a capa azul " + (k === "sofa" ? "no sofá" : k === "cama" ? "na cama box" : "na geladeira"));
+    setState("idle");
   }
+  function protPlay() {
+    if (state === "playing") return;
+    if (!pv.getAttribute("src")) pv.src = "media/anim/p3-" + cur + ".mp4";
+    if (reduced) { pv.poster = "media/anim/p3-" + cur + "-fim.webp"; setState("done"); return; }
+    pv.currentTime = 0; setState("playing");
+    var p = pv.play(); if (p && p.catch) p.catch(function () { setState("idle"); });
+  }
+  go.addEventListener("click", protPlay);
+  $("#protAgain").addEventListener("click", function () { if (reduced) { pv.poster = ""; } setState("idle"); reducedPlayOnce(); });
+  function reducedPlayOnce() { if (!pv.getAttribute("src")) pv.src = "media/anim/p3-" + cur + ".mp4"; pv.currentTime = 0; setState("playing"); var p = pv.play(); if (p && p.catch) p.catch(function () { setState("idle"); }); }
+  $("#protOther").addEventListener("click", function () { var i = tabs.findIndex(function (b) { return b.dataset.k === cur; }); var n = tabs[(i + 1) % tabs.length]; n.focus(); choose(n.dataset.k); });
+  pv.addEventListener("ended", function () { setState("done"); });
   tabs.forEach(function (b, i) {
-    b.addEventListener("click", function () { choose(b.dataset.k, true); });
+    b.addEventListener("click", function () { choose(b.dataset.k); });
     b.addEventListener("keydown", function (e) {
       var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0; if (!d) return;
-      var n = tabs[(i + d + tabs.length) % tabs.length]; n.focus(); choose(n.dataset.k, true);
+      var n = tabs[(i + d + tabs.length) % tabs.length]; n.focus(); choose(n.dataset.k);
     });
   });
-  if (reduced) pv.poster = "media/anim/capa-geladeira-fim.webp";
-  pSync();
+  // fora da tela, a demonstração pausa; ao voltar, continua de onde parou
   new IntersectionObserver(function (es) {
-    if (es[0].isIntersecting && !pSeen && !reduced) { pSeen = true; play(pv); }
-    else if (!es[0].isIntersecting) pv.pause();
-  }, {threshold: 0.5}).observe(pv);
+    if (state !== "playing") return;
+    if (es[0].intersectionRatio < 0.3) pv.pause(); else if (pv.paused) { var p = pv.play(); if (p && p.catch) p.catch(function () {}); }
+  }, {threshold: [0, 0.3, 0.6]}).observe(pv);
+  setState("idle");
+
+  // botão flutuante do WhatsApp sai do caminho quando os controles das cenas estão na tela
+  var sceneVis = {};
+  var so2 = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { sceneVis[e.target.id] = e.isIntersecting; });
+    fab.classList.toggle("hide-for-scene", Object.keys(sceneVis).some(function (k) { return sceneVis[k]; }));
+  }, {threshold: 0.15});
+  so2.observe($("#routeScene")); so2.observe($("#protScene"));
 
   /* player em tela cheia */
   var player = $("#player"), fv = $("video", player), lastFocus = null;

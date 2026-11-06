@@ -38,14 +38,14 @@
 <header class="hd">
   <a class="brand" href="#topo" aria-label="Diego Mudanças, início"><img src="assets/leao-xs.webp" alt="" width="40" height="40"><img src="assets/letreiro.png" alt="Diego Mudanças" width="66" height="36"></a>
   <nav class="nav" aria-label="Principal">
-    <a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#cliente">Clientes</a><a href="#videos">Vídeos</a><a href="#duvidas">Dúvidas</a>
+    <a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#experiencia">Experiência</a><a href="#videos">Vídeos</a><a href="#duvidas">Dúvidas</a>
   </nav>
   <a class="btn btn-sm hd-cta" href="#orcamento"><span class="lg">Pedir orçamento</span><span class="sm">Orçamento</span></a>
   <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menu"><span></span><span></span></button>
 </header>
 <div class="sheet" id="menu" hidden>
   <nav aria-label="Menu">
-    <a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#cliente">Clientes</a><a href="#videos">Vídeos</a><a href="#duvidas">Dúvidas</a><a href="#orcamento">Pedir orçamento</a>
+    <a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#protecao">Proteção</a><a href="#experiencia">Experiência</a><a href="#videos">Vídeos</a><a href="#duvidas">Dúvidas</a><a href="#orcamento">Pedir orçamento</a>
   </nav>
 </div>
 
@@ -78,31 +78,27 @@
     <header class="sec-head">
       <p class="eyebrow">Serviços</p>
       <h2 id="serv-t">Da embalagem ao último móvel no lugar</h2>
-      <p class="lead">Você fala com uma equipe só. Ela embala, protege, transporta e, se for preciso, guarda.</p>
     </header>
     <div class="svc">
       <article class="sv">
-        <figure><img src="media/fotos/mudanca.webp" alt="Lateral de um caminhão da Diego Mudanças, com o leão azul, o letreiro e a frase Servir a Deus tem nos feito muito bem" width="1080" height="1350" loading="lazy"></figure>
+        <figure><picture><source media="(min-width: 601px) and (max-width: 960px)" srcset="media/fotos/mudanca-m.webp"><img src="media/fotos/mudanca.webp" alt="Caminhão branco da Diego Mudanças estacionado na rua, com a faixa azul e o letreiro na porta" width="800" height="1000" loading="lazy"></picture></figure>
         <div class="sv-t">
           <h3>Mudança residencial e comercial</h3>
-          <p>Casas, apartamentos, escritórios e lojas. Dentro de Belo Horizonte, para outras cidades e para outros estados.</p>
-          <p class="note-s">Caminhões da própria frota, identificados com a marca.</p>
+          <p>Casas, apartamentos, escritórios e lojas. Em BH, para outras cidades e outros estados, em caminhão próprio.</p>
         </div>
       </article>
       <article class="sv">
-        <figure><img src="media/fotos/embalagem.webp" alt="Integrante da equipe passando plástico stretch sobre um guarda-roupa já coberto com a capa azul da Diego" width="960" height="1200" loading="lazy"></figure>
+        <figure><picture><source media="(min-width: 601px) and (max-width: 960px)" srcset="media/fotos/embalagem-m.webp"><img src="media/fotos/embalagem.webp" alt="Integrante da equipe passando plástico stretch sobre um guarda-roupa coberto com a capa azul" width="800" height="1000" loading="lazy" style="object-position:18% 40%"></picture></figure>
         <div class="sv-t">
           <h3>Embalagem completa</h3>
-          <p>A equipe embala item por item: louças, vidros e frágeis um a um; móveis e eletrodomésticos com capa acolchoada e plástico stretch.</p>
-          <p class="note-s">No orçamento, você combina o que a equipe vai embalar.</p>
+          <p>Louças e frágeis embalados um a um. Móveis e eletrodomésticos com capa acolchoada e plástico stretch.</p>
         </div>
       </article>
       <article class="sv">
-        <figure><img src="media/fotos/guarda.webp" alt="Integrante da equipe fechando caixas ao lado de móveis envoltos em plástico" width="960" height="1200" loading="lazy" style="object-position:70% 50%"></figure>
+        <figure><picture><source media="(min-width: 601px) and (max-width: 960px)" srcset="media/fotos/guarda-m.webp"><img src="media/fotos/guarda.webp" alt="Galpão de guarda-móveis com volumes embalados, cobertos de azul e organizados em fileiras" width="800" height="1000" loading="lazy"></picture></figure>
         <div class="sv-t">
           <h3>Guarda-móveis</h3>
-          <p>Seus móveis ficam em local seguro, protegidos com papelão, plástico, plástico-bolha e a manta da Diego, pelo tempo que você precisar.</p>
-          <p class="note-s">Útil durante uma reforma ou entre um endereço e outro.</p>
+          <p>Seus móveis guardados e protegidos pelo tempo que você precisar, por exemplo durante uma reforma.</p>
         </div>
       </article>
     </div>
@@ -111,23 +107,26 @@
 
 <section class="sec dark" id="como-funciona" aria-labelledby="como-t">
   <div class="wrap how">
-    <div class="player-box">
-      <video id="routeVideo" class="anim" muted playsinline loop preload="none" poster="media/anim/rota-fim.webp" data-src="media/anim/rota.mp4" aria-label="Animação: o caminhão da Diego sai do endereço de origem e chega ao destino"></video>
+    <div class="scene" id="routeScene">
+      <div class="scene-media">
+        <video id="routeVideo" muted playsinline preload="none" poster="media/anim/rota3d-inicio.webp" data-src="media/anim/rota3d.mp4" aria-label="Animação ilustrativa: o caminhão da Diego sai do endereço de origem e percorre o bairro até o destino"></video>
+        <button class="scene-replay" type="button" hidden><svg class="ic"><use href="#i-redo"/></svg>Ver percurso novamente</button>
+      </div>
       <div class="ctrl">
-        <button class="ctrl-btn" type="button" data-for="routeVideo" aria-label="Pausar animação"><svg class="ic"><use href="#i-pause"/></svg></button>
-        <span class="ctrl-l">Animação do percurso</span>
+        <button class="ctrl-btn" type="button" id="routeBtn" aria-label="Pausar percurso"><svg class="ic"><use href="#i-pause"/></svg></button>
+        <span class="ctrl-l" id="routeLbl">Demonstração ilustrativa do percurso</span>
       </div>
     </div>
     <div>
       <header class="sec-head">
         <p class="eyebrow">Como funciona</p>
-        <h2 id="como-t">Quatro etapas, do primeiro contato à casa nova</h2>
+        <h2 id="como-t">Do seu endereço à casa nova</h2>
       </header>
       <ol class="steps" id="routeSteps">
-        <li data-t="0"><button type="button"><span><b>Você conta</b> de onde sai, para onde vai e o que precisa levar, pelo formulário ou pelo WhatsApp.</span></button></li>
-        <li data-t="2.2"><button type="button"><span><b>A equipe embala e protege</b> os frágeis um a um e cada móvel com capa acolchoada.</span></button></li>
-        <li data-t="4.4"><button type="button"><span><b>O caminhão da Diego leva</b> tudo até o novo endereço.</span></button></li>
-        <li data-t="8.4"><button type="button"><span><b>Na chegada, a equipe descarrega</b> e coloca cada coisa no cômodo que você indicar.</span></button></li>
+        <li data-t="0"><button type="button"><span><b>Você conta</b> de onde sai e para onde vai, pelo formulário ou pelo WhatsApp.</span></button></li>
+        <li data-t="2.0"><button type="button"><span><b>A equipe embala, protege e carrega</b> o caminhão no endereço de saída.</span></button></li>
+        <li data-t="3.6"><button type="button"><span><b>O caminhão da Diego segue o trajeto</b> até o novo endereço.</span></button></li>
+        <li data-t="13.6"><button type="button"><span><b>Na chegada, a equipe descarrega</b> e coloca cada coisa no cômodo que você indicar.</span></button></li>
       </ol>
     </div>
   </div>
@@ -135,42 +134,58 @@
 
 <section class="sec light" id="protecao" aria-labelledby="prot-t">
   <div class="wrap prot">
-    <div>
+    <div class="prot-copy">
       <header class="sec-head">
         <p class="eyebrow">Proteção</p>
-        <h2 id="prot-t">Uma capa para cada móvel</h2>
-        <p class="lead">A capa azul da Diego é acolchoada e se ajusta ao formato de cada peça. Por cima, vai o plástico stretch.</p>
+        <h2 id="prot-t">Veja a equipe proteger um móvel</h2>
+        <p class="lead">Escolha a peça e toque no botão. Dois integrantes da equipe colocam a capa acolchoada da Diego, ajustada ao formato do móvel.</p>
       </header>
       <div class="tabs" role="tablist" aria-label="Escolha o móvel">
-        <button role="tab" type="button" id="t-geladeira" aria-selected="true" aria-controls="p-prot" data-k="geladeira">Geladeira</button>
-        <button role="tab" type="button" id="t-sofa" aria-selected="false" aria-controls="p-prot" data-k="sofa" tabindex="-1">Sofá</button>
-        <button role="tab" type="button" id="t-cama" aria-selected="false" aria-controls="p-prot" data-k="cama" tabindex="-1">Cama</button>
+        <button role="tab" type="button" id="t-geladeira" aria-selected="true" aria-controls="protScene" data-k="geladeira">Geladeira</button>
+        <button role="tab" type="button" id="t-sofa" aria-selected="false" aria-controls="protScene" data-k="sofa" tabindex="-1">Sofá</button>
+        <button role="tab" type="button" id="t-cama" aria-selected="false" aria-controls="protScene" data-k="cama" tabindex="-1">Cama</button>
       </div>
-      <p class="prot-d" id="protText" aria-live="polite">Capa acolchoada, plástico stretch por cima e a frente identificada. Na descida, todo o cuidado para que ela não sofra impacto.</p>
+      <p class="prot-note">Na mudança, a capa ganha plástico stretch por cima. Frágeis vão em papel, plástico-bolha e caixa.</p>
     </div>
-    <div class="player-box light-box" id="p-prot" role="tabpanel" aria-labelledby="t-geladeira">
-      <video id="protVideo" class="anim" muted playsinline preload="none" poster="media/anim/capa-geladeira-fim.webp" data-src="media/anim/capa-geladeira.mp4" aria-label="Animação: a geladeira recebe a capa acolchoada da Diego e o plástico stretch"></video>
-      <div class="ctrl">
-        <button class="ctrl-btn" type="button" data-for="protVideo" aria-label="Ver de novo"><svg class="ic"><use href="#i-redo"/></svg></button>
-        <span class="ctrl-l">Ver de novo</span>
+    <div class="scene" id="protScene" role="tabpanel" aria-labelledby="t-geladeira">
+      <div class="scene-media light-media">
+        <video id="protVideo" muted playsinline preload="none" poster="media/anim/p3-geladeira-inicio.webp" aria-label="Demonstração: dois funcionários da Diego colocam a capa azul na geladeira"></video>
+      </div>
+      <div class="prot-ctrl">
+        <button class="btn prot-go" type="button" id="protGo">Proteger minha geladeira</button>
+        <p class="prot-status" id="protStatus" aria-live="polite"></p>
+        <div class="prot-done" id="protDone" hidden>
+          <button class="btn ghost-l" type="button" id="protAgain"><svg class="ic"><use href="#i-redo"/></svg>Ver de novo</button>
+          <button class="btn ghost-l" type="button" id="protOther">Escolher outra peça</button>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="wrap real">
-    <figure><img src="assets/capas.webp" alt="Móveis cobertos com as capas azuis acolchoadas da Diego Mudanças" width="880" height="785" loading="lazy"><figcaption>As capas de verdade, prontas para sair.</figcaption></figure>
-    <figure><img src="assets/protecao.webp" alt="Integrante da equipe ao lado de um móvel embalado, em frente a um caminhão da Diego" width="1200" height="830" loading="lazy"><figcaption>Móvel protegido antes de subir no caminhão.</figcaption></figure>
   </div>
 </section>
 
-<section class="sec dark" id="cliente" aria-labelledby="cli-t">
-  <div class="wrap cli">
-    <figure class="cli-photo"><img src="media/hero/cliente.webp" alt="Seu Daniel, cliente, abraçado a um integrante da equipe Diego Mudanças" width="720" height="900" loading="lazy"></figure>
-    <div>
-      <p class="eyebrow">Clientes</p>
-      <h2 id="cli-t">Seu Daniel morou 30 anos na mesma casa</h2>
-      <blockquote><p>“Mas na hora que eu cheguei, meus amigos… dá uma tranquilidade.”</p></blockquote>
-      <blockquote class="q2"><p>“Do jeito que veio, chegou.”</p><cite>Sobre a cristaleira e a mesa de mármore</cite></blockquote>
-      <button class="btn ghost" type="button" data-video="media/ig/video-06.mp4"><svg class="ic"><use href="#i-play"/></svg>Assistir ao depoimento (1min15)</button>
+<section class="sec dark" id="experiencia" aria-labelledby="exp-t">
+  <div class="wrap exp">
+    <div class="exp-intro">
+      <p class="eyebrow">Experiência</p>
+      <h2 id="exp-t">Quem está mudando também precisa de cuidado</h2>
+      <p class="lead">Tem prazo, mudança de rotina e preocupação com as coisas de casa. A gente entende. Queremos ouvir o que preocupa você, combinar os cuidados e ajudar a organizar esse momento.</p>
+    </div>
+    <ul class="attitudes">
+      <li><b>A gente ouve o que exige atenção</b><span>Conte o que é frágil, o que tem valor afetivo e o que não pode atrasar.</span></li>
+      <li><b>A gente combina os detalhes com clareza</b><span>Endereços, data, o que a equipe embala e como cada peça vai ser protegida.</span></li>
+      <li><b>Dúvida tem espaço</b><span>Durante o atendimento, pergunte o que precisar pelo WhatsApp.</span></li>
+    </ul>
+    <div class="cli" id="cliente">
+      <figure class="cli-photo"><img src="media/hero/cliente.webp" alt="Seu Daniel, cliente, abraçado a um integrante da equipe Diego Mudanças, os dois sorrindo" width="720" height="900" loading="lazy"></figure>
+      <div class="cli-t">
+        <p class="cli-k">Seu Daniel morou 30 anos na mesma casa</p>
+        <blockquote><p>“Mas na hora que eu cheguei, meus amigos… dá uma tranquilidade.”</p></blockquote>
+        <blockquote class="q2"><p>“Do jeito que veio, chegou.”</p><cite>Sobre a cristaleira e a mesa de mármore</cite></blockquote>
+        <button class="btn ghost" type="button" data-video="media/ig/video-06.mp4"><svg class="ic"><use href="#i-play"/></svg>Assistir ao depoimento (1min15)</button>
+      </div>
+    </div>
+    <div class="exp-cta">
+      <a class="btn" data-wa-msg="Olá! Vou fazer uma mudança e queria contar o que me preocupa:" href="#orcamento"><svg class="ic"><use href="#i-wa"/></svg>Conte o que preocupa você na sua mudança</a>
     </div>
   </div>
 </section>

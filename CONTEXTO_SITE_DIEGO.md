@@ -57,3 +57,10 @@
 - Foto da sede: textos ilegíveis corrigidos (arroba no capô, letreiros pequenos) e placas desfocadas.
 - Sem GSAP: JS próprio em `site/main.js`. Menu fechado usa `hidden` (não captura cliques).
 - Seção "Gente de verdade, caminhões da casa" removida.
+
+## Atualização: cenas 3D e Experiência
+- Cenas 3D em Remotion + three.js (`src/three/`): `P3Geladeira`, `P3Sofa`, `P3Cama` (dois funcionários colocam a capa; IK de braços e pernas; capa deformável em `cover.js`; coreografias em `plans.js`) e `Route3D` (bairro e caminhão da frota).
+- Renderizar: `npx remotion render src/index.jsx P3Geladeira out/3d/P3Geladeira.mp4 --gl=swangle`. Vídeos do site em `site/media/anim/` (p3-*.mp4, rota3d.mp4 e pôsteres -inicio/-fim).
+- Rota começa sozinha com 60% da cena visível e pausa fora da tela; proteção começa no toque ("Proteger minha geladeira").
+- Nova seção "Experiência" (#experiencia) com o depoimento do seu Daniel.
+- Fotos dos serviços em `site/media/fotos/` (recortes próprios para desktop e celular). Foto do guarda-móveis enviada pelo usuário (parece gerada por IA).
