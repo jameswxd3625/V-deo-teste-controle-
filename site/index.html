@@ -66,19 +66,49 @@
 <main id="conteudo">
 
 <!-- ABERTURA -->
-<section class="hero" aria-labelledby="hero-t">
-  <div class="wrap hero-grid">
-    <div class="hero-copy">
-      <p class="eyebrow">Mudanças em Belo Horizonte e região</p>
-      <h1 id="hero-t">É a sua casa que vai <em>nesse caminhão.</em></h1>
-      <p class="hero-lead">Embalamos peça por peça, levamos com frota própria e entregamos no seu novo endereço.</p>
-      <div class="hero-cta">
-        <a class="btn btn-lg" href="#orcamento">Pedir orçamento<svg class="ic"><use href="#i-arrow"/></svg></a>
-        <a class="btn btn-lg ghost" href="#historia">Ver uma história real</a>
-      </div>
-    </div>
-    <div class="hero-frame">
-      <img class="hero-still" src="media/v3/abertura-final.webp" alt="Caminhão da Diego Mudanças estacionado na rua, com a rota azul até um novo endereço" width="810" height="1080" fetchpriority="high">
+<section class="hero2" aria-labelledby="hero-t">
+  <div class="h2-sky" aria-hidden="true"></div>
+  <div class="h2-floor" aria-hidden="true"></div>
+  <!-- rota: desktop -->
+  <svg class="h2-route h2-desk" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <path id="rD" d="M 70 790 C 380 800 640 770 900 760 C 1110 752 1150 600 1250 470 C 1300 405 1350 350 1390 320" pathLength="1" />
+      <path id="rD0" d="M 70 790 C 380 800 640 770 900 760 C 1110 752 1150 600 1250 470 C 1300 405 1350 350 1390 320" />
+      <filter id="glowD" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9" /></filter>
+    </defs>
+    <use href="#rD0" class="r-dots" />
+    <use href="#rD" class="r-glow" filter="url(#glowD)" />
+    <use href="#rD" class="r-w" /><use href="#rD" class="r-c" /><use href="#rD" class="r-b" />
+    <g class="r-start" transform="translate(70 790)"><circle r="34" class="halo" /><circle r="16" class="dot" /><path d="M-9 2 L0 -7 L9 2 M-6 0 V8 H6 V0" class="ico" /></g>
+    <g class="r-end" transform="translate(1390 320)"><circle r="60" class="halo big" /><path d="M0 0 C0 0 -30 -34 -30 -56 A30 30 0 1 1 30 -56 C30 -34 0 0 0 0 Z" class="pin" /><path d="M-11 -54 L0 -64 L11 -54 M-8 -56 V-44 H8 V-56" class="ico" /></g>
+    <g class="r-truck"><g transform="translate(-26 -20)"><rect x="0" y="4" width="34" height="24" rx="4" class="tb" /><path d="M34 12 H44 L52 20 V28 H34 Z" class="tc" /><circle cx="10" cy="30" r="5" class="tw" /><circle cx="42" cy="30" r="5" class="tw" /></g>
+      <animateMotion dur="7s" begin="2.2s" repeatCount="indefinite" rotate="auto" keyPoints="0;1;1" keyTimes="0;0.72;1" calcMode="linear"><mpath href="#rD0" /></animateMotion></g>
+  </svg>
+  <!-- rota: celular -->
+  <svg class="h2-route h2-mob" viewBox="0 0 390 844" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+    <defs>
+      <path id="rM" d="M 26 176 C 110 180 116 128 196 120 C 272 112 300 98 300 80 C 300 64 312 54 330 52" pathLength="1" />
+      <path id="rM0" d="M 26 176 C 110 180 116 128 196 120 C 272 112 300 98 300 80 C 300 64 312 54 330 52" />
+      <filter id="glowM" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5" /></filter>
+    </defs>
+    <use href="#rM0" class="r-dots" />
+    <use href="#rM" class="r-glow" filter="url(#glowM)" />
+    <use href="#rM" class="r-w" /><use href="#rM" class="r-c" /><use href="#rM" class="r-b" />
+    <g class="r-start" transform="translate(26 176)"><circle r="22" class="halo" /><circle r="11" class="dot" /><path d="M-6 1 L0 -5 L6 1 M-4 0 V5 H4 V0" class="ico" /></g>
+    <g class="r-end" transform="translate(330 52)"><circle r="40" class="halo big" /><path d="M0 0 C0 0 -20 -23 -20 -38 A20 20 0 1 1 20 -38 C20 -23 0 0 0 0 Z" class="pin" /><path d="M-7 -37 L0 -44 L7 -37 M-5 -38 V-30 H5 V-38" class="ico" /></g>
+    <g class="r-truck"><g transform="translate(-18 -14) scale(.7)"><rect x="0" y="4" width="34" height="24" rx="4" class="tb" /><path d="M34 12 H44 L52 20 V28 H34 Z" class="tc" /><circle cx="10" cy="30" r="5" class="tw" /><circle cx="42" cy="30" r="5" class="tw" /></g>
+      <animateMotion dur="7s" begin="2.2s" repeatCount="indefinite" rotate="auto" keyPoints="0;1;1" keyTimes="0;0.72;1" calcMode="linear"><mpath href="#rM0" /></animateMotion></g>
+  </svg>
+  <svg class="h2-waves" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 80C320 20 640 120 1000 70S1320 20 1440 50V160H0Z" fill="#fff" opacity=".95"/><path d="M0 102C330 50 650 140 1020 94S1320 54 1440 78V160H0Z" fill="#22C7F5"/><path d="M0 122C340 86 670 156 1040 118S1330 90 1440 104V160H0Z" fill="#1446E0"/><path d="M0 140C350 116 690 160 1060 140S1340 124 1440 130V160H0Z" fill="#020A22"/>
+  </svg>
+  <div class="wrap h2-copy">
+    <p class="eyebrow">Mudanças em Belo Horizonte e região</p>
+    <h1 id="hero-t">É a sua casa que vai <em>nesse caminhão.</em></h1>
+    <p class="h2-lead">Embalamos peça por peça, levamos com frota própria e entregamos no seu novo endereço.</p>
+    <div class="hero-cta">
+      <a class="btn btn-lg" href="#orcamento">Pedir orçamento<svg class="ic"><use href="#i-arrow"/></svg></a>
+      <a class="btn btn-lg ghost" href="#historia">Ver uma história real</a>
     </div>
   </div>
 </section>
