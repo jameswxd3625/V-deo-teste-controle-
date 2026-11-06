@@ -1,217 +1,217 @@
-/* Diego Mudanças — v4 */
+/* Diego Mudanças — interações do site */
 (function () {
   "use strict";
   var D = window.DIEGO || {};
   var doc = document.documentElement;
   doc.classList.add("js");
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
-  /* contatos */
+  /* ---------- contatos (config.js) ---------- */
   var waUrl = function (t) { return "https://wa.me/" + D.whatsapp + "?text=" + encodeURIComponent(t); };
-  $$("[data-wa-msg]").forEach(function (a) { a.href = waUrl(a.getAttribute("data-wa-msg")); a.target = "_blank"; a.rel = "noopener"; });
+  $$("[data-wa-msg]").forEach(function (a) {
+    a.href = waUrl(a.getAttribute("data-wa-msg"));
+    a.target = "_blank"; a.rel = "noopener";
+  });
   $$("[data-wa-label]").forEach(function (a) { a.textContent = "WhatsApp " + D.whatsappLabel; });
   $$("[data-ig]").forEach(function (a) { a.href = "https://www.instagram.com/" + D.instagram; });
   $$("[data-ig-label]").forEach(function (a) { a.textContent = "@" + D.instagram; });
+  $$("[data-site]").forEach(function (a) { a.textContent = D.site; });
   $$("[data-cidade]").forEach(function (a) { a.textContent = D.cidade; });
   $$("[data-ano]").forEach(function (a) { a.textContent = new Date().getFullYear(); });
 
-  /* menu */
+  /* ---------- topo, progresso, botão flutuante, link ativo ---------- */
+  var top = $(".top"), bar = $(".progress span"), fab = $(".wa-fab"), quote = $("#orcamento");
+  var ticking = false;
+  function onScroll() {
+    var y = window.scrollY, h = doc.scrollHeight - innerHeight;
+    top.classList.toggle("solid", y > 24);
+    bar.style.setProperty("--p", h > 0 ? (y / h).toFixed(4) : 0);
+    var q = quote.getBoundingClientRect();
+    fab.classList.toggle("show", y > innerHeight * 0.7 && !(q.top < innerHeight * 0.8 && q.bottom > 0));
+    ticking = false;
+  }
+  addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, {passive: true});
+  onScroll();
+  var navLinks = $$(".nav a");
+  var secObs = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      navLinks.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id); });
+    });
+  }, {rootMargin: "-45% 0px -50% 0px"});
+  $$("main section[id]").forEach(function (s) { secObs.observe(s); });
+
+  /* ---------- menu do celular ---------- */
   var mb = $(".menu-btn"), sheet = $("#menu");
   function setMenu(open) {
-    mb.setAttribute("aria-expanded", open); mb.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+    mb.setAttribute("aria-expanded", open);
+    mb.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
     document.body.style.overflow = open ? "hidden" : "";
-    if (open) { sheet.hidden = false; requestAnimationFrame(function () { sheet.classList.add("open"); }); }
-    else { sheet.classList.remove("open"); setTimeout(function () { if (mb.getAttribute("aria-expanded") === "false") sheet.hidden = true; }, 320); }
+    if (open) { sheet.hidden = false; requestAnimationFrame(function () { sheet.classList.add("open"); }); $("a", sheet).focus(); }
+    else { sheet.classList.remove("open"); setTimeout(function () { if (mb.getAttribute("aria-expanded") === "false") sheet.hidden = true; }, 350); }
   }
   mb.addEventListener("click", function () { setMenu(mb.getAttribute("aria-expanded") !== "true"); });
-  var sc = $(".sheet-close"); if (sc) sc.addEventListener("click", function () { setMenu(false); mb.focus(); });
   $$("a", sheet).forEach(function (a) { a.addEventListener("click", function () { setMenu(false); }); });
   addEventListener("keydown", function (e) { if (e.key === "Escape" && mb.getAttribute("aria-expanded") === "true") { setMenu(false); mb.focus(); } });
 
-  /* revelação suave (só o que está abaixo da primeira tela) */
-  var rvEls = $$(".b-head, .frame, .panel, .tile, .steps li, .story-media, .story-copy, .card, .faq details, .vhead, .q-head, .form");
-  rvEls.forEach(function (el, i) {
-    if (el.getBoundingClientRect().top < innerHeight) return;
-    el.classList.add("rv");
-    var sib = el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0;
-    el.style.setProperty("--d", Math.min(sib, 5) * 0.06 + "s");
+  /* ---------- revelação ao rolar (com escalonamento) ---------- */
+  var groups = new Map();
+  $$(".reveal").forEach(function (el) {
+    var p = el.parentElement, i = groups.get(p) || 0;
+    el.style.setProperty("--d", Math.min(i, 6) * 0.07 + "s");
+    groups.set(p, i + 1);
   });
-  var rv = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); rv.unobserve(e.target); } }); }, {rootMargin: "0px 0px -8% 0px"});
-  $$(".rv").forEach(function (el) { rv.observe(el); });
+  var rv = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); rv.unobserve(e.target); } });
+  }, {rootMargin: "0px 0px -8% 0px", threshold: 0.08});
+  $$(".reveal").forEach(function (el) { rv.observe(el); });
 
-  /* ============ o percurso que atravessa a página ============ */
-  var J = $("#journey"), jPaths = J ? $$("path", J) : [], jTruck = J && $(".j-truck", J), jMain = J && $(".j-b", J);
-  var jLen = 0, jTop = 0, jBottom = 0;
-  function absPos(el, fx, fy) { var r = el.getBoundingClientRect(); return [r.left + scrollX + r.width * fx, r.top + scrollY + r.height * fy]; }
-  function buildJourney() {
-    if (!J || !$(".hero-art")) return;
-    var W = doc.clientWidth, mob = W < 980;
-    var hero = $(".hero-art"), dest = $("#dest");
-    var start = mob ? [13, absPos(hero, 0.5, 0.9)[1]] : absPos(hero, 0.92, 0.9); // sai da ilustração
-    var end = mob ? [13, absPos(dest, 0.5, 0.92)[1]] : absPos(dest, 0.5, 0.92);
-    var secs = ["#como-funciona", "#protecao", "#historia", "#servicos", "#videos", "#duvidas"].map(function (s) { return $(s); });
-    var edgeL = mob ? 10 : Math.max(26, (W - 1200) / 2 - 40), edgeR = mob ? W - 10 : W - edgeL;
-    var pts = [start];
-    secs.forEach(function (s, i) {
-      var r = s.getBoundingClientRect(), y = r.top + scrollY;
-      var x = (i % 2 === 0) ? edgeR : edgeL;
-      if (mob) x = 13;
-      pts.push([x, y + 70]);
-      pts.push([x, y + r.height - 70]);
+  /* ---------- brilho que segue o cursor nos cartões ---------- */
+  $$(".card").forEach(function (c) {
+    c.addEventListener("pointermove", function (e) {
+      var r = c.getBoundingClientRect();
+      c.style.setProperty("--mx", (e.clientX - r.left) + "px");
+      c.style.setProperty("--my", (e.clientY - r.top) + "px");
     });
-    pts.push(end);
-    // curva suave: vertical nas margens, cruzando nas folgas entre seções
-    var d = "M " + pts[0][0].toFixed(1) + " " + pts[0][1].toFixed(1);
-    for (var i = 1; i < pts.length; i++) {
-      var a = pts[i - 1], b = pts[i], dy = (b[1] - a[1]) * 0.5;
-      d += " C " + a[0].toFixed(1) + " " + (a[1] + dy).toFixed(1) + " " + b[0].toFixed(1) + " " + (b[1] - dy).toFixed(1) + " " + b[0].toFixed(1) + " " + b[1].toFixed(1);
-    }
-    var H = doc.scrollHeight;
-    J.setAttribute("width", W); J.setAttribute("height", H); J.style.height = H + "px";
-    J.setAttribute("viewBox", "0 0 " + W + " " + H);
-    jPaths.forEach(function (p) { p.setAttribute("d", d); });
-    jLen = jMain.getTotalLength(); jTop = start[1]; jBottom = end[1];
-    drawJourney();
-  }
-  function drawJourney() {
-    if (!jLen || !J) return;
-    var target = scrollY + innerHeight * 0.62;
-    var p = reduce ? 1 : Math.max(0, Math.min(1, (target - jTop) / (jBottom - jTop)));
-    // progresso por distância vertical aproximada ao longo da curva
-    var lo = 0, hi = jLen, pt;
-    var yT = jTop + (jBottom - jTop) * p;
-    for (var k = 0; k < 22; k++) { var mid = (lo + hi) / 2; pt = jMain.getPointAtLength(mid); if (pt.y < yT) lo = mid; else hi = mid; }
-    var frac = lo / jLen;
-    J.style.setProperty("--jp", frac.toFixed(4));
-    var a = jMain.getPointAtLength(lo), b = jMain.getPointAtLength(Math.min(jLen, lo + 2));
-    var ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
-    var flip = Math.abs(ang) > 90;
-    jTruck.setAttribute("transform", "translate(" + a.x.toFixed(1) + " " + a.y.toFixed(1) + ") rotate(" + (flip ? ang + 180 : ang).toFixed(1) + ")" + (flip ? " scale(-1 1)" : ""));
-    jTruck.style.opacity = frac > 0.03 && frac < 0.995 && !reduce ? 1 : 0;
-  }
-  var ticking = false;
-  addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(function () { drawJourney(); onScroll(); ticking = false; }); } }, {passive: true});
-  var rT; addEventListener("resize", function () { clearTimeout(rT); rT = setTimeout(buildJourney, 150); });
-  addEventListener("load", buildJourney);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(buildJourney);
-  buildJourney();
+  });
 
-  /* topo, botão flutuante, link ativo */
-  var top = $(".top"), fab = $(".wa-fab"), quote = $("#orcamento");
-  function onScroll() {
-    top.classList.toggle("solid", scrollY > 20);
-    var q = quote.getBoundingClientRect();
-    fab.classList.toggle("show", scrollY > innerHeight * 0.8 && !(q.top < innerHeight * 0.85));
-  }
-  onScroll();
-  var navLinks = $$(".nav a");
-  var so = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) navLinks.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id); }); }); }, {rootMargin: "-45% 0px -50% 0px"});
-  $$("main section[id]").forEach(function (s) { so.observe(s); });
-
-  /* ============ como funciona: etapas + percurso ============ */
-  var steps = $$("#steps li"), sw = $("#stepsWrap"), stepTimer = null, cur = -1;
-  function setStep(k) {
-    cur = k;
-    steps.forEach(function (li, i) { li.classList.toggle("on", i === k); li.classList.toggle("past", i < k); });
-    sw.style.setProperty("--sp", steps[k].dataset.p);
-  }
-  function auto() { clearInterval(stepTimer); if (reduce) return; stepTimer = setInterval(function () { setStep((cur + 1) % steps.length); }, 2600); }
-  steps.forEach(function (li, i) { $("button", li).addEventListener("click", function () { setStep(i); auto(); }); });
-  new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { if (cur < 0) setStep(0); auto(); } else clearInterval(stepTimer); }); }, {threshold: 0.3}).observe(sw);
-  if (reduce) setStep(3);
-
-  /* ============ capas: Geladeira · Sofá · Cama ============ */
-  var cv = $("#capas"), pBtns = $$("#pieces button[role=tab]"), pNote = $("#pieceNote");
-  var pTimes = pBtns.map(function (b) { return parseFloat(b.dataset.at); });
-  var NOTES = ["Geladeira: o tecido encontra primeiro as quinas e desce pelas laterais.", "Sofá: a capa se acomoda nos braços e depois no assento.", "Cama: a capa acompanha a espessura e os cantos do colchão."];
-  var pCur = -1;
-  function pSet(k) { if (k === pCur) return; pCur = k; pBtns.forEach(function (b, i) { b.setAttribute("aria-selected", i === k); }); pNote.textContent = NOTES[k]; }
-  function pTick() { var t = cv.currentTime, k = 0; for (var i = 0; i < pTimes.length; i++) if (t >= pTimes[i] - 0.4) k = i; pSet(k); if (!cv.paused) requestAnimationFrame(pTick); }
-  cv.addEventListener("play", function () { requestAnimationFrame(pTick); });
-  cv.addEventListener("seeked", pTick);
-  function playV(v) { if (reduce || v.dataset.user === "paused") return; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
-  pBtns.forEach(function (b, i) { b.addEventListener("click", function () { if (!cv.src) cv.src = cv.dataset.src; cv.currentTime = pTimes[i] + 0.05; pSet(i); playV(cv); }); });
-  pSet(0);
-  new IntersectionObserver(function (es) { es.forEach(function (e) { var v = e.target; if (e.isIntersecting) { if (!v.src) v.src = v.dataset.src; playV(v); } else v.pause(); }); }, {threshold: 0.25}).observe(cv);
-  $$(".vtoggle").forEach(function (b) {
+  /* ---------- animações (vídeos Remotion em loop) ---------- */
+  var loops = $$("video.loop");
+  loops.forEach(function (v) { if (v.dataset.src) v.src = v.dataset.src; v.dataset.user = ""; });
+  function tryPlay(v) { if (reduce.matches || v.dataset.user === "paused" || (v.classList.contains("once") && v.ended)) return; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+  var lo = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) tryPlay(e.target); else e.target.pause(); });
+  }, {threshold: 0.2});
+  loops.forEach(function (v) { v.preload = "auto"; lo.observe(v); });
+  $$(".loop-toggle").forEach(function (b) {
     var v = document.getElementById(b.dataset.for);
-    function sync() { b.setAttribute("aria-label", v.paused ? "Reproduzir animação" : "Pausar animação"); $("use", b).setAttribute("href", v.paused ? "#i-play" : "#i-pause"); }
-    b.addEventListener("click", function () { if (v.paused) { v.dataset.user = ""; if (!v.src) v.src = v.dataset.src; var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else { v.dataset.user = "paused"; v.pause(); } });
+    function sync() {
+      var paused = v.paused;
+      b.setAttribute("aria-label", paused ? "Reproduzir animação" : "Pausar animação");
+      $("use", b).setAttribute("href", paused ? "#i-play" : "#i-pause");
+    }
+    b.addEventListener("click", function () {
+      if (v.ended) { v.currentTime = 0; v.dataset.user = ""; tryPlay(v); return; }
+      if (v.paused) { v.dataset.user = ""; tryPlay(v); } else { v.dataset.user = "paused"; v.pause(); }
+    });
+    v.addEventListener("ended", function () { b.setAttribute("aria-label", "Ver a animação de novo"); $("use", b).setAttribute("href", "#i-play"); });
     v.addEventListener("play", sync); v.addEventListener("pause", sync); sync();
   });
 
-  /* ============ história: ouvir com som ============ */
-  var sm = $("#storyMedia"), sPlay = $(".story-play", sm);
-  function playStory() {
-    $$("video").forEach(function (o) { if (!o.muted) o.pause(); });
-    var v = $("video", sm);
-    if (!v) { v = document.createElement("video"); v.src = sPlay.dataset.src; v.controls = true; v.playsInline = true; v.poster = $("img", sm).src; sm.appendChild(v); }
-    sm.classList.add("on"); v.muted = false;
-    var pr = v.play(); if (pr && pr.catch) pr.catch(function () {});
-    sm.scrollIntoView({block: "nearest", behavior: reduce ? "auto" : "smooth"});
+  /* ---------- passos sincronizados com as animações ---------- */
+  function syncList(video, items, times, end) {
+    var cur = -1;
+    function update() {
+      var t = video.currentTime, k = 0;
+      for (var i = 0; i < times.length; i++) if (t >= times[i]) k = i;
+      if (end && t > end) k = -1;
+      if (k !== cur) { items.forEach(function (li, i) { li.classList.toggle("on", i === k); }); cur = k; }
+      if (!video.paused) requestAnimationFrame(update);
+    }
+    video.addEventListener("play", function () { requestAnimationFrame(update); });
+    video.addEventListener("seeked", update);
+    if (reduce.matches) items.forEach(function (li) { li.classList.remove("on"); });
+    return update;
   }
-  sPlay.addEventListener("click", playStory);
-  $("#storyBtn").addEventListener("click", playStory);
+  var jv = $("#journeyVideo"), jItems = $$("#journeySteps li");
+  var jTimes = jItems.map(function (li) { return parseFloat(li.dataset.at); });
+  var jUpdate = syncList(jv, jItems, jTimes, 8.6);
+  jItems.forEach(function (li, i) {
+    $("button", li).addEventListener("click", function () {
+      jv.currentTime = jTimes[i] + 0.05; jUpdate();
+      jItems.forEach(function (o, k) { o.classList.toggle("on", k === i); });
+      if (jv.dataset.user !== "paused") tryPlay(jv);
+    });
+  });
+  var pItems = $$("#protectSteps li");
+  syncList($("#protectVideo"), pItems.concat([pItems[0]]), [0, 4.25, 8.85, 13.45]);
+  // linha de percurso dos serviços: desenha conforme a rolagem
+  var svc = $(".services"), svr = $(".svc-route");
+  function routeDraw() {
+    var r = svc.getBoundingClientRect(), vh = innerHeight;
+    var p = Math.max(0, Math.min(1, (vh * 0.85 - r.top) / (r.height + vh * 0.2)));
+    svr.style.setProperty("--rp", reduce.matches ? 1 : p.toFixed(3));
+  }
+  addEventListener("scroll", function () { requestAnimationFrame(routeDraw); }, {passive: true});
+  routeDraw();
 
-  /* ============ vídeos reais ============ */
+  /* abertura: leve paralaxe dos cartões com o ponteiro */
+  var hx = $("#hxStack");
+  if (hx && !reduce.matches && matchMedia("(pointer:fine)").matches) {
+    hx.addEventListener("pointermove", function (e) {
+      var r = hx.getBoundingClientRect(), dx = (e.clientX - r.left) / r.width - .5, dy = (e.clientY - r.top) / r.height - .5;
+      Array.prototype.forEach.call(hx.querySelectorAll(".hx-card"), function (c, i) { var k = (i + 1) * 6; c.style.setProperty("--px", (dx * k).toFixed(1) + "px"); c.style.setProperty("--py", (dy * k).toFixed(1) + "px"); });
+    });
+  }
+
+  /* ---------- trilho de vídeos reais ---------- */
   var V = [
-    ["media/ig/video-06", "30 anos na mesma casa", "Seu Daniel"],
-    ["media/ig/video-09", "Mais uma mudança entregue", "Palavra de cliente"],
-    ["media/ig/video-04", "Embalagem completa", "Item por item"],
-    ["media/ig/video-02", "A queridinha da casa", "A geladeira"],
-    ["media/ig/video-01", "Guarda-móveis", "Proteção em camadas"],
-    ["media/ig/video-03", "Tudo em um só lugar", "Frota e equipe"],
-    ["media/equipe-02-paqueta", "Equipe 02 em execução", "Paquetá, BH"],
-    ["media/hora-de-descarregar", "Hora de descarregar", "Nossos caminhões"],
-    ["media/ig/video-16", "Como num passe de mágica", "Antes e depois"],
-    ["media/ig/video-05", "Uma nova fase na frota", "Novas plotagens"],
-    ["media/ig/video-07", "Nossos caminhões", "Frota própria"],
-    ["media/ig/video-08", "Proteção e fé", "Salmo 139"]
+    ["media/filme-diego", "Conheça a Diego", "Filme institucional", "Novo"],
+    ["media/ig/video-06", "30 anos na mesma casa", "Uma mudança especial", "Cliente"],
+    ["media/ig/video-09", "Mais uma mudança entregue", "Palavra de cliente", "Cliente"],
+    ["media/ig/video-04", "Embalagem completa", "Item por item", ""],
+    ["media/ig/video-02", "A queridinha da casa", "Proteção da geladeira", ""],
+    ["media/ig/video-01", "Guarda-móveis", "Proteção em camadas", ""],
+    ["media/ig/video-03", "Tudo em um só lugar", "Conectando destinos", ""],
+    ["media/equipe-02-paqueta", "Equipe 02 em execução", "Bairro Paquetá, BH", ""],
+    ["media/hora-de-descarregar", "Hora de descarregar", "Nossos caminhões", ""],
+    ["media/ig/video-16", "Como num passe de mágica", "Antes e depois", ""],
+    ["media/ig/video-05", "Uma nova fase na frota", "Novas plotagens", ""],
+    ["media/ig/video-07", "Nossos caminhões", "Frota própria", ""],
+    ["media/ig/video-08", "Proteção e fé", "Salmo 139", ""],
+    ["media/ig/video-25", "Bastidores", "Com o Diego", ""]
   ];
   var rail = $("#vrail");
   rail.innerHTML = V.map(function (v) {
-    return '<div class="vid" style="background-image:url(' + v[0] + '.webp)"><button class="play" type="button" data-src="' + v[0] + '.mp4" aria-label="Assistir: ' + v[1] + '"><i><svg><use href="#i-play"/></svg></i><b>' + v[1] + "</b><span>" + v[2] + "</span></button></div>";
+    return '<div class="vid" style="background-image:url(' + v[0] + '.webp)">' +
+      (v[3] ? '<span class="tag">' + v[3] + "</span>" : "") +
+      '<button class="play" type="button" data-src="' + v[0] + '.mp4" aria-label="Assistir: ' + v[1] + '">' +
+      '<i><svg><use href="#i-play"/></svg></i><b>' + v[1] + "</b><span>" + v[2] + "</span></button></div>";
   }).join("");
   $$(".vid .play", rail).forEach(function (b) {
     b.addEventListener("click", function () {
       $$("video", rail).forEach(function (o) { o.pause(); });
       var box = b.parentElement, v = $("video", box);
-      if (!v) { v = document.createElement("video"); v.src = b.dataset.src; v.controls = true; v.playsInline = true; box.insertBefore(v, box.firstChild); }
-      box.classList.add("on"); var pr = v.play(); if (pr && pr.catch) pr.catch(function () {});
+      if (!v) {
+        v = document.createElement("video");
+        v.src = b.dataset.src; v.controls = true; v.playsInline = true; v.preload = "auto";
+        box.insertBefore(v, box.firstChild);
+      }
+      box.classList.add("on");
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+      v.focus();
     });
   });
-  $$(".rn").forEach(function (b) { b.addEventListener("click", function () { rail.scrollBy({left: parseInt(b.dataset.dir, 10) * rail.clientWidth * 0.8, behavior: reduce ? "auto" : "smooth"}); }); });
+  $$(".rn").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var r = document.getElementById(b.dataset.rail);
+      r.scrollBy({left: parseInt(b.dataset.dir, 10) * r.clientWidth * 0.8, behavior: reduce.matches ? "auto" : "smooth"});
+    });
+  });
 
-  /* ============ orçamento ============ */
+  /* ---------- orçamento: monta a mensagem e abre o WhatsApp ---------- */
   var form = $("#form");
-  var gmOnly = $(".gm-only", form), lO = $("[data-l-origem]", form), lD = $("[data-l-destino]", form), dIn = form.elements.destino;
-  function tipoChanged() {
-    var gm = form.elements.tipo.value === "guarda-móveis";
-    gmOnly.hidden = !gm;
-    lO.textContent = gm ? "Onde os móveis estão" : "Saindo de";
-    lD.innerHTML = gm ? 'Endereço final <small>(se já souber)</small>' : "Indo para";
-    dIn.required = !gm; dIn.placeholder = gm ? "Ainda não sei / bairro e cidade" : "Bairro e cidade";
-    if (gm) dIn.closest(".field").classList.remove("bad");
-    buildJourney();
+  function check(inp) {
+    var ok = inp.value.trim().length > 1;
+    inp.closest(".field").classList.toggle("bad", !ok);
+    inp.setAttribute("aria-invalid", !ok);
+    return ok;
   }
-  $$("input[name=tipo]", form).forEach(function (r) { r.addEventListener("change", tipoChanged); });
-  $$("[data-tipo]").forEach(function (a) { a.addEventListener("click", function () { var r = $('input[name=tipo][value="' + a.dataset.tipo + '"]', form); if (r) { r.checked = true; tipoChanged(); } }); });
-  function check(inp) { var ok = inp.value.trim().length > 1; inp.closest(".field").classList.toggle("bad", !ok); inp.setAttribute("aria-invalid", !ok); return ok; }
-  $$("[name=origem],[name=destino],[name=nome]", form).forEach(function (i) {
-    i.addEventListener("blur", function () { if (i.value && i.required) check(i); });
+  $$("[required]", form).forEach(function (i) {
+    i.addEventListener("blur", function () { if (i.value) check(i); });
     i.addEventListener("input", function () { if (i.closest(".bad")) check(i); });
   });
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var bad = $$("[required]", form).filter(function (i) { return !check(i); });
     if (bad.length) { bad[0].focus(); return; }
-    var f = new FormData(form), gm = f.get("tipo") === "guarda-móveis";
+    var f = new FormData(form);
     var t = "Olá! Meu nome é " + f.get("nome").trim() + ".\n" +
-      "Gostaria de um orçamento: " + (gm ? "guarda-móveis" : "mudança " + f.get("tipo")) + ".\n" +
-      (gm ? "Os móveis estão em: " + f.get("origem").trim() + "\nEndereço final: " + (f.get("destino").trim() || "ainda não definido") + (f.get("tempo").trim() ? "\nPor quanto tempo: " + f.get("tempo").trim() : "")
-          : "Saindo de: " + f.get("origem").trim() + "\nIndo para: " + f.get("destino").trim()) +
+      "Gostaria de um orçamento (" + f.get("tipo") + ").\n" +
+      "Saindo de: " + f.get("origem").trim() + "\n" +
+      "Indo para: " + f.get("destino").trim() +
       (f.get("itens").trim() ? "\nPreciso levar: " + f.get("itens").trim() : "") +
       (f.get("data").trim() ? "\nData aproximada: " + f.get("data").trim() : "") +
       "\n\n(Mensagem enviada pelo site)";
