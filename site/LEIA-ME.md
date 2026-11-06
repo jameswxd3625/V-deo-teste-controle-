@@ -10,7 +10,7 @@ Para outra hospedagem, publique a pasta `site/` (Hostinger, Netlify, Vercel...).
 - **Vídeos da seção "Veja a Diego em ação":** lista no início de "trilho de vídeos reais" em `main.js` (arquivo, título, subtítulo, selo).
 
 ## Animações (Remotion, em `src/site/`)
-- `HeroReal.jsx` (composição `HeroReal`) → `media/v3/abertura.mp4`: gesto real com papel (vídeo 04, 35,3 s), revelação do caminhão real (`public/diego/caminhao_rua.jpg`) e a rota que nasce da faixa azul da cabine.
+- Abertura: foto fixa `media/v3/abertura-final.webp` (quadro final de `HeroReal.jsx`, o vídeo foi retirado do site). A composição `HeroReal` continua no projeto: gesto real com papel (vídeo 04, 35,3 s), revelação do caminhão real (`public/diego/caminhao_rua.jpg`) e a rota que nasce da faixa azul da cabine.
 - `Scenes.jsx` (composição `ProtectV2`) → `media/v3/capas.mp4`: geladeira (0 s), sofá (4,6 s), cama (9,2 s) e o detalhe real da capa (13,8 s). Os botões Geladeira · Sofá · Cama usam esses tempos.
 - `Scenes.jsx` (`SvHome`, `SvWrap`, `SvTruck`, `SvStorage`) → `media/v2/sv-*.mp4`, vídeos dos serviços.
 - `SiteLoops.jsx` (`SiteJourney`) → `media/loops/jornada.mp4`, o percurso de "Como funciona".
