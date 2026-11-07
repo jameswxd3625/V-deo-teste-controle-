@@ -76,13 +76,15 @@ h3{font-size:clamp(19px,1.6vw,21px);line-height:1.25;letter-spacing:-.01em}
 .facts li{display:flex;align-items:center;gap:8px}
 .facts li::before{content:"";width:8px;height:8px;background:var(--cyan);border-radius:2px}
 .hero-photo{grid-column:2;grid-row:1;position:relative;align-self:stretch;min-height:440px;overflow:hidden;background:#24356b}
-.hero-photo picture,.hero-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 62%}
+.hero-photo picture,.hero-photo img{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;object-fit:cover;object-position:62% 62%}
+.hero-photo picture{display:block}
 /* abertura curta: a porta de enrolar do baú sobe em 0,6 s; título e botões já estão na tela */
-.slats{position:absolute;inset:0;display:flex;flex-direction:column;pointer-events:none}
-.slats i{flex:1;background:linear-gradient(180deg,#F4F6F9,#DDE2E9);border-bottom:1px solid #C5CCD6;transform-origin:50% 0;animation:slat .5s cubic-bezier(.6,0,.3,1) both}
+.slats{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;pointer-events:none}
+.slats i{flex:1;background:linear-gradient(180deg,#F4F6F9,#DDE2E9);border-bottom:1px solid #C5CCD6;-webkit-transform:scaleY(0);transform:scaleY(0);-webkit-transform-origin:50% 0;transform-origin:50% 0;-webkit-animation:slat .5s cubic-bezier(.6,0,.3,1) backwards;animation:slat .5s cubic-bezier(.6,0,.3,1) backwards}
 .slats i:nth-child(8){animation-delay:0s}.slats i:nth-child(7){animation-delay:.02s}.slats i:nth-child(6){animation-delay:.04s}.slats i:nth-child(5){animation-delay:.06s}
 .slats i:nth-child(4){animation-delay:.08s}.slats i:nth-child(3){animation-delay:.1s}.slats i:nth-child(2){animation-delay:.12s}.slats i:nth-child(1){animation-delay:.14s}
-@keyframes slat{to{transform:scaleY(0)}}
+@-webkit-keyframes slat{from{-webkit-transform:scaleY(1);transform:scaleY(1)}to{-webkit-transform:scaleY(0);transform:scaleY(0)}}
+@keyframes slat{from{transform:scaleY(1)}to{transform:scaleY(0)}}
 .rm .slats,html:not(.js) .slats{display:none}
 
 /* ---------- seções ---------- */
@@ -221,8 +223,9 @@ h3{font-size:clamp(19px,1.6vw,21px);line-height:1.25;letter-spacing:-.01em}
 /* ---------- celular ---------- */
 @media (max-width:860px){
   .hero{grid-template-columns:1fr;min-height:0}
-  .hero-photo{grid-column:1;grid-row:1;min-height:0;aspect-ratio:1100/584}
-  .hero-photo img{object-position:50% 50%}
+  .hero-photo{grid-column:1;grid-row:1;min-height:0;align-self:start;width:100%}
+  .hero-photo picture{position:static;display:block;width:100%;height:auto}
+  .hero-photo img{position:static;display:block;width:100%;height:auto;aspect-ratio:1100/584;object-position:50% 50%}
   .hero-copy{grid-row:2;padding:22px var(--gut) 44px;max-width:720px}
 }
 @media (max-width:760px){
