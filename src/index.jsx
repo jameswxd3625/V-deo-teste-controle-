@@ -10,6 +10,7 @@ import {HeroLoop, JourneyLoop, ProtectLoop, JOURNEY_T, PROTECT_T} from "./site/S
 import {HeroReal, HERO3_T} from "./site/HeroReal";
 import {CoverScene, COVER_T, RouteScene, ROUTE_T} from "./site/Craft";
 import {T3} from "./three/Test";
+import {Imersivo, IMV_FPS, IMV_T} from "./imersivo/Imersivo";
 import {Protect3D, PIECES} from "./three/Protect3D";
 import {Route3D, ROUTE3D_T} from "./three/Route3D";
 import {Stage, HeroScene, ProtectScene, HERO_T, PROT_T, SvHome, SvWrap, SvTruck, SvStorage, SV_T} from "./site/Scenes";
@@ -297,6 +298,7 @@ registerRoot(() => (
     <Composition id="P3Sofa" component={Protect3D} durationInFrames={Math.round(PIECES.sofa.T * 30)} fps={30} width={1080} height={1080} defaultProps={{item: "sofa"}} />
     <Composition id="P3Cama" component={Protect3D} durationInFrames={Math.round(PIECES.cama.T * 30)} fps={30} width={1080} height={1080} defaultProps={{item: "cama"}} />
     <Composition id="Route3D" component={Route3D} durationInFrames={Math.round(ROUTE3D_T * 30)} fps={30} width={1200} height={900} />
+    <Composition id="Imersivo" component={Imersivo} durationInFrames={IMV_T * IMV_FPS} fps={IMV_FPS} width={1080} height={1920} />
     <Composition id="T3" component={T3} durationInFrames={30} fps={30} width={1080} height={1080} />
     <Composition id="Anuncio" component={Ad} durationInFrames={900} fps={30} width={1080} height={1920} />
     <Composition id="ConttroleMotionV3" component={MotionV3} durationInFrames={6 * FPS_V3} fps={FPS_V3} width={1080} height={1920} />
