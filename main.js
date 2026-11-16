@@ -67,6 +67,10 @@
   }, {threshold: .2});
   if (motion && !lite) $$("video.auto").forEach(function (v) { vo.observe(v); });
 
+  /* embalagem: só anima quando aparece */
+  var pko = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle("play", e.isIntersecting); }); }, {threshold: .25});
+  $$(".pack").forEach(function (el) { pko.observe(el); });
+
   /* animações contínuas pausam fora da tela */
   var po = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle("paused", !e.isIntersecting); }); });
   $$(".hero, .faith").forEach(function (el) { po.observe(el); });

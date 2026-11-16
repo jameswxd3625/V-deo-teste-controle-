@@ -377,3 +377,34 @@ html:not(.motion) .rider{display:none}
   .scard-media{aspect-ratio:auto}
   .arts-row img{height:min(62svh,540px)}
 }
+
+/* embalagem: taça e copo embrulhados e encaixotados */
+.pack{background:#06205F}
+.pack svg{width:100%;height:100%}
+.pack [class^="pk-"]{transform-box:view-box}
+.pk-p1,.pk-p2{transform-origin:75px 191px;transform:scaleY(0)}
+.pk-p2{transform-origin:136px 191px}
+.pk-f1{transform-origin:192px 129px;transform:rotate(-125deg)}
+.pk-f2{transform-origin:288px 129px;transform:rotate(125deg)}
+.pk-tape{transform-origin:188px 129px;transform:scaleX(0)}
+.pk-tag{opacity:0}
+.pk-ok{opacity:0}
+html:not(.motion) .pk-p1,html:not(.motion) .pk-p2{transform:none}
+.motion .pack.play .pk-g1{animation:pkg1 8s infinite}
+.motion .pack.play .pk-p1{animation:pkp1 8s infinite}
+.motion .pack.play .pk-g2{animation:pkg2 8s infinite}
+.motion .pack.play .pk-p2{animation:pkp2 8s infinite}
+.motion .pack.play .pk-f1{animation:pkf1 8s infinite}
+.motion .pack.play .pk-f2{animation:pkf2 8s infinite}
+.motion .pack.play .pk-tape{animation:pktape 8s infinite}
+.motion .pack.play .pk-tag{animation:pktag 8s infinite}
+.motion .pack.play .pk-ok{animation:pkok 8s infinite}
+@keyframes pkp1{0%,12%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}26%,94%{transform:scaleY(1)}96%,100%{transform:scaleY(0)}}
+@keyframes pkg1{0%,28%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.6,0,.3,1)}38%{transform:translate(165px,-74px)}46%{transform:translate(165px,34px);animation-timing-function:ease-in}92%{transform:translate(165px,34px);opacity:1}94%{opacity:0;transform:translate(165px,34px)}96%{transform:none;opacity:0}100%{transform:none;opacity:1}}
+@keyframes pkp2{0%,44%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}56%,94%{transform:scaleY(1)}96%,100%{transform:scaleY(0)}}
+@keyframes pkg2{0%,58%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.6,0,.3,1)}66%{transform:translate(104px,-74px)}72%{transform:translate(104px,34px)}92%{transform:translate(104px,34px);opacity:1}94%{opacity:0;transform:translate(104px,34px)}96%{transform:none;opacity:0}100%{transform:none;opacity:1}}
+@keyframes pkf1{0%,74%{transform:rotate(-125deg);animation-timing-function:cubic-bezier(.6,0,.3,1)}79%,92%{transform:none}96%,100%{transform:rotate(-125deg)}}
+@keyframes pkf2{0%,76%{transform:rotate(125deg);animation-timing-function:cubic-bezier(.6,0,.3,1)}81%,92%{transform:none}96%,100%{transform:rotate(125deg)}}
+@keyframes pktape{0%,82%{transform:scaleX(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}87%,92%{transform:scaleX(1)}95%,100%{transform:scaleX(0)}}
+@keyframes pktag{0%,86%{opacity:0;transform:translate(0,-6px)}89%,92%{opacity:1;transform:none}95%,100%{opacity:0}}
+@keyframes pkok{0%,88%{opacity:0}90%,93%{opacity:1}95%,100%{opacity:0}}
