@@ -17,26 +17,7 @@
   $$("[data-cidade]").forEach(function (a) { a.textContent = D.cidade; });
   $$("[data-ano]").forEach(function (a) { a.textContent = new Date().getFullYear(); });
 
-  /* ---------- cenário da abertura (desenhado aqui, pesa quase nada) ---------- */
-  var seed = 7; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
-  function svgUrl(inner) { return 'url("data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 200" preserveAspectRatio="none">' + inner + "</svg>") + '")'; }
-  var city = "", x = 0;
-  while (x < 1200) {
-    var w = Math.min(28 + rnd() * 64, 1200 - x), h = 46 + rnd() * 140, y = 200 - h;
-    if (1200 - x - w < 30) w = 1200 - x;
-    city += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + h.toFixed(1) + '" fill="' + (rnd() > .5 ? "#061858" : "#08206B") + '"/>';
-    if (h > 150 && rnd() > .4) city += '<rect x="' + (x + w / 2 - 1).toFixed(1) + '" y="' + (y - 16).toFixed(1) + '" width="2" height="16" fill="#08206B"/><circle cx="' + (x + w / 2).toFixed(1) + '" cy="' + (y - 17).toFixed(1) + '" r="2" fill="#FF6B6B"/>';
-    for (var cx = x + 6; cx < x + w - 8; cx += 10) for (var cy = y + 8; cy < 194; cy += 14) if (rnd() < .13) city += '<rect x="' + cx.toFixed(1) + '" y="' + cy.toFixed(1) + '" width="4" height="6" fill="' + (rnd() > .3 ? "#9BEBFF" : "#FFE7A8") + '" opacity=".85"/>';
-    x += w + 2;
-  }
-  var lamps = '<defs><radialGradient id="g"><stop offset="0" stop-color="#FFF3C4" stop-opacity=".9"/><stop offset=".25" stop-color="#9BEBFF" stop-opacity=".35"/><stop offset="1" stop-color="#9BEBFF" stop-opacity="0"/></radialGradient></defs>';
-  for (var lx = 150; lx < 1200; lx += 400) {
-    lamps += '<circle cx="' + (lx + 30) + '" cy="44" r="46" fill="url(#g)"/><rect x="' + lx + '" y="40" width="5" height="160" fill="#030B2A"/><path d="M' + (lx + 2) + ' 42q0-10 14-10h18" stroke="#030B2A" stroke-width="4" fill="none"/><rect x="' + (lx + 22) + '" y="34" width="20" height="6" rx="3" fill="#FFF3C4"/>';
-    lamps += '<circle cx="' + (lx + 200) + '" cy="150" r="30" fill="#030B2A"/><circle cx="' + (lx + 228) + '" cy="160" r="24" fill="#030B2A"/><circle cx="' + (lx + 176) + '" cy="164" r="22" fill="#030B2A"/><rect x="' + (lx + 196) + '" y="160" width="6" height="40" fill="#030B2A"/>';
-  }
   var scene = $(".scene");
-  scene.style.setProperty("--city", svgUrl(city));
-  scene.style.setProperty("--lamps", svgUrl(lamps));
 
   /* ---------- cabeçalho e menu ---------- */
   var hd = $(".hd"), fab = $(".wa-fab"), mb = $(".menu-btn"), sheet = $("#menu");
@@ -116,17 +97,17 @@
   ];
   var flow = $("#flow");
   flow.innerHTML = V.map(function (v) {
-    return '<div class="card" data-bg="' + v[0] + '.webp"><button type="button" data-video="' + v[0] + '.mp4" aria-label="Assistir: ' + v[1] + '"><i><svg><use href="#i-play"/></svg></i><b>' + v[1] + "</b><span>" + v[2] + "</span></button></div>";
+    return '<div class="card" data-bg="' + v[0] + '.webp"><button type="button" data-video="' + v[0] + '.mp4" ><i><svg aria-hidden="true"><use href="#i-play"/></svg></i><b>' + v[1] + "</b> <span>" + v[2] + "</span></button></div>";
   }).join("");
   var cards = $$(".card", flow);
   var co = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.style.backgroundImage = "url(" + e.target.dataset.bg + ")"; co.unobserve(e.target); } }); }, {root: flow, rootMargin: "0px 400px"});
-  cards.forEach(function (c) { co.observe(c); });
+  new IntersectionObserver(function (es, o) { if (es[0].isIntersecting) { o.disconnect(); cards.forEach(function (c) { co.observe(c); }); } }, {rootMargin: "600px 0px"}).observe(flow);
   $$("button", flow).forEach(function (b) { b.addEventListener("click", function () { openVideo(b.dataset.video); }); });
   function coverflow() {
     var c = flow.getBoundingClientRect(), mid = c.left + c.width / 2;
-    cards.forEach(function (el) {
-      var r = el.getBoundingClientRect(), d = (r.left + r.width / 2 - mid) / r.width;
-      if (Math.abs(d) > 3) return;
+    var ds = cards.map(function (el) { var r = el.getBoundingClientRect(); return (r.left + r.width / 2 - mid) / r.width; });
+    cards.forEach(function (el, i) {
+      var d = ds[i]; if (Math.abs(d) > 3) return;
       el.style.setProperty("--ry", clamp(-d * 30, -48, 48).toFixed(1) + "deg");
       el.style.setProperty("--sc", (1 - Math.min(Math.abs(d) * .1, .2)).toFixed(3));
       el.style.setProperty("--op", (1 - Math.min(Math.abs(d) * .25, .55)).toFixed(3));
@@ -237,6 +218,7 @@
   var main = $("main"), road = $(".road"), paths = $$("path", road), litP = $(".road-lit"), rider = $(".rider");
   var hero = $(".hero"), story = $(".story"), sphoto = $(".story-photo"), arts = $(".arts"), artsRow = $(".arts-row"), faith = $(".faith"), fphoto = $(".faith-photo");
   var scards = $$(".scard");
+  var truck = $(".truck");
   var vh = innerHeight, W = 0, mainTop = 0, len = 0, step = 6, LX = [], LY = [], stops = [];
   var lay = {}, Lcur = 0, lastY = scrollY, vel = 0, speed = 1, skew = 0, running = false, loops = [];
 
@@ -265,10 +247,17 @@
       else { pts.push([rail, (t + b) / 2]); stops.push([(t + b) / 2, el.closest(".step") || el]); }
     });
     var d = "M" + pts[0][0].toFixed(1) + " " + pts[0][1].toFixed(1), py = pts[0][1], px = pts[0][0];
+    var fx = [px], fy = [py], fl = [0], tot = 0;
     for (var i = 1; i < pts.length; i++) {
       var p = pts[i]; if (p[1] < py + 4) continue;
       var m = (p[1] - py) / 2;
       d += "C" + px.toFixed(1) + " " + (py + m).toFixed(1) + " " + p[0].toFixed(1) + " " + (p[1] - m).toFixed(1) + " " + p[0].toFixed(1) + " " + p[1].toFixed(1);
+      /* a mesma curva, calculada aqui: evita milhares de consultas ao SVG */
+      for (var n = Math.max(6, Math.ceil((p[1] - py) / 8)), k = 1; k <= n; k++) {
+        var t = k / n, u = 1 - t, bx = u * u * u * px + 3 * u * u * t * px + 3 * u * t * t * p[0] + t * t * t * p[0],
+          by = u * u * u * py + 3 * u * u * t * (py + m) + 3 * u * t * t * (p[1] - m) + t * t * t * p[1], j = fx.length - 1;
+        tot += Math.hypot(bx - fx[j], by - fy[j]); fx.push(bx); fy.push(by); fl.push(tot);
+      }
       px = p[0]; py = p[1];
     }
     road.setAttribute("height", Math.ceil(main.scrollHeight));
@@ -276,7 +265,11 @@
     paths.forEach(function (p) { p.setAttribute("d", d); });
     len = litP.getTotalLength();
     LX = []; LY = [];
-    for (var l = 0; l <= len; l += step) { var q = litP.getPointAtLength(l); LX.push(q.x); LY.push(q.y); }
+    for (var l = 0, c = 0, sc = (tot / len) || 1; l <= len; l += step) {
+      var tl = l * sc; while (c < fl.length - 2 && fl[c + 1] < tl) c++;
+      var f = (tl - fl[c]) / ((fl[c + 1] - fl[c]) || 1);
+      LX.push(fx[c] + (fx[c + 1] - fx[c]) * f); LY.push(fy[c] + (fy[c + 1] - fy[c]) * f);
+    }
     litP.style.strokeDasharray = len + " " + (len + 10);
     if (!motion) { litP.style.strokeDashoffset = 0; stops.forEach(function (s) { s[1].classList.add("passed"); }); }
   }
@@ -304,7 +297,7 @@
       var hp = clamp(y / (lay.hero - vh), 0, 1);
       hero.style.setProperty("--hp", hp.toFixed(3));
       hero.style.setProperty("--mk", clamp((hp - .42) / .28, 0, 1).toFixed(3));
-      $(".truck").style.setProperty("--tx", (clamp((hp - .55) / .45, 0, 1) * clamp((hp - .55) / .45, 0, 1) * W * 1.1).toFixed(1) + "px");
+      truck.style.setProperty("--tx", (clamp((hp - .55) / .45, 0, 1) * clamp((hp - .55) / .45, 0, 1) * W * 1.1).toFixed(1) + "px");
       if (!loops.length && scene.getAnimations) loops = scene.getAnimations({subtree: true}).filter(function (a) { return /slide|lane|spin/.test(a.animationName || ""); });
       var target = 1 + Math.min(Math.abs(vel) / 5, 5);
       speed += (target - speed) * .12;
