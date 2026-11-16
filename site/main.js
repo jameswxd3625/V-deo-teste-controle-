@@ -47,6 +47,8 @@
     });
   }, {threshold: .2});
   if (motion && !lite) $$("video.auto").forEach(function (v) { vo.observe(v); });
+  var pso = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.poster = e.target.dataset.poster; pso.unobserve(e.target); } }); }, {rootMargin: "600px 0px"});
+  $$("video[data-poster]").forEach(function (v) { pso.observe(v); });
 
   /* guarda-móveis: só anima quando aparece */
   var gmo = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle("play", e.isIntersecting); }); }, {threshold: .25});
@@ -368,5 +370,6 @@
   if (window.ResizeObserver) new ResizeObserver(relayout).observe(main);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
   addEventListener("load", relayout);
+  addEventListener("load", function () { $$("img[data-late]").forEach(function (i) { i.src = i.dataset.late; }); });
   layout();
 })();
