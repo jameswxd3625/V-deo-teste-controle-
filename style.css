@@ -378,3 +378,21 @@ html:not(.motion) .rider{display:none}
   .arts-row img{height:min(62svh,540px)}
 }
 
+
+/* guarda-móveis: galpão e capa da Diego cobrindo a carga */
+.gm{background:#06205F}
+.gm svg{width:100%;height:100%}
+.gm-cover{transform:translateY(-300px)}
+.gm-shine{transform:translateX(0)}
+.gm-ok{transform-box:fill-box;transform-origin:center;transform:scale(0)}
+html:not(.motion) .gm-cover{transform:none}
+html:not(.motion) .gm-ok{transform:none}
+.motion .gm.play .gm-cover{animation:gmc 9s infinite}
+.motion .gm.play .gm-shine{animation:gms 9s infinite}
+.motion .gm.play .gm-ok{animation:gmo 9s infinite}
+.motion .gm.play .gm-cone{animation:gml 9s infinite}
+.motion .gm.play .l1 .gm-cone{animation-delay:.15s}.motion .gm.play .l2 .gm-cone{animation-delay:.3s}
+@keyframes gmc{0%,18%{transform:translateY(-300px);animation-timing-function:cubic-bezier(.65,0,.35,1)}46%{transform:translateY(6px);animation-timing-function:ease-out}51%,88%{transform:none;animation-timing-function:cubic-bezier(.65,0,.35,1)}98%,100%{transform:translateY(-300px)}}
+@keyframes gms{0%,54%{transform:translateX(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}68%,100%{transform:translateX(520px)}}
+@keyframes gmo{0%,58%{transform:scale(0);animation-timing-function:cubic-bezier(.34,1.8,.6,1)}63%,86%{transform:scale(1)}90%,100%{transform:scale(0)}}
+@keyframes gml{0%{opacity:.15}4%{opacity:.9}6%{opacity:.35}9%,100%{opacity:1}}
