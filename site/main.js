@@ -85,7 +85,8 @@
 
   /* ---------- player em tela cheia ---------- */
   var player = $("#player"), pv = $("video", player);
-  function openVideo(src) {
+  function openVideo(src, poster) {
+    pv.poster = poster || "";
     pv.src = src;
     if (player.showModal) player.showModal(); else player.setAttribute("open", "");
     var p = pv.play(); if (p && p.catch) p.catch(function () {});
@@ -94,7 +95,7 @@
   $(".player-x").addEventListener("click", closeVideo);
   player.addEventListener("click", function (e) { if (e.target === player) closeVideo(); });
   player.addEventListener("close", function () { pv.pause(); });
-  $(".play-story").addEventListener("click", function () { openVideo(this.dataset.video); });
+  $(".play-story").addEventListener("click", function () { openVideo(this.dataset.video, this.dataset.poster); });
 
   /* ---------- vídeos: carrossel em 3D ---------- */
   var V = [
