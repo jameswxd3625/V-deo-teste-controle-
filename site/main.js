@@ -184,7 +184,7 @@
   }
 
   function buildRoad(mr) {
-    var rail = Math.max(14, $(".svc .head").getBoundingClientRect().left - mr.left - 26);
+    var rail = Math.max(14, $(".svc .head").getBoundingClientRect().left - mr.left - 32);
     var pts = [[rail, lay.hero - 6]]; stops = [];
     $$("[data-road]").forEach(function (el) {
       var r = el.getBoundingClientRect(), t = r.top - mr.top, b = r.bottom - mr.top, kind = el.dataset.road;
@@ -231,6 +231,7 @@
     if (y < lay.hero) {
       var hp = clamp(y / (lay.hero - vh), 0, 1);
       hero.style.setProperty("--hp", hp.toFixed(3));
+      hero.style.setProperty("--mk", clamp((hp - .42) / .28, 0, 1).toFixed(3));
       $(".truck").style.setProperty("--tx", (clamp((hp - .55) / .45, 0, 1) * clamp((hp - .55) / .45, 0, 1) * W * 1.1).toFixed(1) + "px");
       if (!loops.length && scene.getAnimations) loops = scene.getAnimations({subtree: true}).filter(function (a) { return /slide|lane|spin/.test(a.animationName || ""); });
       var target = 1 + Math.min(Math.abs(vel) / 5, 5);
@@ -246,6 +247,8 @@
       var p = at(Lcur), p2 = at(Lcur + 10), ang = Math.atan2(p2[1] - p[1], p2[0] - p[0]) * 57.3 - 90;
       rider.style.transform = "translate3d(" + p[0].toFixed(1) + "px," + (p[1] + mainTop - y).toFixed(1) + "px,0) rotate(" + ang.toFixed(1) + "deg)";
       rider.classList.toggle("on", y + vh * .62 - mainTop > LY[0] - 30);
+      if (Lcur > len - 3) arrive();
+      rider.classList.toggle("parked", destEl.classList.contains("arrived") && Lcur > len - 3);
       litP.style.strokeDashoffset = (len - Lcur).toFixed(1);
       for (var s = 0; s < stops.length; s++) stops[s][1].classList.toggle("passed", p[1] >= stops[s][0] - 4);
     }
@@ -300,9 +303,14 @@
 
     if (more) kick();
   }
+  function arrive() { if (!destEl.classList.contains("arrived")) destEl.classList.add("arrived"); }
   function kick() { if (!running) { running = true; requestAnimationFrame(frame); } }
   addEventListener("scroll", kick, {passive: true});
 
+  var destEl = $("#orcamento");
+  if (!motion) destEl.classList.add("arrived");
+  form.addEventListener("focusin", arrive);
+  new IntersectionObserver(function (es) { if (es[0].intersectionRatio > .55) arrive(); }, {threshold: .55}).observe(form);
   var lt = 0;
   function relayout() { clearTimeout(lt); lt = setTimeout(layout, 120); }
   var lastW = innerWidth;
