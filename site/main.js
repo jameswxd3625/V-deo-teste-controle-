@@ -304,7 +304,7 @@
       var hp = clamp(y / (lay.hero - vh), 0, 1);
       hero.style.setProperty("--hp", hp.toFixed(3));
       hero.style.setProperty("--mk", clamp((hp - .42) / .28, 0, 1).toFixed(3));
-      $(".truck").style.setProperty("--tx", -(clamp((hp - .55) / .45, 0, 1) * clamp((hp - .55) / .45, 0, 1) * W * 1.1).toFixed(1) + "px");
+      $(".truck").style.setProperty("--tx", (clamp((hp - .55) / .45, 0, 1) * clamp((hp - .55) / .45, 0, 1) * W * 1.1).toFixed(1) + "px");
       if (!loops.length && scene.getAnimations) loops = scene.getAnimations({subtree: true}).filter(function (a) { return /slide|lane|spin/.test(a.animationName || ""); });
       var target = 1 + Math.min(Math.abs(vel) / 5, 5);
       speed += (target - speed) * .12;

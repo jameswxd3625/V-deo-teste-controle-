@@ -103,15 +103,15 @@ section>*,.curve>*{position:relative;z-index:2}
 .city i{background-image:var(--city)}
 .lamps{bottom:calc(var(--gb) + var(--ah));height:17%}
 .lamps i{background-image:var(--lamps)}
-.motion .city{animation:slide 70s linear infinite reverse}
-.motion .lamps{animation:slide 9s linear infinite reverse}
+.motion .city{animation:slide 70s linear infinite}
+.motion .lamps{animation:slide 9s linear infinite}
 @keyframes slide{to{transform:translate3d(-50%,0,0)}}
 .ground{left:0;right:0;bottom:0;height:var(--gb);background:linear-gradient(180deg,#050A1C,var(--ink) 40%)}
 .asph{left:0;right:0;bottom:var(--gb);height:var(--ah);background:linear-gradient(180deg,#0B1432,#050A1C);border-top:2px solid rgba(155,235,255,.35);overflow:hidden}
 .lane{position:absolute;left:0;top:44%;height:4px;width:calc(100% + 120px);background:repeating-linear-gradient(90deg,rgba(255,255,255,.7) 0 34px,transparent 34px 60px)}
-.motion .lane{animation:lane .42s linear infinite reverse}
+.motion .lane{animation:lane .42s linear infinite}
 @keyframes lane{to{transform:translate3d(-60px,0,0)}}
-.truck{left:50%;bottom:calc(var(--gb) - 2%);width:min(62vw,310px);margin-left:calc(min(62vw,310px) * -.5);transform:translate3d(var(--tx,0),0,0)}
+.truck{left:50%;bottom:calc(var(--gb) - 2%);width:min(62vw,310px);margin-left:calc(min(62vw,310px) * -.56);transform:translate3d(var(--tx,0),0,0)}
 .truck img{display:block;width:100%;height:auto;filter:drop-shadow(0 14px 14px rgba(0,0,0,.55))}
 .motion .truck>img{animation:bob .32s ease-in-out infinite alternate}
 @keyframes bob{to{transform:translateY(-1.5px)}}
