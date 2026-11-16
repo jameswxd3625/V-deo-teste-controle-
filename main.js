@@ -171,11 +171,70 @@
   var lit = $(".lit"); lit.innerHTML = lit.textContent.split(" ").map(function (w) { return '<span class="w">' + w + "</span>"; }).join(" ");
   var words = $$(".w", lit);
 
+
+  /* =================== JOGO: EMBALE O MÓVEL =================== */
+  (function () {
+    var items = $$(".prot .item"), picks = $$(".pick button"), btn = $(".play-btn"), badge = $(".prot .badge"), status = $(".prot .status"), scoreB = $(".score b");
+    var clips = [0, 1, 2].map(function (i) { return $("#cv" + i + " rect"); }), shines = $$(".prot .item .sh");
+    var A = $("#pa"), B = $("#pb"), Y = 263, HOME = [34, 70];
+    var EDGE = [[163, 240], [114, 286], [117, 288]];
+    var NAME = ["a geladeira", "o sofá", "a cama"], DONE = ["Geladeira protegida!", "Sofá protegido!", "Cama protegida!"];
+    var cur = 0, busy = false, done = [false, false, false], pos = new Map();
+    function place(p, x) { pos.set(p, x); p.setAttribute("transform", "translate(" + x.toFixed(1) + " " + Y + ")"); }
+    place(A, HOME[0]); place(B, HOME[1]);
+    function tween(ms, fn, ez) { return new Promise(function (res) { var t0 = performance.now(); (function step(n) { var t = Math.min(1, (n - t0) / ms); fn((ez || function (v) { return v < .5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2; })(t)); if (t < 1) requestAnimationFrame(step); else res(); })(t0); }); }
+    function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+    function walk(p, x) {
+      var x0 = pos.get(p), d = Math.abs(x - x0); if (d < 1) return Promise.resolve();
+      p.classList.toggle("left", x < x0); p.classList.add("walk");
+      return tween(d / .15, function (t) { place(p, x0 + (x - x0) * t); }, function (v) { return v; }).then(function () { p.classList.remove("walk"); });
+    }
+    function label() {
+      btn.textContent = done[cur] ? "Embalar de novo" : "Embalar " + NAME[cur];
+      badge.classList.toggle("on", done[cur]);
+    }
+    function select(k) {
+      if (busy) return; cur = k;
+      picks.forEach(function (b, i) { b.classList.toggle("on", i === k); b.setAttribute("aria-pressed", i === k); });
+      items.forEach(function (it, i) { it.classList.toggle("on", i === k); });
+      status.textContent = ""; label();
+    }
+    picks.forEach(function (b, i) { b.addEventListener("click", function () { select(i); }); });
+    function finish(k) {
+      done[k] = true; picks[k].classList.add("done");
+      var n = done.filter(Boolean).length; scoreB.textContent = n;
+      status.textContent = n === 3 ? "Tudo protegido! É assim na sua mudança." : DONE[k] + " Escolha outro móvel.";
+      label();
+    }
+    btn.addEventListener("click", async function () {
+      if (busy) return; busy = true; btn.disabled = true; picks.forEach(function (b) { b.disabled = true; });
+      var k = cur, c = clips[k];
+      badge.classList.remove("on"); c.setAttribute("height", 0); status.textContent = "A equipe está a caminho…";
+      if (!motion) { c.setAttribute("height", 320); finish(k); badge.classList.add("on"); busy = false; btn.disabled = false; picks.forEach(function (b) { b.disabled = false; }); return; }
+      await Promise.all([walk(A, EDGE[k][0] - 18), walk(B, EDGE[k][1] + 18)]);
+      B.classList.add("left"); A.classList.remove("left");
+      await wait(150);
+      A.classList.add("lift"); B.classList.add("lift"); A.classList.add("empty");
+      status.textContent = "Vestindo a capa…";
+      await wait(300);
+      await tween(1100, function (t) { c.setAttribute("height", (t * 320).toFixed(1)); });
+      A.classList.remove("lift"); B.classList.remove("lift");
+      tween(600, function (t) { shines[k].setAttribute("transform", "translate(" + (-80 + t * 440).toFixed(1) + " 0)"); });
+      badge.classList.add("on"); A.classList.add("hop"); B.classList.add("hop");
+      finish(k);
+      await wait(1100);
+      A.classList.remove("hop"); B.classList.remove("hop");
+      await Promise.all([walk(A, HOME[0]), walk(B, HOME[1])]);
+      A.classList.remove("left", "empty"); B.classList.remove("left");
+      busy = false; btn.disabled = false; picks.forEach(function (b) { b.disabled = false; });
+    });
+    select(0);
+  })();
+
   /* =================== A ESTRADA E AS CENAS =================== */
   var main = $("main"), road = $(".road"), paths = $$("path", road), litP = $(".road-lit"), rider = $(".rider");
-  var hero = $(".hero"), prot = $(".prot"), story = $(".story"), sphoto = $(".story-photo"), arts = $(".arts"), artsRow = $(".arts-row"), faith = $(".faith"), fphoto = $(".faith-photo");
-  var scards = $$(".scard"), items = $$(".item"), chips = $$(".chips-on li"), badge = $(".badge"), sbar = $(".stage-bar");
-  var clips = [0, 1, 2].map(function (i) { return $("#cv" + i + " rect"); }), shines = $$(".item .sh");
+  var hero = $(".hero"), story = $(".story"), sphoto = $(".story-photo"), arts = $(".arts"), artsRow = $(".arts-row"), faith = $(".faith"), fphoto = $(".faith-photo");
+  var scards = $$(".scard");
   var vh = innerHeight, W = 0, mainTop = 0, len = 0, step = 6, LX = [], LY = [], stops = [];
   var lay = {}, Lcur = 0, lastY = scrollY, vel = 0, speed = 1, skew = 0, running = false, loops = [];
 
@@ -184,7 +243,6 @@
     vh = innerHeight; W = main.clientWidth;
     var mr = main.getBoundingClientRect(); mainTop = mr.top + scrollY;
     lay.hero = hero.offsetHeight;
-    lay.prot = topOf(prot); lay.protH = prot.offsetHeight;
     lay.story = topOf(story); lay.storyH = story.offsetHeight;
     lay.arts = topOf(arts); lay.artsH = arts.offsetHeight; lay.rowW = artsRow.scrollWidth;
     lay.faith = topOf(faith); lay.faithH = faith.offsetHeight;
@@ -273,20 +331,6 @@
         scards[c].style.setProperty("--s", (1 - .06 * t).toFixed(4));
         scards[c].style.setProperty("--dk", (.5 * t).toFixed(3));
       }
-    }
-
-    /* proteção: a capa veste geladeira, sofá e cama */
-    if (y + vh > lay.prot && y < lay.prot + lay.protH) {
-      var pp = clamp((y - lay.prot) / (lay.protH - vh), 0, .9999), k = Math.floor(pp * 3), tt = pp * 3 - k;
-      var cov = ease(clamp((tt - .1) / .55, 0, 1));
-      for (var j = 0; j < 3; j++) {
-        items[j].classList.toggle("on", j === k);
-        chips[j].classList.toggle("on", j === k); chips[j].classList.toggle("done", j < k);
-        clips[j].setAttribute("height", j < k ? 320 : j > k ? 0 : (cov * 320).toFixed(1));
-      }
-      shines[k].setAttribute("transform", "translate(" + (-80 + clamp((tt - .66) / .22, 0, 1) * 400).toFixed(1) + " 0)");
-      badge.classList.toggle("on", tt > .72);
-      sbar.style.setProperty("--pp", pp.toFixed(4));
     }
 
     /* artes deslizam e inclinam com a velocidade */
