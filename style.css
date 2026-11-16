@@ -85,7 +85,7 @@ section>*,.curve>*{position:relative;z-index:2}
 .hero{height:100vh;height:100svh}
 .motion .hero{height:180vh;height:180svh}
 .hero-in{position:sticky;top:0;height:100vh;height:100svh;min-height:560px;overflow:hidden}
-.scene{position:absolute;inset:0;overflow:hidden;z-index:0;--gb:clamp(150px,29%,250px);--ah:9%;--yaw:-42deg;--eye:48%;perspective:520px;perspective-origin:72% var(--eye)}
+.scene{position:absolute;inset:0;overflow:hidden;z-index:0;--gb:clamp(150px,29%,250px);--ah:9%;--yaw:-42deg;--eye:56%;perspective:520px;perspective-origin:72% var(--eye)}
 .scene>*{position:absolute}
 .sky{inset:0;background:linear-gradient(180deg,#010617 0%,#031040 50%,#0A2A86 86%,#1446E0 100%)}
 .stars{inset:0 0 30% 0}
@@ -355,7 +355,7 @@ html:not(.motion) .rider{display:none}
   .hd{padding-left:28px;padding-right:28px}
   .nav,.cta-sm{display:flex}
   .menu-btn{display:none}
-  .scene{--gb:0%;--ah:17%;--eye:70%}
+  .scene{--gb:0%;--ah:17%;--eye:71.4%}
   .sky{background:linear-gradient(180deg,#010617 0%,#031040 45%,#0A2A86 82%,#1446E0 100%)}
   .mount{height:22%}
   .city{height:60%}
@@ -436,3 +436,14 @@ html:not(.motion) .gm-ok{transform:none}
 .dep cite{display:block;margin-top:12px;font-style:normal;font-weight:700;color:var(--ice)}
 .dep .btn svg{width:18px;height:18px}
 .motion .dep-copy.rv{transition-delay:.12s}
+
+/* fumacinha dos pneus */
+.puffs{position:absolute;width:0;height:0;pointer-events:none}
+.puffs.r{left:14%;top:84%}
+.puffs.f{left:52%;top:97%}
+.puffs i{position:absolute;left:-18px;top:-18px;width:36px;height:36px;border-radius:50%;background:radial-gradient(circle,rgba(235,242,255,.95) 0,rgba(210,225,250,.55) 38%,rgba(210,225,250,0) 70%);opacity:0}
+.motion .puffs i{animation:puff 1.3s ease-out infinite}
+.motion .puffs i:nth-child(2){animation-delay:-.43s}
+.motion .puffs i:nth-child(3){animation-delay:-.86s}
+.motion .puffs.f i{animation-duration:1.5s}
+@keyframes puff{0%{transform:translate3d(0,0,0) scale(.35);opacity:0}15%{opacity:.9}100%{transform:translate3d(-64px,-34px,0) scale(2.8);opacity:0}}
