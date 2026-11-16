@@ -96,6 +96,7 @@
   player.addEventListener("click", function (e) { if (e.target === player) closeVideo(); });
   player.addEventListener("close", function () { pv.pause(); });
   $(".play-story").addEventListener("click", function () { openVideo(this.dataset.video, this.dataset.poster); });
+  $$(".play-v").forEach(function (b) { b.addEventListener("click", function () { openVideo(this.dataset.video, this.dataset.poster); }); });
 
   /* ---------- vídeos: carrossel em 3D ---------- */
   var V = [
