@@ -341,11 +341,10 @@
       artsRow.style.transform = "translate3d(" + (-(lay.rowW - W * .85) * ap).toFixed(1) + "px,0,0) skewX(" + skew.toFixed(2) + "deg)";
     }
 
-    /* seu Daniel: a foto se abre até tomar a tela */
+    /* seu Daniel: a foto surge e se afasta suavemente */
     if (y + vh > lay.story && y < lay.story + lay.storyH) {
       var sp = clamp((y - lay.story) / (lay.storyH - vh), 0, 1), e1 = ease(clamp(sp / .45, 0, 1));
-      var r0 = Math.min(W, vh) * .2;
-      story.style.setProperty("--cr", (r0 + (lay.rmax - r0) * e1).toFixed(1) + "px");
+      story.style.setProperty("--cf", (.25 + .75 * e1).toFixed(3));
       story.style.setProperty("--cs", (1.25 - .25 * e1).toFixed(3));
       story.style.setProperty("--co", clamp((sp - .3) / .2, 0, 1).toFixed(3));
       story.style.setProperty("--t1", clamp((sp - .38) / .12, 0, 1).toFixed(3));

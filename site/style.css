@@ -217,7 +217,7 @@ html:not(.motion) .arts{overflow-x:auto}
 /* ---------- história ---------- */
 .story{height:240vh;height:240svh}
 .story-sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;align-items:flex-end;padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
-.story-photo{position:absolute;inset:0;z-index:0;clip-path:circle(var(--cr,14%) at 50% 40%);will-change:clip-path}
+.story-photo{position:absolute;inset:0;z-index:0;opacity:var(--cf,.25);will-change:opacity}
 .story-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 25%;transform:scale(var(--cs,1.25))}
 .story-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(2,10,34,.97) 12%,rgba(2,10,34,.5) 48%,rgba(2,10,34,.05) 75%);opacity:var(--co,0)}
 .story-copy{position:relative;z-index:2}
@@ -230,7 +230,7 @@ html:not(.motion) .arts{overflow-x:auto}
 .play-story{opacity:var(--t3,0);transform:translateY(calc((1 - var(--t3,0)) * 20px))}
 .play-story svg{width:18px;height:18px}
 html:not(.motion) .story h2,html:not(.motion) .story blockquote,html:not(.motion) .play-story{opacity:1;transform:none}
-html:not(.motion) .story-photo{clip-path:none}
+html:not(.motion) .story-photo{opacity:1}
 html:not(.motion) .story-photo::after{opacity:1}
 html:not(.motion) .lit .w{opacity:1}
 
