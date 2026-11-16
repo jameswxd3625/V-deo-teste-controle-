@@ -138,7 +138,6 @@ section>*,.curve>*{position:relative;z-index:2}
 .hero-cta .btn{flex:1 1 auto;min-height:52px;padding:12px 20px}
 .motion .hero-lead,.motion .hero-cta{animation:fade 1s .55s var(--ease) both}
 @keyframes fade{from{opacity:0;transform:translateY(16px)}}
-.cue{display:none}
 .hero-copy{transform:translate3d(0,calc(var(--hp,0) * -90px),0);opacity:calc(1 - var(--hp,0) * 2.2)}
 .motion .truck svg .beam{animation:flick 3s ease-in-out infinite}
 @keyframes flick{50%{opacity:.6}}
@@ -366,7 +365,6 @@ html:not(.motion) .rider{display:none}
   .hero h1{font-size:clamp(60px,7vw,112px)}
   .hero-lead{font-size:18px}
   .hero-cta .btn{flex:0 0 auto;padding:14px 28px}
-  .cue{display:block;position:absolute;right:28px;top:50%;z-index:3;writing-mode:vertical-rl;font-size:12.5px;font-weight:700;color:var(--ice);opacity:.8}
 }
 .paused,.paused *{animation-play-state:paused!important}
 @media (max-height:700px) and (max-width:999px){.hero-lead{display:none}}
