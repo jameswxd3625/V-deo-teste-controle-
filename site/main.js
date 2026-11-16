@@ -71,6 +71,14 @@
   var gmo = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle("play", e.isIntersecting); }); }, {threshold: .25});
   $$(".gm").forEach(function (el) { gmo.observe(el); });
 
+  /* embalagem (animação SMIL): toca só quando aparece */
+  $$(".emb-svg").forEach(function (sv) {
+    if (!sv.pauseAnimations) return;
+    sv.pauseAnimations();
+    if (!motion) { sv.setCurrentTime(8.9); return; }
+    new IntersectionObserver(function (es) { if (es[0].isIntersecting) sv.unpauseAnimations(); else sv.pauseAnimations(); }, {threshold: .25}).observe(sv);
+  });
+
   /* animações contínuas pausam fora da tela */
   var po = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle("paused", !e.isIntersecting); }); });
   $$(".hero, .faith").forEach(function (el) { po.observe(el); });
