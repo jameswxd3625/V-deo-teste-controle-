@@ -359,7 +359,7 @@ html:not(.motion) .rider{display:none}
   .mount{height:22%}
   .city{height:60%}
   .lamps{height:50%}
-  .truck{left:auto;right:6%;margin:0;width:min(29vw,440px);bottom:8%}
+  .truck{left:auto;right:6%;margin:0;width:clamp(330px,29vw,640px);bottom:8%}
   .hero-copy{bottom:auto;top:15%;display:block}
   .hero h1{margin-bottom:18px}
   .hero h1{font-size:clamp(60px,7vw,112px)}
@@ -466,3 +466,5 @@ html:not(.motion) .gm-ok{transform:none}
 .more[open] summary::before{content:"–"}
 .more small{color:var(--soft);font-weight:500}
 .more[open] summary{margin-bottom:10px}
+
+@media (min-width:1500px) and (min-height:900px){.scene{--ah:21%;--eye:63%}.truck{bottom:11%;right:8%}}
